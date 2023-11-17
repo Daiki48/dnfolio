@@ -25,7 +25,7 @@
 	}
 
 	ul li a:visited {
-		color: #345 !important;
+		color: inherit;
 	}
 
 	li::after {
@@ -46,5 +46,9 @@
 	.main {
 		display: flex;
 		justify-content: center;
+	}
+
+	.material-symbols-outlined {
+		color: #345 !important;
 	}
 </style>

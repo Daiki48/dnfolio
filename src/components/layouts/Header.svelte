@@ -25,7 +25,7 @@
 	}
 
 	ul li a:visited {
-		color: inherit;
+		color: #345 !important;
 	}
 
 	li::after {

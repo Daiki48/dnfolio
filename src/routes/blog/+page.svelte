@@ -11,12 +11,13 @@
 
 <h1>記事一覧</h1>
 
-<a href="blog/posts">カテゴリから選択</a>
+<!-- <a href="blog/posts">カテゴリから選択</a> -->
 
 <section>
 	<ul class="posts">
 		{#each data.posts as post}
-			<a href={`blog/posts/${post.category}/${post.slug}`} class="title">
+			<a href={`blog/${post.category}/${post.slug}`} class="title">
+				<!-- <a href={`blog/${post.slug}`} class="title"> -->
 				<li class="post">
 					{post.title}
 					<ul>
@@ -26,6 +27,8 @@
 					{#if post.updatedAt}
 						<p class="date">更新日 : {formatDate(post.updatedAt)}</p>
 					{/if}
+					<p>{post.category}</p>
+					<p>{post.slug}</p>
 					<p class="description">{post.description}</p>
 				</li>
 			</a>

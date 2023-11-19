@@ -1,23 +1,17 @@
 import adapter from "@sveltejs/adapter-cloudflare";
 import { vitePreprocess } from "@sveltejs/kit/vite";
 import { mdsvex } from "mdsvex";
+import mdsvexConfig from "./mdsvex.config.js";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   preprocess: [
     vitePreprocess(),
-    mdsvex({
-      extensions: [".md"],
-    }),
+    mdsvex(mdsvexConfig),
   ],
 
   kit: {
     adapter: adapter({
-      // pages: "build",
-      // assets: "build",
-      // fallback: undefined,
-      // precompress: false,
-      // strict: true,
       routes: {
         include: ["/*"],
         exclude: ["<all>"],
@@ -25,7 +19,7 @@ const config = {
     }),
     alias: { "$components": "./src/components" },
   },
-  extensions: [".svelte", ".md"],
+  extensions: [".svelte", ...mdsvexConfig.extensions],
 };
 
 export default config;

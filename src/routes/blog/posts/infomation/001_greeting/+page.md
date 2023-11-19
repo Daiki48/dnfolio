@@ -2,8 +2,8 @@
 title: ブログ始めます
 description: こちらの個人サイトにブログ機能を追加しました。
 createdAt: '2023-11-19'
-categories:
-  - infomation
+tags:
+  - アナウンス
 published: true
 ---
 

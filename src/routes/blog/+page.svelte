@@ -16,29 +16,36 @@
 <section>
 	<ul class="posts">
 		{#each data.posts as post}
-			<li class="post">
-				<a href={`blog/posts/${post.category}/${post.slug}`} class="title">{post.title}</a>
-				<p>Slug : {post.slug}</p>
-				<p>Category : {post.category}</p>
-				<p class="date">公開日 : {formatDate(post.createdAt)}</p>
-				{#if post.updatedAt}
-					<p class="date">更新日 : {formatDate(post.updatedAt)}</p>
-				{/if}
-				<p class="description">{post.description}</p>
-			</li>
+			<a href={`blog/posts/${post.category}/${post.slug}`} class="title">
+				<li class="post">
+					{post.title}
+					<ul>
+						<li>{post.tags}</li>
+					</ul>
+					<p class="date">公開日 : {formatDate(post.createdAt)}</p>
+					{#if post.updatedAt}
+						<p class="date">更新日 : {formatDate(post.updatedAt)}</p>
+					{/if}
+					<p class="description">{post.description}</p>
+				</li>
+			</a>
 		{/each}
 	</ul>
 </section>
 
 <style>
+	.posts {
+		display: flex;
+		list-style: none;
+	}
 	.post {
 		border: 1px #333 solid;
-		border-radius: 20px;
+		border-radius: 10px;
 		padding: 10px;
 	}
 
 	.post:hover {
-		background-color: #ededed;
+		background-color: #f2f0f0;
 	}
 
 	a {

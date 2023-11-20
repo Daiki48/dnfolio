@@ -11,24 +11,22 @@
 
 <h1>記事一覧</h1>
 
-<!-- <a href="blog/posts">カテゴリから選択</a> -->
-
 <section>
 	<ul class="posts">
 		{#each data.posts as post}
 			<a href={`blog/${post.category}/${post.slug}`} class="title">
-				<!-- <a href={`blog/${post.slug}`} class="title"> -->
 				<li class="post">
-					{post.title}
-					<ul>
-						<li>{post.tags}</li>
-					</ul>
-					<p class="date">公開日 : {formatDate(post.createdAt)}</p>
-					{#if post.updatedAt}
-						<p class="date">更新日 : {formatDate(post.updatedAt)}</p>
-					{/if}
-					<p>{post.category}</p>
-					<p>{post.slug}</p>
+					<h1>{post.title}</h1>
+					<div class="middle-container">
+						<p class="tags">{post.tags}</p>
+						<div class="date-container">
+							{#if post.updatedAt}
+								<p class="update-date">更新日 : {formatDate(post.updatedAt)}</p>
+							{/if}
+							<p class="create-date">公開日 : {formatDate(post.createdAt)}</p>
+						</div>
+					</div>
+					<!-- <p class="category">{post.category}</p> -->
 					<p class="description">{post.description}</p>
 				</li>
 			</a>
@@ -39,16 +37,22 @@
 <style>
 	.posts {
 		display: flex;
+		flex-direction: column;
 		list-style: none;
+		padding: 0;
+		margin: 0;
 	}
 	.post {
-		border: 1px #333 solid;
+		/* border: 1px #333 solid; */
 		border-radius: 10px;
+		box-shadow: 2px 2px 4px gray;
 		padding: 10px;
+		margin: 10px;
+		width: 100%;
 	}
 
 	.post:hover {
-		background-color: #f2f0f0;
+		background-color: #f7f5f5;
 	}
 
 	a {
@@ -58,5 +62,25 @@
 
 	a:visited {
 		color: inherit;
+	}
+
+	.middle-container {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.middle-container .tags {
+		justify-content: start;
+	}
+	.middle-container .date-container {
+		justify-content: end;
+	}
+
+	.date-container {
+		display: flex;
+	}
+
+	.date-container .update-date {
+		margin-right: 10px;
 	}
 </style>

@@ -36,4 +36,11 @@
 	footer {
 		margin-top: auto;
 	}
+
+	@media (max-width: 800px) {
+		body {
+			margin: 0;
+			padding: 0;
+		}
+	}
 </style>

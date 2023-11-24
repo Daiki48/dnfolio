@@ -1,0 +1,30 @@
+---
+title: SvelteKitを使用したプロジェクトの始め方
+description: SvelteKitを使用したプロジェクトの始め方を紹介します。
+createdAt: '2023-11-24'
+tags:
+  - Svelte
+  - SvelteKit
+published: true
+---
+
+SvelteKitを使用したSvelteプロジェクトの始め方を紹介します。  
+
+[SvelteKitの公式サイト](https://kit.svelte.jp/docs/creating-a-project) 通りにすれば導入出来ます。
+
+## npm create
+
+```shell
+$ npm create svelte@latest my-app
+$ cd my-app
+$ npm install
+$ npm run dev
+```
+
+まずは、`npm create svelte@latest my-app` で `my-app` というプロジェクト名のSvelteKitプロジェクトを作成します。
+
+`cd` で作成した `my-app` へ移動します。この `my-app` は任意のプロジェクト名にしてください。もしくは、 `npm create svelte@latest` のみでも大丈夫です。その後のスクリプトでプロジェクト名を入力する項目があるのでそこでも設定可能です。
+
+`npm install` で `package.json` の依存関係をインストールします。このタイミングでプロジェクトのルートに `node_modules` が生成されます。
+
+`npm run dev` で開発サーバーを起動します。指定されたlocalhostへ接続してSvelteKitのプロジェクトを確認出来ます。

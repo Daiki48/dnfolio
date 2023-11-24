@@ -8,7 +8,8 @@ const config = defineConfig({
 	},
 
 	remarkPlugins: [],
-	rehypePlugins: []
+	rehypePlugins: [],
+
 });
 
 export default config;

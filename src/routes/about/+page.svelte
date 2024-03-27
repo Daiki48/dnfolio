@@ -1,6 +1,6 @@
 <h1>Name</h1>
 <ul>
-	<li>Daiki48</li>
+	<li>Daiki</li>
 </ul>
 
 <h1>Date of Birth</h1>

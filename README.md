@@ -4,3 +4,9 @@
 # 技術
 - SvelteKit
 - Cloudflare Pages
+
+# URL
+
+カスタムドメインをCloudflare registerで取得。
+
+https://dnfolio.dev

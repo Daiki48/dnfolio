@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-// import type { Post } from '$lib/types';
 
 export const load: PageLoad = async ({ params }) => {
 	try {

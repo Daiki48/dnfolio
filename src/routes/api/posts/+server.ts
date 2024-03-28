@@ -29,5 +29,6 @@ async function getPosts() {
 
 export async function GET() {
 	const posts = await getPosts();
+  console.log("posts is ", posts);
 	return json(posts);
 }

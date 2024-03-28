@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Dnote</title>
+	<title>Dnfolio</title>
 </svelte:head>
 <div class="main">
 	<ul>

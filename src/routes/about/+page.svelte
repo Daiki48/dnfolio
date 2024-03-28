@@ -55,8 +55,8 @@
 		</ul>
 	</li>
 	<li>
-		<a href="https://twitter.com/Daiki48engineer" target="_blank"
-			>X <span class="material-symbols-outlined"> open_in_new </span></a
+		<a href="https://bsky.app/profile/daiki48.bsky.social" target="_blank"
+			>BlueSky <span class="material-symbols-outlined"> open_in_new </span></a
 		>
 		<ul>
 			<li>使用頻度はかなり落ちてるが、技術情報収集で細々と。</li>

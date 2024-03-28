@@ -7,15 +7,27 @@ tags:
 published: true
 ---
 
+<script>
+  import Img from '$components/modules/Img.svelte';
+</script>
+
 冬にたくさん収穫出来たほうれん草の残り以外は全滅したようです。
 
-<!-- ![終わった様子](%sveltekit.assets%/images/hobby/home-vegetable-garden) -->
+<Img src="/images/hobby/home-vegetable-garden/01-before.png" alt="home vegetable garden" />
 
 次に挑戦する野菜たちはこちら
 - 赤丸はつか大根
 - バジル
 - 水菜
 - ほうれん草（別の種類）
+
+前回のほうれん草も最後まで育てます。
+
+<Img src="/images/hobby/home-vegetable-garden/02-after.png" alt="new home vegetable garden" />
+
+ネギも最後まで育てます。
+
+<Img src="/images/hobby/home-vegetable-garden/03-after.png" alt="new home vegetable garden" />
 
 連鎖障害に気を付けて植えたので毎日様子を見ながら育てていこうと思います。
 

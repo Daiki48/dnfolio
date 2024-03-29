@@ -1,5 +1,3 @@
-import type { Tags } from './taglist';
-
 export type Post = {
 	title: string;
 	slug: string;
@@ -7,6 +5,6 @@ export type Post = {
 	createdAt: string;
 	updatedAt: string | undefined;
 	category: string;
-	tags: Tags[];
+	tags: string[];
 	published: boolean;
 };

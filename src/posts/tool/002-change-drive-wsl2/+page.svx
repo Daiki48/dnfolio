@@ -2,6 +2,7 @@
 title: WSL2の割り当てドライブを変更する
 description: WSL2の割り当ててあるドライブを変更する手順です。
 createdAt: '2024-4-6'
+updatedAt: '2024-4-7'
 tags:
   - WSL2
 published: true

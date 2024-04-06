@@ -2,6 +2,7 @@
 	import Footer from '$components/layouts/Footer.svelte';
 	import Header from '$components/layouts/Header.svelte';
 	import Container from '$components/tags/Container.svelte';
+	import '../css/global.css';
 </script>
 
 <body>

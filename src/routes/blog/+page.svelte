@@ -31,10 +31,10 @@
 					</a>
 					<div class="middle-container">
 						<div class="date-container">
+							<p class="create-date">公開日 : {formatDate(post.createdAt)}</p>
 							{#if post.updatedAt}
 								<p class="update-date">更新日 : {formatDate(post.updatedAt)}</p>
 							{/if}
-							<p class="create-date">公開日 : {formatDate(post.createdAt)}</p>
 						</div>
 					</div>
 					<p class="description">{post.description}</p>
@@ -129,5 +129,9 @@
 
 	.list-tag button:hover {
 		background-color: rgb(208, 249, 195);
+	}
+
+	.create-date {
+		margin-right: 10px;
 	}
 </style>

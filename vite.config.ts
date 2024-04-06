@@ -10,5 +10,9 @@ export default defineConfig({
 		alias: {
 			$components: './src/components'
 		}
-	}
+	},
+  server: {
+    host: '0.0.0.0',
+    port: 5000
+  }
 });

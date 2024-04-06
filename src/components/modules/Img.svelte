@@ -9,7 +9,8 @@
 
 <style>
 	img {
-		height: 500px;
+		height: 50%;
+		max-width: 90%;
 	}
 
 	.container {

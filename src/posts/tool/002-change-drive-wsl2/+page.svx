@@ -32,20 +32,25 @@ $ id -u
 
 **Uドライブへ移動** します。
 
-```shell
-$ cd U:\
+```powershell
+$ cd U:\\
 ```
 
-**wsl** ディレクトリを作成して移動します。
+`wsl` ディレクトリを作成します。
 
-```shell
+```powershell
 $ mkdir wsl
-$ cd .\wsl\
+```
+
+`wsl` ディレクトリへ移動します。
+
+```powershell
+$ cd .\\wsl\\
 ```
 
 移動するディストリビューションの名前を確認します。
 
-```shell
+```powershell
 $ wsl -l -v
 ```
 
@@ -53,7 +58,7 @@ $ wsl -l -v
 
 `Ubuntu` という名前のディストリビューションをUドライブに割り当てるので、エクスポートします。
 
-```shell
+```powershell
 $ wsl --export Ubuntu ubuntu.tar
 ```
 
@@ -63,7 +68,7 @@ $ wsl --export Ubuntu ubuntu.tar
 
 Uドライブでも同じディストリビューションの名前を使いたいので、削除します。
 
-```shell
+```powershell
 $ wsl --unregister Ubuntu
 ```
 
@@ -73,7 +78,7 @@ $ wsl --unregister Ubuntu
 
 先ほどエクスポートした `ubuntu.tar` をインポートします。
 
-```shell
+```powershell
 $ wsl --import Ubuntu Ubuntu ubuntu.tar --version 2
 ```
 

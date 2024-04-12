@@ -9,14 +9,14 @@
 <h1>タグ</h1>
 
 <section>
-	<ul class="list-tags">
-		<li class="list-tag"><button on:click={() => (selectedTag = '')}>全記事表示</button></li>
+	<div class="list-tags">
+		<span class="list-tag"><button on:click={() => (selectedTag = '')}>全記事表示</button></span>
 		{#each data.posts as post}
 			{#each post.tags as tag}
-				<li class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></li>
+				<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
 			{/each}
 		{/each}
-	</ul>
+	</div>
 </section>
 
 <h1>記事一覧</h1>

@@ -4,7 +4,7 @@ description: 複数の記事で使用したタグが、タグ一覧で複数表�
 createdAt: '2024-4-13'
 tags:
   - アナウンス
-	- JavaScript
+  - JavaScript
 published: true
 ---
 

@@ -12,17 +12,22 @@ async function getPosts() {
 		const slug = parts.at(-2);
 		const category = parts.at(-3);
 		console.log('slug in server : ', slug);
+		console.log('parts is ', parts);
 
 		if (file && typeof file === 'object' && 'metadata' in file && slug && category) {
 			const metadata = file.metadata as Omit<Post, 'slug'>;
 			const post = { ...metadata, slug, category } satisfies Post;
+			console.log("Publish status is ", post.published);
 			post.published && posts.push(post);
+			console.log("Pushed post is ", post);
 		}
 	}
 
 	posts = posts.sort(
 		(first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime()
 	);
+
+	console.log("Return before ", posts);
 
 	return posts;
 }

@@ -1,0 +1,70 @@
+---
+title: 複数の記事で使用しているタグをまとめて表示する
+description: 複数の記事で使用したタグが、タグ一覧で複数表示されていたのでまとめて表示出来るように修正しました。
+createdAt: '2024-4-13'
+tags:
+  - アナウンス
+	- JavaScript
+published: true
+---
+
+<script>
+  import Img from '$components/modules/Img.svelte';
+</script>
+
+## 同じタグが複数表示される現象が発生
+
+このようなコードでタグの一覧を表示していたが、重複するタグを考慮していなかったため、**アナウンス** というタグを付与した記事を2つ作成した際、**アナウンス** タグが2つ発生した。
+
+```svelte
+<section>
+	<div class="list-tags">
+		<span class="list-tag"><button on:click={() => (selectedTag = '')}>全記事表示</button></span>
+		{#each data.posts as post}
+			{#each post.tags as tag}
+				<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
+			{/each}
+		{/each}
+	</div>
+</section>
+```
+
+<Img src="/images/infomation/003-fixed-tags-duplication/01-before-duplication.png" alt="before duplication" />
+
+## Setを使用して重複したタグを除去する
+
+[Set](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Set) というJavaScriptの機能を使います。  
+`uniqueTags` を定義します。
+
+```svelte
+<script>
+	let uniqueTags = [...new Set(data.posts.flatMap(post => post.tags))];
+</script>
+```
+
+`data.posts.flatMap(post => post.tags)` は、`data.posts` の各 `post` に対して `post.tags` を取り出し、それらを一つの配列に結合します。  
+つまり、全ての記事のタグが一つの配列になります。この時点で重複するタグが含まれる可能性があります。  
+今回だと、アナウンスというタグがこの配列に二つ含まれることになります。
+
+`new Set(...)` は、その配列を引数に取り、新しい `Set` オブジェクトを作成します。 `Set` オブジェクトは各要素が一意であることを保証します。つまり、重複する要素は自動的に削除されます。ここでアナウンスというタグは一つだけ残りました。  
+
+`new Set(...)` の前にある `...` は [スプレッド構文](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Spread_syntax) といい、 `Set` オブジェクトを再度配列に変換します。  
+Svelteの `each` で配列を扱うため、このタイミングで変換しました。
+
+一意の要素のみに変換した `uniqueTags` を、Svelteの `each` で繰り返し処理します。
+
+```svelte
+<section>
+	<div class="list-tags">
+		<span class="list-tag"><button on:click={() => (selectedTag = '')}>全記事表示</button></span>
+		{#each uniqueTags as tag}
+			<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
+		{/each}
+	</div>
+</section>
+```
+
+重複していたアナウンスタグが一つだけ表示出来ました。
+
+<Img src="/images/infomation/003-fixed-tags-duplication/02-after-duplication.png" alt="after duplication" />
+

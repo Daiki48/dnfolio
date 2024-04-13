@@ -4,17 +4,22 @@
 	export let data: PageData;
 
 	let selectedTag: string = '';
+
+	let uniqueTags = [...new Set(data.posts.flatMap(post => post.tags))];
 </script>
 
-<h1>タグ</h1>
+<div class="tag-list-container">
+	<h1>タグ</h1>
+	{#if selectedTag}
+		<p class="selected-tag">{selectedTag}</p>
+	{/if}
+</div>
 
 <section>
 	<div class="list-tags">
 		<span class="list-tag"><button on:click={() => (selectedTag = '')}>全記事表示</button></span>
-		{#each data.posts as post}
-			{#each post.tags as tag}
-				<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
-			{/each}
+		{#each uniqueTags as tag}
+			<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
 		{/each}
 	</div>
 </section>
@@ -101,9 +106,24 @@
 		margin-right: 10px;
 	}
 
+	.tag-list-container {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.tag-list-container h1 {
+		padding-right: 40px;
+	}
+
+	.selected-tag {
+		border-bottom: 2px solid rgba(209, 225, 105, 0.8);
+	}
+
 	.tag-container {
 		display: flex;
 	}
+
 	.tags {
 		padding: 4px;
 		margin: 4px;

@@ -10,3 +10,7 @@
 カスタムドメインをCloudflare registerで取得。
 
 https://dnfolio.dev
+
+# Author
+
+Daiki Nakashima

@@ -23,9 +23,14 @@ async function getPosts() {
 		}
 	}
 
-	posts = posts.sort(
-		(first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime()
-	);
+	posts.sort((first, second) => {
+		const dateDiff = new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime();
+		if (dateDiff !== 0) {
+			return dateDiff;
+		} else {
+			return parseInt(second.slug.slice(0, 3)) - parseInt(first.slug.slice(0, 3));
+		}
+	});
 
 	console.log("Return before ", posts);
 

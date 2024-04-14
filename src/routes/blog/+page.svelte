@@ -27,18 +27,23 @@
 <h1>記事一覧</h1>
 
 <section>
-	<ul class="posts">
+	<div class="posts">
 		{#each data.posts as post (post.slug)}
 			{#if !selectedTag || post.tags.includes(selectedTag)}
-				<li class="post">
+				<span class="post">
 					<a href={`blog/${post.category}/${post.slug}`} class="title">
 						<h1>{post.title}</h1>
 					</a>
 					<div class="middle-container">
 						<div class="date-container">
-							<p class="create-date">公開日 : {formatDate(post.createdAt)}</p>
 							{#if post.updatedAt}
-								<p class="update-date">更新日 : {formatDate(post.updatedAt)}</p>
+                <p class="update-date">{formatDate(post.updatedAt)}
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+								</p>
+							{:else}
+								<p class="create-date">{formatDate(post.createdAt)}</p>
 							{/if}
 						</div>
 					</div>
@@ -48,32 +53,30 @@
 							<p class="tags">{tag}</p>
 						{/each}
 					</div>
-				</li>
+				</span>
 			{/if}
 		{/each}
-	</ul>
+	</div>
 </section>
 
 <style>
-	ul {
-		margin: 0;
-		padding: 0;
-	}
 	.posts {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
 		gap: 4rem 3rem;
-		list-style: none;
 		width: 100%;
 		padding: 0;
 		margin: 0;
 	}
+
 	.post {
 		border-radius: 10px;
 		box-shadow: 2px 2px 4px gray;
 		padding: 10px;
 		width: 100%;
 		height: 100%;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.post:hover {
@@ -99,11 +102,16 @@
 	}
 
 	.date-container {
-		display: flex;
+		display: block;
 	}
 
 	.date-container .update-date {
-		margin-right: 10px;
+		display: flex;
+		align-items: center;
+	}
+
+	.update-date span {
+		margin-left: 2px;
 	}
 
 	.tag-list-container {
@@ -122,6 +130,7 @@
 
 	.tag-container {
 		display: flex;
+		margin-top: auto;
 	}
 
 	.tags {

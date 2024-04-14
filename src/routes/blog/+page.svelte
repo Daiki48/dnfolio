@@ -12,12 +12,16 @@
 	<h1>タグ</h1>
 	{#if selectedTag}
 		<p class="selected-tag">{selectedTag}</p>
+		<button on:click={() => (selectedTag = '')} class="tag-clear-button">
+			<span class="material-symbols-outlined">
+				close
+			</span>
+		</button>
 	{/if}
 </div>
 
 <section>
 	<div class="list-tags">
-		<span class="list-tag"><button on:click={() => (selectedTag = '')}>全記事表示</button></span>
 		{#each uniqueTags as tag}
 			<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
 		{/each}
@@ -163,5 +167,11 @@
 
 	.create-date {
 		margin-right: 10px;
+	}
+
+	.tag-clear-button {
+		background-color: rgba(255, 254, 250, 1);
+		border: none;
+		cursor: pointer;
 	}
 </style>

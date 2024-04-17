@@ -1,5 +1,5 @@
 <div class="main">
-	<img src="/icon.webp" alt="icon" class="icon-img" height="360" width="640" />
+	<img src="/icon.webp" alt="icon" class="icon-img" height="260" width="540" />
 </div>
 <h1>Hello✋</h1>
 

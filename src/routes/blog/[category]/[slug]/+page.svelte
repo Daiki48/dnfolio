@@ -64,9 +64,9 @@
 		margin: 4px;
 	}
 
-@media (max-width: 800px) {
-	section {
-		width: 100%;
+	@media (max-width: 800px) {
+		section {
+			width: 100%;
+		}
 	}
-}
 </style>

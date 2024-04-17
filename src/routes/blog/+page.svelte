@@ -5,7 +5,7 @@
 
 	let selectedTag: string = '';
 
-	let uniqueTags = [...new Set(data.posts.flatMap(post => post.tags))];
+	let uniqueTags = [...new Set(data.posts.flatMap((post) => post.tags))];
 </script>
 
 <div class="tag-list-container">
@@ -13,9 +13,7 @@
 	{#if selectedTag}
 		<p class="selected-tag">{selectedTag}</p>
 		<button on:click={() => (selectedTag = '')} class="tag-clear-button">
-			<span class="material-symbols-outlined">
-				close
-			</span>
+			<span class="material-symbols-outlined"> close </span>
 		</button>
 	{/if}
 </div>
@@ -41,10 +39,9 @@
 					<div class="middle-container">
 						<div class="date-container">
 							{#if post.updatedAt}
-                <p class="update-date">{formatDate(post.updatedAt)}
-                  <span class="material-symbols-outlined">
-                    edit
-                  </span>
+								<p class="update-date">
+									{formatDate(post.updatedAt)}
+									<span class="material-symbols-outlined"> edit </span>
 								</p>
 							{:else}
 								<p class="create-date">{formatDate(post.createdAt)}</p>

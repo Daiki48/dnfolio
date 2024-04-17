@@ -11,8 +11,8 @@ export default defineConfig({
 			$components: './src/components'
 		}
 	},
-  server: {
-    host: '0.0.0.0',
-    port: 5000
-  }
+	server: {
+		host: '0.0.0.0',
+		port: 5000
+	}
 });

@@ -18,6 +18,13 @@
 		border-radius: 50%;
 		width: 40%;
 		height: auto;
-		transition: opacity 2s ease-in-out;
+	}
+
+	@media (width: 900px) {
+		.icon-img {
+			border-radius: 50%;
+			width: 30%;
+			height: auto;
+		}
 	}
 </style>

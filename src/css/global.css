@@ -18,3 +18,9 @@ h3 {
 	border-bottom: 1px solid rgb(205, 203, 203);
 	margin-top: 40px;
 }
+
+@media (max-width: 800px) {
+	strong {
+		word-break: break-all;
+	}
+}

@@ -86,7 +86,7 @@
 
 	a {
 		text-decoration: none;
-		color: #345 !important;
+		color: rgb(3, 4, 5) !important;
 	}
 
 	a:visited {

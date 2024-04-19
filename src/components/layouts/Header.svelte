@@ -49,6 +49,6 @@
 	}
 
 	.material-symbols-outlined {
-		color: #345 !important;
+		color: rgb(3, 4, 5) !important;
 	}
 </style>

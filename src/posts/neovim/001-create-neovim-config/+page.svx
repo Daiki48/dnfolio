@@ -8,9 +8,13 @@ tags:
 published: true
 ---
 
-## windows11の場合
+<script>
+  import HL from '$components/modules/HL.svelte';
+</script>
 
-### Neovimをインストールする
+<HL el="h2" text="windows11の場合" />
+
+<HL el="h3" text="Neovimをインストールする" />
 
 [Scoop](https://scoop.sh/)というパッケージ管理システムが存在します。今回はこれを使用します。Scoopのインストールは公式サイトを参考に実施してください。最初の画面にコマンドが書かれているので、これをPowerShellで実行すればインストール出来ると思います。
 
@@ -28,7 +32,7 @@ $ scoop install main/neovim
 
 上記でインストール完了です。
 
-### 動作確認
+<HL el="h3" text="動作確認" />
 
 Windowsだと `$HOME\AppData\Local\` 配下に `nvim` ディレクトリを作成して `init.lua` か `init.vim` を配置します。
 
@@ -50,9 +54,9 @@ $ nvim init.lua
 
 行番号が表示されていれば設定出来ています。
 
-## Manjaroの場合
+<HL el="h2" text="Manjaroの場合" />
 
-### Neovimをインストールする
+<HL el="h3" text="Neovimをインストールする" />
 
 [manjaro.org](https://software.manjaro.org/package/neovim) に書いてあるように下記のコマンドを実行します。
 

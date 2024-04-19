@@ -26,7 +26,7 @@
 		font-family: 'BIZ UDPGothic', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ',
 			Meiryo, Osaka, 'MS PGothic', sans-serif;
 		background-color: rgba(255, 254, 250, 1);
-		color: #345;
+		color: rgba(3, 4, 5, 0.8);
 		line-height: 2;
 	}
 	main {

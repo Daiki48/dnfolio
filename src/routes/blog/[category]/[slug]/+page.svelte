@@ -1,7 +1,10 @@
 <script lang="ts">
+	import Toc from '$components/modules/Toc.svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
 </script>
+
+<Toc />
 
 <article>
 	<section>

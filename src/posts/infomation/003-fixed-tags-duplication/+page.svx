@@ -10,9 +10,10 @@ published: true
 
 <script>
   import Img from '$components/modules/Img.svelte';
+  import HL from '$components/modules/HL.svelte';
 </script>
 
-## 同じタグが複数表示される現象が発生
+<HL el="h2" text="同じタグが複数表示される現象が発生" />
 
 このようなコードでタグの一覧を表示していたが、重複するタグを考慮していなかったため、**アナウンス** というタグを付与した記事を2つ作成した際、**アナウンス** タグが2つ発生した。
 
@@ -31,7 +32,7 @@ published: true
 
 <Img src="/images/infomation/003-fixed-tags-duplication/01-before-duplication.png" alt="before duplication" />
 
-## Setを使用して重複したタグを除去する
+<HL el="h2" text="Setを使用して重複したタグを除去する" />
 
 [Set](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Set) というJavaScriptの機能を使います。  
 `uniqueTags` を定義します。

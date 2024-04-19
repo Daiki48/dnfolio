@@ -10,9 +10,10 @@ published: true
 
 <script>
   import Img from '$components/modules/Img.svelte';
+  import HL from '$components/modules/HL.svelte';
 </script>
 
-## デフォルトユーザーのUIDを確認
+<HL el="h2" text="デフォルトユーザーのUIDを確認" />
 
 今回、割り当てドライブを変更するディストリビューションでデフォルトユーザーのUIDを確認します。  
 割り当て後に設定するため事前に控えておく必要があります。
@@ -25,7 +26,7 @@ $ id -u
 
 **1000** と表示されました。メモしておきます。
 
-## ディストリビューションのエクスポート
+<HL el="h2" text="ディストリビューションのエクスポート" />
 
 今後割り当てる予定のドライブに移動してディレクトリを作成します。  
 私は、 **Uドライブ** に `wsl` ディレクトリを作りました。
@@ -64,7 +65,7 @@ $ wsl --export Ubuntu ubuntu.tar
 
 <Img src="/images/tool/002-change-drive-wsl2/01-wsl-export-tar.png" alt="wsl export tar file" />
 
-## ディストリビューションのアンインストール
+<HL el="h2" text="ディストリビューションのアンインストール" />
 
 Uドライブでも同じディストリビューションの名前を使いたいので、削除します。
 
@@ -74,7 +75,7 @@ $ wsl --unregister Ubuntu
 
 <Img src="/images/tool/002-change-drive-wsl2/02-unregister.png" alt="unregister" />
 
-## ディストリビューションのインポート
+<HL el="h2" text="ディストリビューションのインポート" />
 
 先ほどエクスポートした `ubuntu.tar` をインポートします。
 
@@ -84,7 +85,7 @@ $ wsl --import Ubuntu Ubuntu ubuntu.tar --version 2
 
 <Img src="/images/tool/002-change-drive-wsl2/03-wsl-import-tar.png" alt="wsl import tar file" />
 
-## ユーザー設定
+<HL el="h2" text="ユーザー設定" />
 
 最初の **デフォルトユーザーのUIDを確認** でメモした数字を設定します。
 
@@ -100,11 +101,11 @@ windowsのタスクバーにある検索か、もしくはwindowsキー（スタ
 
 <Img src="/images/tool/002-change-drive-wsl2/05-default-user-uid-1000.png" alt="default user uid 1000" />
 
-## 終わり
+<HL el="h2" text="終わり" />
 
 以上でディストリビューションの割り当てドライブを変更出来ました。
 
-## 参考資料
+<HL el="h2" text="参考資料" />
 
 - [ディストリビューションをエクスポートする](https://learn.microsoft.com/ja-jp/windows/wsl/basic-commands#export-a-distribution)
 - [ディストリビューションをインポートする](https://learn.microsoft.com/ja-jp/windows/wsl/basic-commands#import-a-distribution)

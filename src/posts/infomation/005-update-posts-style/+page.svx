@@ -10,9 +10,10 @@ published: true
 
 <script>
   import Img from '$components/modules/Img.svelte';
+  import HL from '$components/modules/HL.svelte';
 </script>
 
-## タグの表示位置を最下部へ
+<HL el="h2" text="タグの表示位置を最下部へ" />
 
 今まで記事一覧に表示するタグは、特に配置を設定していませんでした。
 
@@ -57,7 +58,7 @@ published: true
 
 これだけでも、少し見やすくなりました。
 
-## 記事カードに最新加筆日のみ表示
+<HL el="h2" text="記事カードに最新加筆日のみ表示" />
 
 今までは、公開日と更新日をどちらも表示していました。
 

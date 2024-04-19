@@ -10,9 +10,10 @@ published: true
 
 <script>
   import Img from '$components/modules/Img.svelte';
+  import HL from '$components/modules/HL.svelte';
 </script>
 
-## 修正前の状態
+<HL el="h2" text="修正前の状態" />
 
 同じ作成日付の記事が複数存在した場合、それらの記事に表示順は存在しませんでした。今まで同じ日に記事を2つ書いていなかったからです。  
 今回、同じ日に2つ記事を書くことでこの不具合を発見出来ました。  
@@ -47,7 +48,8 @@ posts.sort((first, second) => {
 });
 ```
 
-## slug名で並び換える
+## 
+<HL el="h2" text="slug名で並び換える" />
 
 まず、作成日付の差分を `dateDiff` で定義します。
 

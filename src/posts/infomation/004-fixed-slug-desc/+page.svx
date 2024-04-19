@@ -48,7 +48,6 @@ posts.sort((first, second) => {
 });
 ```
 
-## 
 <HL el="h2" text="slug名で並び換える" />
 
 まず、作成日付の差分を `dateDiff` で定義します。

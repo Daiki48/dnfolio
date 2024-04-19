@@ -5,7 +5,14 @@
 
 	let selectedTag: string = '';
 
-	let uniqueTags = [...new Set(data.posts.flatMap((post) => post.tags))];
+	let tagCounts: Record<string, number> = data.posts
+		.flatMap((post) => post.tags)
+		.reduce((acc: Record<string, number>, tag) => {
+			acc[tag] = (acc[tag] || 0) + 1;
+			return acc;
+		}, {});
+
+	let uniqueTags = Object.keys(tagCounts);
 </script>
 
 <div class="tag-list-container">
@@ -21,7 +28,11 @@
 <section>
 	<div class="list-tags">
 		{#each uniqueTags as tag}
-			<span class="list-tag"><button on:click={() => (selectedTag = tag)}>{tag}</button></span>
+			<span class="list-tag"
+				><button on:click={() => (selectedTag = tag)}
+					>{tag}<span class="tag-counts">{tagCounts[tag]}</span></button
+				></span
+			>
 		{/each}
 	</div>
 </section>
@@ -170,5 +181,12 @@
 		background-color: rgba(255, 254, 250, 1);
 		border: none;
 		cursor: pointer;
+	}
+
+	.tag-counts {
+		color: green;
+		font-weight: bold;
+		border-radius: 50px;
+		margin: 0.4rem;
 	}
 </style>

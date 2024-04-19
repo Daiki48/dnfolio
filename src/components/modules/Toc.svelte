@@ -81,10 +81,6 @@
 		width: 0;
 	}
 
-	/* .toc ul { */
-	/* 	list-style: none; */
-	/* } */
-
 	a {
 		text-decoration: none;
 		color: rgb(3, 4, 5);
@@ -94,9 +90,9 @@
 		border-bottom: 1px rgb(3, 4, 5) solid;
 	}
 
-li {
-	font-size: 0.8rem;
-}
+	li {
+		font-size: 0.8rem;
+	}
 
 	@media (max-width: 1000px) {
 		button {

@@ -1,3 +1,13 @@
+<svelte:head>
+	<title>About | Dnfolio</title>
+	<meta name="description" content="Daikiについて知ることが出来ます。" />
+	<meta property="og:title" content="Dnfolio's about me" />
+	<meta property="og:description" content="Daikiの趣味プログラミング" />
+	<meta property="og:site_name" content="Dnfolio" />
+	<meta property="og:url" content="https://dnfolio.dev/about" />
+	<meta property="og:image" content="/icon.webp" />
+</svelte:head>
+
 <h1>Name</h1>
 <ul>
 	<li>Daiki</li>

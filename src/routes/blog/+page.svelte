@@ -15,6 +15,16 @@
 	let uniqueTags = Object.keys(tagCounts);
 </script>
 
+<svelte:head>
+	<title>Blog | Dnfolio</title>
+	<meta name="description" content="Daikiのブログです。雑多な内容からプログラミングに関する記事まで幅広く書きます。" />
+	<meta property="og:title" content="Dnfolio's blog" />
+	<meta property="og:description" content="Daikiの趣味プログラミング" />
+	<meta property="og:site_name" content="Dnfolio" />
+	<meta property="og:url" content="https://dnfolio.dev/blog" />
+	<meta property="og:image" content="/icon.webp" />
+</svelte:head>
+
 <div class="tag-list-container">
 	<h1>タグ</h1>
 	{#if selectedTag}

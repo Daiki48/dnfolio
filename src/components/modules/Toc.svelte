@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	let isOpen: boolean = false;
+	let isOpen = false;
 	type Headers = {
 		text: string;
 		id: string;

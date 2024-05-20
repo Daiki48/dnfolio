@@ -17,7 +17,10 @@
 
 <svelte:head>
 	<title>Blog | Dnfolio</title>
-	<meta name="description" content="Daikiのブログです。雑多な内容からプログラミングに関する記事まで幅広く書きます。" />
+	<meta
+		name="description"
+		content="Daikiのブログです。雑多な内容からプログラミングに関する記事まで幅広く書きます。"
+	/>
 	<meta property="og:title" content="Dnfolio's blog" />
 	<meta property="og:description" content="Daikiの趣味プログラミング" />
 	<meta property="og:site_name" content="Dnfolio" />
@@ -93,7 +96,7 @@
 
 	.post {
 		border-radius: 10px;
-		box-shadow: 2px 2px 4px gray;
+		box-shadow: 0 0 8px gray;
 		padding: 10px;
 		width: 100%;
 		height: 100%;

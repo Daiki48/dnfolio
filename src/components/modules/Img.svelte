@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let src: string = '';
-	export let alt: string = '';
+	export let src = '';
+	export let alt = '';
 </script>
 
 <div class="container">

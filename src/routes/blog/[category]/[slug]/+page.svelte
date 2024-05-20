@@ -4,6 +4,27 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>{data.title ? `${data.title} | Dnfolio` : 'Dnfolio'}</title>
+	<meta
+		name="description"
+		content={data.description
+			? `${data.description}`
+			: 'Daikiのブログです。雑多な内容からプログラミングに関する記事まで幅広く書きます'}
+	/>
+	<meta property="og:title" content={data.title ? `${data.title}` : "Dnfolio's blog"} />
+	<meta
+		property="og:description"
+		content={data.description ? `${data.description}` : 'Daikiの趣味プログラミング'}
+	/>
+	<meta property="og:site_name" content="Dnfolio" />
+	<meta
+		property="og:url"
+		content={`https://dnfolio.dev/blog/${data.category}/${data.slug}` ?? 'https://dnfolio.dev/blog'}
+	/>
+	<meta property="og:image" content="/icon.webp" />
+</svelte:head>
+
 <Toc />
 
 <article>

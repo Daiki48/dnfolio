@@ -1,7 +1,7 @@
 <!-- このタグを利用して書いた見出しはidを付与する。 -->
 <script lang="ts">
-	export let text: string = '';
-	export let el: string = '';
+	export let text = '';
+	export let el = '';
 </script>
 
 {#if el === 'h2'}

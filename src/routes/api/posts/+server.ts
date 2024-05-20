@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
 import type { Post } from '$lib/types';
+import { json } from '@sveltejs/kit';
 
 async function getPosts() {
 	let posts: Post[] = [];

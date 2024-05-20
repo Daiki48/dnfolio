@@ -23,6 +23,10 @@ h3 {
 	margin-top: 40px;
 }
 
+img {
+	box-shadow: 0 0 8px gray;
+}
+
 @media (max-width: 800px) {
 	strong {
 		word-break: break-all;

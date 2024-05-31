@@ -44,6 +44,7 @@
 				{/if}
 			</div>
 		</div>
+		<p class="description">{data.description}</p>
 		<svelte:component this={data.content} />
 		<div class="blog-top">
 			<a href="/blog">記事一覧へ</a>
@@ -86,6 +87,12 @@
 
 	.time-container time {
 		margin: 4px;
+	}
+
+	.description {
+		display: flex;
+		justify-content: center;
+		text-align: center;
 	}
 
 	@media (max-width: 800px) {

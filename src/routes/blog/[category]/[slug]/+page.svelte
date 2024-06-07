@@ -25,8 +25,6 @@
 	<meta property="og:image" content="/icon.webp" />
 </svelte:head>
 
-<Toc />
-
 <article>
 	<section>
 		<div class="header">
@@ -45,7 +43,14 @@
 			</div>
 		</div>
 		<p class="description">{data.description}</p>
-		<svelte:component this={data.content} />
+		<div class="content-toc">
+			<div class="content">
+				<svelte:component this={data.content} />
+			</div>
+			<div class="toc">
+				<Toc />
+			</div>
+		</div>
 		<div class="blog-top">
 			<a href="/blog">記事一覧へ</a>
 		</div>
@@ -62,8 +67,22 @@
 		width: 80%;
 	}
 
-	h1 {
-		font-size: 40px;
+	.content-toc {
+		display: flex;
+		position: relative;
+		padding-top: 6rem;
+	}
+
+	.content {
+		width: 70%;
+	}
+
+	.toc {
+		position: sticky;
+		top: 10px;
+		width: 30%;
+		height: 80vh;
+		overflow: auto;
 	}
 
 	.blog-top {
@@ -97,6 +116,19 @@
 
 	@media (max-width: 800px) {
 		section {
+			width: 100%;
+		}
+
+		.content-toc {
+			flex-direction: column-reverse;
+		}
+
+		.content {
+			width: 100%;
+		}
+
+		.toc {
+			position: static;
 			width: 100%;
 		}
 	}

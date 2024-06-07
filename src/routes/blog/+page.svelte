@@ -202,4 +202,8 @@
 		border-radius: 50px;
 		margin: 0.4rem;
 	}
+
+	.title h1 {
+		font-size: 20px;
+	}
 </style>

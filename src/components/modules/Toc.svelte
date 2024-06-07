@@ -1,17 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	let isOpen = false;
 	type Headers = {
 		text: string;
 		id: string;
+		tag: string;
 		key: string;
 	};
 
 	let headers: Headers[] = [];
-
-	const toggle = () => {
-		isOpen = !isOpen;
-	};
 
 	onMount(async () => {
 		await new Promise((r) => setTimeout(r, 0));
@@ -20,65 +16,58 @@
 			return {
 				text: htmlElement.textContent || '',
 				id: htmlElement.id,
+				tag: htmlElement.tagName,
 				key: `${htmlElement.textContent} - ${index}`
 			};
 		});
 	});
 </script>
 
-<button on:click={toggle}>
-	{#if isOpen}
-		<span class="material-symbols-outlined"> keyboard_double_arrow_right </span>
-	{:else}
-		<span class="material-symbols-outlined"> keyboard_double_arrow_left </span>
-	{/if}
-</button>
-
-{#if isOpen}
-	<div class="toc open">
-		<h5>見出し</h5>
-		<ul>
-			{#each headers as header (header.key)}
-				<li><a href={`#${header.id}`} on:click={() => (isOpen = !isOpen)}>{header.text}</a></li>
-			{/each}
-		</ul>
-	</div>
-{:else}
-	<div class="toc close"></div>
-{/if}
+<div class="toc open">
+	<h5>見出し</h5>
+	<ul>
+		{#each headers as header (header.key)}
+			{#if header.tag === 'H3'}
+				<li class="indent-h3">
+					<a href={`#${header.id}`}>{header.text}</a>
+				</li>
+			{:else if header.tag === 'H4'}
+				<li class="indent-h4">
+					<a href={`#${header.id}`}>{header.text}</a>
+				</li>
+			{:else}
+				<li>
+					<a href={`#${header.id}`}>{header.text}</a>
+				</li>
+			{/if}
+		{/each}
+	</ul>
+</div>
 
 <style>
-	button {
-		background-color: transparent;
-		border: transparent;
-		position: fixed;
-		right: 6%;
-		top: 50%;
-		transform: translateY(-50%);
-		cursor: pointer;
-	}
-
 	.toc {
-		background-color: rgba(255, 244, 222, 1);
+		background-color: rgba(255, 244, 222, 0.6);
 		border-radius: 6px;
-		position: fixed;
-		top: 50%;
-		transform: translateY(-50%);
+		position: sticky;
+		top: 6rem;
 		padding: 0 50px;
-		margin: 0;
+		margin: 1rem;
 		width: 0;
 		overflow: hidden;
 		transition: width 0.5s ease-in-out;
 	}
 
 	.toc.open {
-		right: 10%;
+		right: 8%;
 		width: 200px;
 	}
 
-	.toc.close {
-		right: 100%;
-		width: 0;
+	.indent-h3 {
+		padding-left: 0.8rem;
+	}
+
+	.indent-h4 {
+		padding-left: 1.2rem;
 	}
 
 	a {
@@ -90,18 +79,19 @@
 		border-bottom: 1px rgb(3, 4, 5) solid;
 	}
 
+	ul {
+		padding-left: 0;
+	}
+
 	li {
 		font-size: 0.8rem;
+		list-style: none;
 	}
 
 	@media (max-width: 1000px) {
-		button {
-			right: 2%;
-		}
-
-		.toc.open {
-			right: 14%;
-			width: 200px;
+		.toc {
+			right: 0;
+			width: 100%;
 		}
 	}
 </style>

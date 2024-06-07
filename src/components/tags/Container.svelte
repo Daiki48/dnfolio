@@ -9,7 +9,7 @@
 	}
 	@media (max-width: 800px) {
 		.container {
-			margin: 0 2em;
+			margin: 0 0.8em;
 			padding: 10px;
 		}
 	}

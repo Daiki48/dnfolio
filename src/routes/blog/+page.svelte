@@ -32,7 +32,7 @@
 	<h1>タグ</h1>
 	{#if selectedTag}
 		<p class="selected-tag">{selectedTag}</p>
-		<button on:click={() => (selectedTag = '')} class="tag-clear-button">
+		<button class="tag-clear-button" on:click={() => (selectedTag = '')}>
 			<span class="material-symbols-outlined"> close </span>
 		</button>
 	{/if}
@@ -85,6 +85,12 @@
 </section>
 
 <style>
+	section {
+		display: flex;
+		padding: 0;
+		margin: 0;
+	}
+
 	.posts {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
@@ -205,5 +211,13 @@
 
 	.title h1 {
 		font-size: 20px;
+	}
+
+	@media(max-width: 1000px) {
+		.posts {
+			padding: 0;
+			margin: 0 1rem;
+			max-width: 90%;
+		}
 	}
 </style>

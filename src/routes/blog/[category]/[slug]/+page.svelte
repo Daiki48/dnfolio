@@ -22,7 +22,7 @@
 		property="og:url"
 		content={`https://dnfolio.dev/blog/${data.category}/${data.slug}` ?? 'https://dnfolio.dev/blog'}
 	/>
-	<meta property="og:image" content="/icon.webp" />
+	<meta property="og:image" content="/static/icon.webp" />
 </svelte:head>
 
 <article>

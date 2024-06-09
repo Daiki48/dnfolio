@@ -14,7 +14,7 @@ code {
 	padding: 4px;
 	border-radius: 4px;
 
-	@media(max-width: 800px) {
+	@media (max-width: 800px) {
 		font-size: 0.8rem;
 	}
 }
@@ -22,7 +22,7 @@ code {
 pre code {
 	font-size: 1rem;
 
-	@media(max-width: 800px) {
+	@media (max-width: 800px) {
 		font-size: 0.8rem;
 	}
 }
@@ -30,7 +30,7 @@ pre code {
 h1 {
 	font-size: 30px;
 
-	@media(max-width: 800px) {
+	@media (max-width: 800px) {
 		font-size: 20px;
 	}
 }
@@ -40,7 +40,7 @@ h2 {
 	border-bottom: 2px solid rgba(192, 192, 192);
 	margin-top: 60px;
 
-	@media(max-width: 800px) {
+	@media (max-width: 800px) {
 		font-size: 18px;
 	}
 }
@@ -50,7 +50,7 @@ h3 {
 	border-bottom: 1px solid rgb(205, 203, 203);
 	margin-top: 40px;
 
-	@media(max-width: 800px) {
+	@media (max-width: 800px) {
 		font-size: 16px;
 	}
 }
@@ -58,7 +58,7 @@ h3 {
 p {
 	font-size: 16px;
 
-	@media(max-width: 800px) {
+	@media (max-width: 800px) {
 		font-size: 14px;
 	}
 }

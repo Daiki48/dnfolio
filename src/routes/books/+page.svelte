@@ -5,7 +5,7 @@
 	<meta property="og:description" content="Daikiのなんちゃって書籍コーナーです。" />
 	<meta property="og:site_name" content="Dnfolio's books" />
 	<meta property="og:url" content="https://dnfolio.dev/books" />
-	<meta property="og:image" content="/icon.webp" />
+	<meta property="og:image" content="https://dnfolio.dev/icon.webp" />
 </svelte:head>
 
 <h1>Bookページ</h1>

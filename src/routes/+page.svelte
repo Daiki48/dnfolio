@@ -5,7 +5,7 @@
 	<meta property="og:description" content="Daikiの趣味プログラミング" />
 	<meta property="og:site_name" content="Dnfolio" />
 	<meta property="og:url" content="https://dnfolio.dev" />
-	<meta property="og:image" content="/icon.webp" />
+	<meta property="og:image" content="https://dnfolio.dev/icon.webp" />
 </svelte:head>
 
 <div class="main">

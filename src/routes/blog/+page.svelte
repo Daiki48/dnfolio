@@ -213,7 +213,7 @@
 		font-size: 20px;
 	}
 
-	@media(max-width: 1000px) {
+	@media (max-width: 1000px) {
 		.posts {
 			padding: 0;
 			margin: 0 1rem;

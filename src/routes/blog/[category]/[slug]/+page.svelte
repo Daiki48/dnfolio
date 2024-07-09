@@ -20,9 +20,14 @@
 	<meta property="og:site_name" content="Dnfolio" />
 	<meta
 		property="og:url"
-		content={`https://dnfolio.dev/blog/${data.category}/${data.slug}` ?? 'https://dnfolio.dev/blog'}
+		content={data.category
+			? `https://dnfolio.dev/blog/${data.category}/${data.slug}`
+			: 'https://dnfolio.dev/blog'}
 	/>
 	<meta property="og:image" content="https://dnfolio.dev/icon.webp" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@Daiki48engineer" />
+	<meta name="twitter:player" content="@Daiki48engineer" />
 </svelte:head>
 
 <article>

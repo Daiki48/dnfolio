@@ -39,7 +39,7 @@ Vim盆栽は好きなのでdotfilesの回やVimの回は面白かったです。
 技術系ラジオ番組枠だが、テンションが高く見てて元気をもらえるのでバラエティ番組として聴いています。    
 ちなみにYoutubeもあります。
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=fWNBl4NRhc7iths3&amp;list=PL0GEQcnC7e3auBOwpAdGRufSsy-uomSJP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="100%" height="auto" src="https://www.youtube.com/embed/videoseries?si=fWNBl4NRhc7iths3&amp;list=PL0GEQcnC7e3auBOwpAdGRufSsy-uomSJP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <HL el="h3" text="気に入ってる点" />
 

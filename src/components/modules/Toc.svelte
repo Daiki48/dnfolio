@@ -59,7 +59,7 @@
 
 	.toc.open {
 		right: 8%;
-		width: 200px;
+		width: auto;
 	}
 
 	.indent-h3 {

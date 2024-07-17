@@ -69,7 +69,7 @@
 	}
 
 	section {
-		width: 80%;
+		width: 100%;
 	}
 
 	.content-toc {
@@ -80,6 +80,9 @@
 
 	.content {
 		width: 70%;
+		background-color: rgba(255, 251, 244, 1);
+		padding: 1rem 2rem;
+		border-radius: 10px;
 	}
 
 	.toc {
@@ -130,6 +133,7 @@
 
 		.content {
 			width: 100%;
+			padding: 0.6rem;
 		}
 
 		.toc {

@@ -11,15 +11,15 @@ async function getPosts() {
 		const parts = path.split('/');
 		const slug = parts.at(-2);
 		const category = parts.at(-3);
-		console.log('slug in server : ', slug);
-		console.log('parts is ', parts);
+		// console.log('slug in server : ', slug);
+		// console.log('parts is ', parts);
 
 		if (file && typeof file === 'object' && 'metadata' in file && slug && category) {
 			const metadata = file.metadata as Omit<Post, 'slug'>;
 			const post = { ...metadata, slug, category } satisfies Post;
-			console.log('Publish status is ', post.published);
+			// console.log('Publish status is ', post.published);
 			post.published && posts.push(post);
-			console.log('Pushed post is ', post);
+			// console.log('Pushed post is ', post);
 		}
 	}
 
@@ -32,13 +32,13 @@ async function getPosts() {
 		}
 	});
 
-	console.log('Return before ', posts);
+	// console.log('Return before ', posts);
 
 	return posts;
 }
 
 export async function GET() {
 	const posts = await getPosts();
-	console.log('posts is ', posts);
+	// console.log('posts is ', posts);
 	return json(posts);
 }

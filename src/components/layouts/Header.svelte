@@ -8,7 +8,7 @@
 		</li>
 		<li><a href="/about"><span class="material-symbols-outlined"> person </span></a></li>
 		<li><a href="/blog"><span class="material-symbols-outlined"> note </span></a></li>
-		<li><a href="/books"><span class="material-symbols-outlined"> book_2 </span></a></li>
+		<li><a href="/myapp"><span class="material-symbols-outlined"> build </span></a></li>
 	</ul>
 </div>
 

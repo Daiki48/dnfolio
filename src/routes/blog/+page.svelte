@@ -111,7 +111,7 @@
 	}
 
 	.post:hover {
-		background-color: #f7f5f5;
+		background-color: rgba(240, 240, 240, 1);
 	}
 
 	a {
@@ -197,9 +197,14 @@
 	}
 
 	.tag-clear-button {
-		background-color: rgba(255, 254, 250, 1);
+		display: flex;
+		background-color: rgba(240, 240, 240, 0.1);
 		border: none;
 		cursor: pointer;
+	}
+
+	.tag-clear-button span {
+		font-size: 20px;
 	}
 
 	.tag-counts {
@@ -211,6 +216,10 @@
 
 	.title h1 {
 		font-size: 20px;
+	}
+
+	.title:hover {
+		font-weight: bold;
 	}
 
 	@media (max-width: 1000px) {

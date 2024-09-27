@@ -1,3 +1,11 @@
+* {
+	font-family: 'BIZ UDPGothic', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ',
+		Meiryo, Osaka, 'MS PGothic', sans-serif;
+	/* background-color: rgba(240, 240, 240, 1); */
+	color: rgba(3, 4, 5, 0.8);
+	line-height: 2;
+}
+
 html {
 	scroll-behavior: smooth;
 }
@@ -8,14 +16,16 @@ pre {
 
 code {
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	/* font-family: 'BIZ UDPGothic', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', */
+	/* 	Meiryo, Osaka, 'MS PGothic', sans-serif; */
 	font-weight: bold;
-	font-size: 1.1rem;
+	font-size: 1rem;
 	background-color: rgba(192, 192, 192, 0.8);
 	padding: 4px;
 	border-radius: 4px;
 
 	@media (max-width: 800px) {
-		font-size: 0.8rem;
+		font-size: 1rem;
 	}
 }
 

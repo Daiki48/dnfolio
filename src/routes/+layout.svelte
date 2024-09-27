@@ -3,43 +3,37 @@
 	import Header from '$components/layouts/Header.svelte';
 	import Container from '$components/tags/Container.svelte';
 	import '../css/global.css';
+
+	let { children } = $props();
 </script>
 
-<body>
+<main>
 	<header>
 		<Header />
 	</header>
 
 	<Container>
-		<main>
-			<slot />
-		</main>
+		{@render children()}
 	</Container>
 
 	<footer>
 		<Footer />
 	</footer>
-</body>
+</main>
 
 <style>
-	body {
-		font-family: 'BIZ UDPGothic', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ',
-			Meiryo, Osaka, 'MS PGothic', sans-serif;
-		background-color: rgba(240, 240, 240, 1);
-		color: rgba(3, 4, 5, 0.8);
-		line-height: 2;
-	}
 	main {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
 	}
+
 	footer {
 		margin-top: auto;
 	}
 
 	@media (max-width: 800px) {
-		body {
+		main {
 			margin: 0;
 			padding: 0;
 		}

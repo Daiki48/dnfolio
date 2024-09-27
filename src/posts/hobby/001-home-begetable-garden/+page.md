@@ -16,6 +16,7 @@ published: true
 <Img src="/images/hobby/home-vegetable-garden/01-before.png" alt="home vegetable garden" />
 
 次に挑戦する野菜たちはこちら
+
 - 赤丸はつか大根
 - バジル
 - 水菜

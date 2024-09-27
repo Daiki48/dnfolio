@@ -36,7 +36,7 @@ $ scoop install main/neovim
 
 Windowsだと `$HOME\AppData\Local\` 配下に `nvim` ディレクトリを作成して `init.lua` か `init.vim` を配置します。
 
-今回はLuaで書きます。  
+今回はLuaで書きます。
 
 `init.lua` に下記のように書きます。
 
@@ -65,5 +65,3 @@ $ sudo pamac install neovim
 ```
 
 それ以外の手順は、windows11と同じです。
-
-

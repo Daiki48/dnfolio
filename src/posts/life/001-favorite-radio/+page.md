@@ -18,7 +18,7 @@ published: true
 
 技術系ラジオ番組枠で聴いています。  
 私がエンジニアとして本格的に頑張り始めた頃にスタートした番組です。MCの一人「ジュンペイ」氏と同じエンジニア歴であり共感出来る部分が多いです。  
-番組内のポジションとして「初級エンジニアのジュンペイ氏」、「中級エンジニアのカイチ氏とノリ氏」という構成でスタートしました。  
+番組内のポジションとして「初級エンジニアのジュンペイ氏」、「中級エンジニアのカイチ氏とノリ氏」という構成でスタートしました。
 
 <HL el="h3" text="気に入ってる点" />
 
@@ -36,7 +36,7 @@ Vim盆栽は好きなのでdotfilesの回やVimの回は面白かったです。
 
 <iframe title="ゆるコンピュータ科学ラジオ" style="border-radius:12px" src="https://open.spotify.com/embed/show/32qgIhAHYnseWxiGyrFzSt?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
-技術系ラジオ番組枠だが、テンションが高く見てて元気をもらえるのでバラエティ番組として聴いています。    
+技術系ラジオ番組枠だが、テンションが高く見てて元気をもらえるのでバラエティ番組として聴いています。  
 ちなみにYoutubeもあります。
 
 <iframe width="100%" height="auto" src="https://www.youtube.com/embed/videoseries?si=fWNBl4NRhc7iths3&amp;list=PL0GEQcnC7e3auBOwpAdGRufSsy-uomSJP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -69,6 +69,6 @@ Web系の話題で共感出来る事や、初耳の情報を得る事が出来�
 
 https://x.com/tomoyaton/status/1810158595172126794
 
-現時点では第1回が公開されたばかりで、まだまだこれからの番組ではりますがvim-jpは幅広い分野のチャンネルが存在するようで話題には困らないのではないかと予想しています。とても楽しみです。  
+現時点では第1回が公開されたばかりで、まだまだこれからの番組ではりますがvim-jpは幅広い分野のチャンネルが存在するようで話題には困らないのではないかと予想しています。とても楽しみです。
 
 他にもありますが、現時点で注目している番組は以上です。

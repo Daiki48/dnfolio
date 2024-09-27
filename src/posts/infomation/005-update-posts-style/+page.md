@@ -29,7 +29,7 @@ published: true
 </div>
 
 <style>
-/* postクラスは親DOM */
+	/* postクラスは親DOM */
 	.post {
 		border-radius: 10px;
 		box-shadow: 2px 2px 4px gray;
@@ -71,10 +71,9 @@ published: true
 ```svelte
 <div class="date-container">
 	{#if post.updatedAt}
-		<p class="update-date">{formatDate(post.updatedAt)}
-			<span class="material-symbols-outlined">
-				edit
-			</span>
+		<p class="update-date">
+			{formatDate(post.updatedAt)}
+			<span class="material-symbols-outlined"> edit </span>
 		</p>
 	{:else}
 		<p class="create-date">{formatDate(post.createdAt)}</p>

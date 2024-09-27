@@ -39,7 +39,7 @@ published: true
 
 ```svelte
 <script>
-	let uniqueTags = [...new Set(data.posts.flatMap(post => post.tags))];
+	let uniqueTags = [...new Set(data.posts.flatMap((post) => post.tags))];
 </script>
 ```
 
@@ -47,7 +47,7 @@ published: true
 つまり、全ての記事のタグが一つの配列になります。この時点で重複するタグが含まれる可能性があります。  
 今回だと、アナウンスというタグがこの配列に二つ含まれることになります。
 
-`new Set(...)` は、その配列を引数に取り、新しい `Set` オブジェクトを作成します。 `Set` オブジェクトは各要素が一意であることを保証します。つまり、重複する要素は自動的に削除されます。ここでアナウンスというタグは一つだけ残りました。  
+`new Set(...)` は、その配列を引数に取り、新しい `Set` オブジェクトを作成します。 `Set` オブジェクトは各要素が一意であることを保証します。つまり、重複する要素は自動的に削除されます。ここでアナウンスというタグは一つだけ残りました。
 
 `new Set(...)` の前にある `...` は [スプレッド構文](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Spread_syntax) といい、 `Set` オブジェクトを再度配列に変換します。  
 Svelteの `each` で配列を扱うため、このタイミングで変換しました。
@@ -68,4 +68,3 @@ Svelteの `each` で配列を扱うため、このタイミングで変換しま
 重複していたアナウンスタグが一つだけ表示出来ました。
 
 <Img src="/images/infomation/003-fixed-tags-duplication/02-after-duplication.png" alt="after duplication" />
-

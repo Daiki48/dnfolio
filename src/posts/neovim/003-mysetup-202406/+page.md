@@ -36,7 +36,7 @@ Lua製Neovimをたくさん開発されているfolke氏によるプラグイン
 
 <HL el="h3" text="lazy.nvimの設定" />
 
-詳しい設定は [README](https://github.com/folke/lazy.nvim/blob/main/README.md) をご覧ください。  
+詳しい設定は [README](https://github.com/folke/lazy.nvim/blob/main/README.md) をご覧ください。
 
 以下は私の設定です。ほとんどREADMEの内容です。
 
@@ -106,6 +106,7 @@ return {
 	},
 }
 ```
+
 <HL el="h2" text="ファイラー" />
 
 [nvim-tree/nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
@@ -194,7 +195,7 @@ keymap.set("n", ";er", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh file explor
 [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 
 Lua製のファジーファインダー。  
-私は、あいまい検索とgrepで使用しています。  
+私は、あいまい検索とgrepで使用しています。
 
 windowsで使用する際は若干重いです。
 
@@ -230,7 +231,7 @@ vim.keymap.set("n", ";fh", builtin.help_tags, {})
 
 最近だと [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) を使うことが多いと思います。私もNeovim使い始めた頃は [ddc.vim](https://github.com/Shougo/ddc.vim) と組み合わせて使っていました。一時期は [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) と組み合わせて使ってみたりもしていました。  
 coc.nvimよりも柔軟に設定することが出来ました。  
-当時はNeovimの設定が楽しかったので多くのプラグインを管理出来ていましたが、最近はdotfilesのメンテナンスを高頻度で行えないためcoc.nvimへ移行しました。  
+当時はNeovimの設定が楽しかったので多くのプラグインを管理出来ていましたが、最近はdotfilesのメンテナンスを高頻度で行えないためcoc.nvimへ移行しました。
 
 coc.nvimは、自分で細かい設定をする必要はありません。 `CocInstall` でLSPをインストールすると動きます。設定が必要な言語は `coc-settings.json` に設定を書くと動きます。  
 とても使いやすいです。
@@ -384,24 +385,24 @@ end, {})
 
 ```json
 {
-  "suggest.noselect": true,
-  "suggest.preferCompleteThanJumpPlaceholder": true,
-  "suggest.floatConfig": {
-    "border": true
-  },
-  "diagnostic.floatConfig": {
-    "border": true
-  },
-  "signature.floatConfig": {
-    "border": true
-  },
-  "hover.floatConfig": {
-    "border": true
-  },
-  "Lua.diagnostics.globals": ["vim"],
-  "svelte.enable-ts-plugin": true,
-  "tsserver.enable": false,
-  "deno.enable": false
+	"suggest.noselect": true,
+	"suggest.preferCompleteThanJumpPlaceholder": true,
+	"suggest.floatConfig": {
+		"border": true
+	},
+	"diagnostic.floatConfig": {
+		"border": true
+	},
+	"signature.floatConfig": {
+		"border": true
+	},
+	"hover.floatConfig": {
+		"border": true
+	},
+	"Lua.diagnostics.globals": ["vim"],
+	"svelte.enable-ts-plugin": true,
+	"tsserver.enable": false,
+	"deno.enable": false
 }
 ```
 

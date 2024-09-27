@@ -16,21 +16,20 @@ published: true
 <HL el="h2" text="修正前の状態" />
 
 同じ作成日付の記事が複数存在した場合、それらの記事に表示順は存在しませんでした。今まで同じ日に記事を2つ書いていなかったからです。  
-今回、同じ日に2つ記事を書くことでこの不具合を発見出来ました。  
+今回、同じ日に2つ記事を書くことでこの不具合を発見出来ました。
 
 下記のように、「複数の記事で...」と書かれている記事が最新の記事ですが、「タグ一覧を...」という記事が先頭に表示されています。これを修正します。
 
 <Img src="/images/infomation/004-fixed-slug-desc/01-before.png" alt="slug is not desc view" />
 
-このサイトは、SvelteKitというフレームワークで構築しています。SvelteKitは、フレームワーク内でサーバー側の処理も書くことが出来ます。  
+このサイトは、SvelteKitというフレームワークで構築しています。SvelteKitは、フレームワーク内でサーバー側の処理も書くことが出来ます。
 
 `/src/routes/api/posts/+server.ts` というファイルを作成し、サーバー側の処理を記述しています。  
 表示順に関して、今までは作成日付である `createdAt` というメタ情報を元に記述していました。
 
 ```svelte
-posts.sort(
-	(first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime()
-);
+posts.sort( (first, second) => new Date(second.createdAt).getTime() - new
+Date(first.createdAt).getTime() );
 ```
 
 このコードでは、posts配列を `createdAt` で降順に並び換えのみ行っています。今まではこれで問題ありませんでした。

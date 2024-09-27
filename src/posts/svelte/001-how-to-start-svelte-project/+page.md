@@ -12,7 +12,7 @@ published: true
   import HL from '$components/modules/HL.svelte';
 </script>
 
-SvelteKitを使用したSvelteプロジェクトの始め方を紹介します。  
+SvelteKitを使用したSvelteプロジェクトの始め方を紹介します。
 
 [SvelteKitの公式サイト](https://kit.svelte.jp/docs/creating-a-project) 通りにすれば導入出来ます。
 

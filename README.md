@@ -2,21 +2,22 @@
 
 なんかいろいろ書いたりしていきたい。
 
-# 技術
+## 技術
 
 - SvelteKit
 - Cloudflare Pages
+- [bun](https://bun.sh)
 
-# URL
+## URL
 
 カスタムドメインをCloudflare registerで取得。
 
 https://dnfolio.dev
 
-# Cloudflareダッシュボード
+## Cloudflareダッシュボード
 
 https://dash.cloudflare.com/
 
-# Author
+## Author
 
 Daiki Nakashima

@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { formatDate } from '$lib/utils';
-	import type { PageData } from './$types';
-	export let data: PageData;
+	// import type { PageData } from './$types';
+	// export let data: PageData;
+	let { data } = $props();
 
-	let selectedTag: string = '';
+	// let selectedTag: string = '';
+	let selectedTag: string = $state('');
 
 	let tagCounts: Record<string, number> = data.posts
 		.flatMap((post) => post.tags)
@@ -32,7 +34,7 @@
 	<h1>タグ</h1>
 	{#if selectedTag}
 		<p class="selected-tag">{selectedTag}</p>
-		<button class="tag-clear-button" on:click={() => (selectedTag = '')}>
+		<button class="tag-clear-button" onclick={() => (selectedTag = '')}>
 			<span class="material-symbols-outlined"> close </span>
 		</button>
 	{/if}
@@ -42,7 +44,7 @@
 	<div class="list-tags">
 		{#each uniqueTags as tag}
 			<span class="list-tag"
-				><button on:click={() => (selectedTag = tag)}
+				><button onclick={() => (selectedTag = tag)}
 					>{tag}<span class="tag-counts">{tagCounts[tag]}</span></button
 				></span
 			>

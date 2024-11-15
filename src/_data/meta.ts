@@ -1,7 +1,6 @@
 export default {
 	lang: [
-		"en",
-		"ja"
+		"en"
 	],
 	name: "Dnfolio",
 	styles: [

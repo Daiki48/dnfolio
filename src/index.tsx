@@ -16,7 +16,7 @@ export default ({ meta }: Lume.Data, _helpers: Lume.Helpers): RC => (
 		</div>
     <a
       href="/about"
-      className="mb-8 text-blue-500 hover:border-b-2 hover:border-blue-500 animate-pulse hover:animate-none hover:font-bold"
+      className="mb-8 text-blue-500 hover:border-b-2 hover:border-blue-500 hover:font-bold"
     >
       Go to about pages
     </a>

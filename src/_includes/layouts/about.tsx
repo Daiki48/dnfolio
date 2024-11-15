@@ -9,14 +9,15 @@ export default (
       <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>{`${title} | ${meta.name}`}</title>
+      <meta name="description" content={meta.description} />
       {meta.styles.map((style: string, index: number) => (
         <link key={index} rel="stylesheet" href={style} />
       ))}
-			<style>{globalStyle}</style>
+      <style>{globalStyle}</style>
       <link rel="icon" href={meta.icon} />
-			{meta.ogp.name.map((name: string, index: number) => (
-				<meta key={index} name={name} content={meta.ogp.content[index]} />
-			))}
+      {meta.ogp.name.map((name: string, index: number) => (
+        <meta key={index} name={name} content={meta.ogp.content[index]} />
+      ))}
     </head>
     <body className="container mx-auto bg-gray-100">
       <header className="text-center text-4xl font-bold my-8 pt-6">
@@ -51,7 +52,10 @@ export default (
                   className="cursor-pointer px-2"
                 />
               </a>
-              <a href="https://bsky.app/profile/daiki48.bsky.social" target="_blank">
+              <a
+                href="https://bsky.app/profile/daiki48.bsky.social"
+                target="_blank"
+              >
                 <img
                   src="/assets/sns/bluesky-logo.svg"
                   alt="bluesky"

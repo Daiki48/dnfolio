@@ -2,7 +2,7 @@ import { globalStyle } from "../../_styles/global.ts";
 
 export default (
   { title, children, meta }: Lume.Data,
-  _helpers: Lume.Helpers
+  _helpers: Lume.Helpers,
 ) => (
   <html lang={meta.lang}>
     <head>

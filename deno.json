@@ -6,7 +6,7 @@
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
-    "build": "deno task lume",
+    "build": "deno fmt | deno task lume",
     "serve": "deno task lume -s"
   },
   "compilerOptions": {
@@ -17,5 +17,8 @@
     "jsxImportSource": "react",
     "jsxImportSourceTypes": "npm:@types/react"
   },
-  "nodeModulesDir": "auto"
+  "nodeModulesDir": "auto",
+  "fmt": {
+    "exclude": ["_site"]
+  }
 }

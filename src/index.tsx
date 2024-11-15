@@ -4,8 +4,8 @@ export const layout = "layouts/home.tsx";
 
 export default ({ meta }: Lume.Data, _helpers: Lume.Helpers): RC => (
   <div className="flex flex-col items-center justify-center min-h-screen">
-		<div className="my-4">
-			<h1 className="text-4xl font-bold mb-8 animate-bounce">{meta.name}</h1>
+		<div className="flex flex-col justify-center my-2">
+			<h1 className="text-4xl font-bold animate-bounce">{meta.name}</h1>
 			<img
 				src="/assets/icon/icon.webp"
 				alt="logo"
@@ -16,9 +16,9 @@ export default ({ meta }: Lume.Data, _helpers: Lume.Helpers): RC => (
 		</div>
     <a
       href="/about"
-      className="mb-8 text-blue-500 hover:border-b-2 hover:border-blue-500 hover:font-bold"
+      className="no-underline m-2 p-2 text-teal-600 hover:border-b-2 shadow-lg rounded"
     >
-      Go to about pages
+		About
     </a>
   </div>
 );

@@ -14,6 +14,9 @@ export default (
       ))}
 			<style>{globalStyle}</style>
       <link rel="icon" href={meta.icon} />
+			{meta.ogp.name.map((name: string, index: number) => (
+				<meta key={index} name={name} content={meta.ogp.content[index]} />
+			))}
     </head>
     <body className="container mx-auto bg-gray-100">
       <header className="text-center text-4xl font-bold my-8 pt-6">

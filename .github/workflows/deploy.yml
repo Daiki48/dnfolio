@@ -24,6 +24,6 @@ jobs:
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: lume-unocss-template
+          project: dnfolio
           import-map: "./deno.json"
           entrypoint: "server.ts"

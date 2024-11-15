@@ -31,7 +31,6 @@ site.use(
   }),
 );
 
-site.copy("./_styles/global.css", "/styles/global.css");
 site.copy("./_assets", "/assets");
 
 site.ignore("README.md");

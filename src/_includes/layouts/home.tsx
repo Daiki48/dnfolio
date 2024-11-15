@@ -1,3 +1,5 @@
+import { globalStyle } from "../../_styles/global.ts";
+
 export default ({ children, meta }: Lume.Data, _helpers: Lume.Helpers) => (
   <html lang={meta.lang}>
     <head>
@@ -7,6 +9,7 @@ export default ({ children, meta }: Lume.Data, _helpers: Lume.Helpers) => (
 			{meta.styles.map((style: string, index: number) => (
 				<link key={index} rel="stylesheet" href={style} />
 			))}
+			<style>{globalStyle}</style>
 			<link rel="icon" href={meta.icon} />
     </head>
     <body className="bg-gray-100">

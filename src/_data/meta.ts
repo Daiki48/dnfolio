@@ -5,7 +5,6 @@ export default {
 	],
 	name: "Dnfolio",
 	styles: [
-		"/styles/global.css",
 		"/styles/uno.css",
 		"/styles/atom-one-dark.css",
 	],

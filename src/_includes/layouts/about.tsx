@@ -1,3 +1,5 @@
+import { globalStyle } from "../../_styles/global.ts";
+
 export default (
   { title, children, meta }: Lume.Data,
   _helpers: Lume.Helpers
@@ -10,6 +12,7 @@ export default (
       {meta.styles.map((style: string, index: number) => (
         <link key={index} rel="stylesheet" href={style} />
       ))}
+			<style>{globalStyle}</style>
       <link rel="icon" href={meta.icon} />
     </head>
     <body className="container mx-auto bg-gray-100">

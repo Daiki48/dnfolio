@@ -2,7 +2,7 @@
 
 My personal site.
 
-<div style="display: flex; justify-content: center; align-items: center;">
+<div align="center">
     <img width="305" alt="icon" src="https://github.com/user-attachments/assets/ab8b4125-3747-45b1-9511-c84e589a0a62">
 </div>
 

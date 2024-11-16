@@ -16,7 +16,7 @@ export default ({ meta }: Lume.Data, _helpers: Lume.Helpers): RC => (
     </div>
     <a
       href="/about"
-      className="no-underline m-2 p-2 text-teal-600 hover:border-b-2 shadow-lg rounded"
+      className="no-underline m-2 p-2 text-black font-normal hover:border-b-2 shadow-lg rounded"
     >
       About
     </a>

@@ -1,6 +1,6 @@
 export const layout = "layouts/main.tsx";
 
-export default ({ children }: Lume.Data, _helpers: Lume.Helpers) => (
+export default ({ children }: Lume.Data) => (
   <main>
     {children}
   </main>

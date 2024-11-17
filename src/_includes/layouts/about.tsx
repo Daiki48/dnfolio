@@ -2,12 +2,19 @@ export const layout = "layouts/main.tsx";
 
 export default (
   { title, children }: Lume.Data,
-  _helpers: Lume.Helpers,
 ) => (
   <>
-    <header className="text-center text-4xl font-bold my-8 pt-6">
-      {title}
-    </header>
+    <div className="flex flex-col items-center justify-start">
+      <a
+        href="/"
+        className="flex justify-center w-full max-w-2xl no-underline text-slate-500 hover:text-slate-800"
+      >
+        ← Home
+      </a>
+      <header className="text-center text-3xl font-bold my-4 pt-2">
+        {title}
+      </header>
+    </div>
     <main className="flex justify-center items-start max-w-full mx-auto px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-2xl break-words">
         <div className="flex flex-col justify-center items-center">

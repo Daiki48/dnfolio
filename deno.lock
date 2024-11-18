@@ -32,6 +32,7 @@
     "jsr:@std/yaml@^1.0.5": "1.0.5",
     "npm:@fec/remark-a11y-emoji@*": "4.0.2",
     "npm:@js-temporal/polyfill@0.4.4": "0.4.4",
+    "npm:@mdit/plugin-alert@~0.13.1": "0.13.1_markdown-it@14.1.0",
     "npm:@types/estree@1.0.6": "1.0.6",
     "npm:@types/node@*": "22.5.4",
     "npm:@types/react-dom@18.3.1": "18.3.1",
@@ -48,6 +49,7 @@
     "npm:highlight.js@11.10.0": "11.10.0",
     "npm:magic-string@0.30.12": "0.30.12",
     "npm:markdown-it-attrs@4.2.0": "4.2.0_markdown-it@14.1.0",
+    "npm:markdown-it-container@4": "4.0.0",
     "npm:markdown-it-deflist@3.0.0": "3.0.0",
     "npm:markdown-it@14.1.0": "14.1.0",
     "npm:meriyah@6.0.3": "6.0.3",
@@ -389,6 +391,13 @@
         "tslib"
       ]
     },
+    "@mdit/plugin-alert@0.13.1_markdown-it@14.1.0": {
+      "integrity": "sha512-3LMYQQ3QP6TUx6zmtmuoHJScST5SVoPZlNuuF4S6PUZvJIwtlITF+eFNjDrA7UQx0PUdCgVHmwu5kYliq+BNtg==",
+      "dependencies": [
+        "@types/markdown-it",
+        "markdown-it"
+      ]
+    },
     "@polka/url@1.0.0-next.28": {
       "integrity": "sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw=="
     },
@@ -475,11 +484,24 @@
         "@types/unist@2.0.11"
       ]
     },
+    "@types/linkify-it@5.0.0": {
+      "integrity": "sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q=="
+    },
+    "@types/markdown-it@14.1.2": {
+      "integrity": "sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==",
+      "dependencies": [
+        "@types/linkify-it",
+        "@types/mdurl"
+      ]
+    },
     "@types/mdast@4.0.4": {
       "integrity": "sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==",
       "dependencies": [
         "@types/unist@3.0.3"
       ]
+    },
+    "@types/mdurl@2.0.0": {
+      "integrity": "sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg=="
     },
     "@types/ms@0.7.34": {
       "integrity": "sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g=="
@@ -1197,6 +1219,9 @@
       "dependencies": [
         "markdown-it"
       ]
+    },
+    "markdown-it-container@4.0.0": {
+      "integrity": "sha512-HaNccxUH0l7BNGYbFbjmGpf5aLHAMTinqRZQAEQbMr2cdD3z91Q6kIo1oUn1CQndkT03jat6ckrdRYuwwqLlQw=="
     },
     "markdown-it-deflist@3.0.0": {
       "integrity": "sha512-OxPmQ/keJZwbubjiQWOvKLHwpV2wZ5I3Smc81OjhwbfJsjdRrvD5aLTQxmZzzePeO0kbGzAo3Krk4QLgA8PWLg=="
@@ -2355,6 +2380,8 @@
   },
   "workspace": {
     "dependencies": [
+      "npm:@mdit/plugin-alert@~0.13.1",
+      "npm:markdown-it-container@4",
       "npm:react@^18.3.1",
       "npm:unocss@0.64"
     ]

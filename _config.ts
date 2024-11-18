@@ -5,6 +5,7 @@ import nav from "lume/plugins/nav.ts";
 import jsx from "lume/plugins/jsx.ts";
 import unocss from "lume/plugins/unocss.ts";
 import unocssConfig from "./uno.config.ts";
+import { alert } from "@mdit/plugin-alert";
 
 const site = lume({
   src: "./src",
@@ -34,5 +35,7 @@ site.use(
 site.copy("./_assets", "/assets");
 
 site.ignore("README.md");
+
+site.hooks.addMarkdownItPlugin(alert);
 
 export default site;

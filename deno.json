@@ -7,7 +7,7 @@
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
-    "build": "deno fmt | deno task lume",
+    "build": "deno task lume",
     "serve": "deno task lume -s"
   },
   "compilerOptions": {

@@ -10,12 +10,12 @@ export default ({ title, children }: Lume.Data, _helpers: Lume.Helpers) => (
       >
         ← Home
       </a>
-      <header className="text-center text-2xl font-bold">
-        <h1>{title}</h1>
+      <header className="text-center text-sm sm:text-xl font-bold text-wrap">
+        <h1 className="leading-loose">{title}</h1>
       </header>
     </div>
 
-    <main className="flex justify-start items-start max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="flex justify-center items-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       {children}
     </main>
   </>

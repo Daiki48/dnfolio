@@ -4,18 +4,6 @@ export const layout = "layouts/home.tsx";
 
 export default ({ meta, search }: Lume.Data, _helpers: Lume.Helpers): RC => (
   <div className="flex flex-col items-center justify-center">
-    {/* Google Tag Manager (noscript) */}
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-KVK67VZ3"
-        height="0"
-        width="0"
-        style={{ display: "none", visibility: "hidden" }}
-      >
-      </iframe>
-    </noscript>
-    {/* End Google Tag Manager (noscript) */}
-
     <h1 className="text-4xl font-bold animate-bounce mt-8">{meta.name}</h1>
     <a
       href="/about"
@@ -29,7 +17,6 @@ export default ({ meta, search }: Lume.Data, _helpers: Lume.Helpers): RC => (
         className="rounded"
       />
     </a>
-
     <div className="flex flex-col items-center justify-start min-h-screen">
       <div className="flex flex-col items-center justify-start">
         <ul className="flex flex-col justify-center items-start list-none pl-0">

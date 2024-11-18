@@ -26,6 +26,19 @@ export default ({ children, meta }: Lume.Data, _helpers: Lume.Helpers) => (
         <meta key={index} name={name} content={meta.ogp.content[index]} />
       ))}
     </head>
-    <body className="bg-gray-100">{children}</body>
+    <body className="bg-gray-100">
+      {/* Google Tag Manager (noscript) */}
+      <noscript>
+        <iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-KVK67VZ3"
+          height="0"
+          width="0"
+          style={{ display: "none", visibility: "hidden" }}
+        >
+        </iframe>
+      </noscript>
+      {/* End Google Tag Manager (noscript) */}
+      {children}
+    </body>
   </html>
 );

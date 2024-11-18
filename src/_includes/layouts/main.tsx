@@ -12,6 +12,10 @@ export default ({ children, meta }: Lume.Data, _helpers: Lume.Helpers) => (
       ))}
       <style>{globalStyle}</style>
       <link rel="icon" href={meta.icon} />
+      <link
+        rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      />
       {meta.ogp.name.map((name: string, index: number) => (
         <meta key={index} name={name} content={meta.ogp.content[index]} />
       ))}

@@ -5,15 +5,12 @@ export const layout = "layouts/home.tsx";
 export default ({ meta, search }: Lume.Data, _helpers: Lume.Helpers): RC => (
   <div className="flex flex-col items-center justify-center">
     <h1 className="text-4xl font-bold animate-bounce mt-8">{meta.name}</h1>
-    <a
-      href="/about"
-      className="no-underline m-2 p-2 text-black font-normal hover:border-b-2 shadow-lg rounded"
-    >
+    <a href="/about" className="flex justify-center">
       <img
         src="/assets/icon/icon.webp"
         alt="logo"
-        height="100px"
-        width="auto"
+        width="100%"
+        height="50px"
         className="rounded"
       />
     </a>

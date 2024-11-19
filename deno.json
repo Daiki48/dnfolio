@@ -20,6 +20,6 @@
   },
   "nodeModulesDir": "auto",
   "fmt": {
-    "exclude": ["_site"]
+    "exclude": ["_site", "src/posts/*.md"]
   }
 }

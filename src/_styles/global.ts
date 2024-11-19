@@ -9,6 +9,10 @@ export const globalStyle = `
 		padding-bottom: 10px;
 	}
 
+	p {
+		line-height: 1.8rem;
+	}
+
 	code {
 		padding: 6px;
 		margin: 0 4px;

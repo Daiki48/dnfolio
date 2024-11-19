@@ -30,9 +30,6 @@ And, setup stylesheet.
 }
 ```
 
-> [!note]
-> This is note text
-
 ## Config for note
 
 ```css
@@ -45,6 +42,9 @@ And, setup stylesheet.
   font-weight: bold;
 }
 ```
+
+> [!note]
+> This is note text
 
 ## Config for important
 

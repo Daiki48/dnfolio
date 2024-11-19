@@ -6,6 +6,7 @@ export const globalStyle = `
 	h2 {
 		margin-top: 40px;
 		border-bottom: 1px solid rgba(181, 179, 179, 1);
+		padding-bottom: 10px;
 	}
 
 	code {

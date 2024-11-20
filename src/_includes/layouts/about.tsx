@@ -32,7 +32,7 @@ export default (
                 alt="x"
                 height="30px"
                 width="auto"
-                className="cursor-pointer px-2"
+                className="cursor-pointer px-2 max-w-10"
               />
             </a>
             <a href="https://sizu.me/daiki48" target="_blank">
@@ -41,7 +41,7 @@ export default (
                 alt="sizu"
                 height="30px"
                 width="auto"
-                className="cursor-pointer px-2"
+                className="cursor-pointer px-2 max-w-10"
               />
             </a>
             <a
@@ -53,7 +53,7 @@ export default (
                 alt="bluesky"
                 height="30px"
                 width="auto"
-                className="cursor-pointer px-2"
+                className="cursor-pointer px-2 max-w-10"
               />
             </a>
             <a href="https://github.com/Daiki48" target="_blank">
@@ -62,7 +62,7 @@ export default (
                 alt="github"
                 height="30px"
                 width="auto"
-                className="cursor-pointer px-2"
+                className="cursor-pointer px-2 max-w-10"
               />
             </a>
           </div>

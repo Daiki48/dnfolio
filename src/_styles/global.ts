@@ -24,7 +24,6 @@ export const globalStyle = `
 
 	img {
 		max-width: 80%;
-		height: auto;
 	}
 
 blockquote {

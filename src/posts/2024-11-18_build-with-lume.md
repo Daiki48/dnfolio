@@ -1,5 +1,6 @@
 ---
 title: Build with lume
+url: /posts/build-with-lume/
 draft: false
 tags:
   - tech

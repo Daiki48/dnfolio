@@ -1,5 +1,6 @@
 ---
 title: Changed Bluesky's handle to my domain
+url: /posts/changed-bluesky-handle-to-my-domain/
 draft: false
 tags:
   - life

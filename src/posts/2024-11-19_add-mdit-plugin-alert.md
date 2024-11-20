@@ -1,5 +1,6 @@
 ---
 title: Add @mdit/plugin-alert
+url: /posts/add-mdit-plugin-alert/
 draft: false
 tags:
   - tech

@@ -1,5 +1,6 @@
 ---
 title: Add blockquote style
+url: /posts/add-blockquote-style/
 draft: false
 tags:
   - tech

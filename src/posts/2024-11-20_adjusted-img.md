@@ -1,5 +1,6 @@
 ---
 title: Adjusted images
+url: /posts/adjusted-img/
 draft: false
 tags:
   - tech

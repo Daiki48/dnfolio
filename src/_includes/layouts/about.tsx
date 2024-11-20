@@ -45,7 +45,7 @@ export default (
               />
             </a>
             <a
-              href="https://bsky.app/profile/daiki48.bsky.social"
+              href="https://bsky.app/profile/dnfolio.dev"
               target="_blank"
             >
               <img

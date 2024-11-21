@@ -1,7 +1,10 @@
 export const title = "Dnfolio post";
 export const layout = "layouts/main.tsx";
 
-export default ({ title, children }: Lume.Data, _helpers: Lume.Helpers) => (
+export default (
+  { title, description, children }: Lume.Data,
+  _helpers: Lume.Helpers,
+) => (
   <>
     <div className="flex flex-col items-center justify-center px-4">
       <a
@@ -12,6 +15,7 @@ export default ({ title, children }: Lume.Data, _helpers: Lume.Helpers) => (
       </a>
       <header className="text-center text-sm sm:text-xl font-bold text-wrap">
         <h1 className="leading-loose">{title}</h1>
+        <p className="leading-loose">{description}</p>
       </header>
     </div>
 

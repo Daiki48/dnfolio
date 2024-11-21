@@ -1,6 +1,7 @@
 ---
 title: Adjusted images
 url: /posts/adjusted-img/
+description: I have adjusted image view at my personal website.
 draft: false
 tags:
   - tech

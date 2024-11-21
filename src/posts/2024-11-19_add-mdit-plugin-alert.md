@@ -1,6 +1,7 @@
 ---
 title: Add @mdit/plugin-alert
 url: /posts/add-mdit-plugin-alert/
+description: I have added mdit-plugin-alert to my personal website.
 draft: false
 tags:
   - tech

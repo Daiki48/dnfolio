@@ -1,6 +1,7 @@
 ---
 title: Changed Bluesky's handle to my domain
 url: /posts/changed-bluesky-handle-to-my-domain/
+description: I changed the handle of my Bluesky account to the domain I hold.
 draft: false
 tags:
   - life

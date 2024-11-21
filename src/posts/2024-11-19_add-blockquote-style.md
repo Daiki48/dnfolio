@@ -1,6 +1,7 @@
 ---
 title: Add blockquote style
 url: /posts/add-blockquote-style/
+description: I have added a citation block to my personal website.
 draft: false
 tags:
   - tech

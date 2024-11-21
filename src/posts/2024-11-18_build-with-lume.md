@@ -1,6 +1,7 @@
 ---
 title: Build with lume
 url: /posts/build-with-lume/
+description: This is the story of my personal website migration from SvelteKit to Lume.
 draft: false
 tags:
   - tech

@@ -1,7 +1,7 @@
 import { globalStyle } from "../../_styles/global.ts";
 
 export default (
-  { title, url, children, meta }: Lume.Data,
+  { title, url, description, children, meta }: Lume.Data,
   _helpers: Lume.Helpers
 ) => (
   <html lang={meta.lang}>
@@ -33,7 +33,13 @@ export default (
 			}
 			<meta name="og:site_name" content={meta.ogSiteName} />
 			<meta name="og:image" content={meta.ogImage} />
-			<meta name="og:description" content={meta.ogDescription} />
+
+			{description ?
+				<meta name="og:description" content={description} />
+			:
+				<meta name="og:description" content={meta.ogDescription} />
+			}
+
 			<meta name="og:type" content={meta.ogType} />
     </head>
     <body className="bg-gray-100">{children}</body>

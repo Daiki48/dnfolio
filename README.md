@@ -1,3 +1,5 @@
+# Dnfolio
+
 <div align="center">
     <h1>Dnfolio</h1>
     <p>My personal site</p>
@@ -13,6 +15,6 @@ this site from Japanese to English.
 
 ## Architecture
 
-- [Lume](https://lume.land)
-- [Deno Deploy](https://deno.com/deploy)
+- [VitePress](https://https://vitepress.dev)
+- [Cloudflare Pages](https://www.cloudflare.com/developer-platform/products/pages)
 - [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)

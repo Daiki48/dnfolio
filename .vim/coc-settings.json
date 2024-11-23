@@ -1,4 +1,3 @@
 {
-  "deno.enable": true,
-  "tsserver.enable": false
+	"tsserver.enable": true
 }

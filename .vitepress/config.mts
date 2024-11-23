@@ -4,10 +4,11 @@ export default defineConfig({
 	head: [
 		['link', { rel: 'icon', href: '/icon/favicon.ico' }],
 	],
+	base: "/",
   lang: "en-US",
   title: "dnfolio",
   description: "Personal website maintained by Daiki48",
-	srcExclude: ["/README.md"],
+	srcExclude: ["**/README.md"],
   themeConfig: {
 		outline: [2, 3],
 		lastUpdated: {

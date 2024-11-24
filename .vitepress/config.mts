@@ -74,27 +74,31 @@ export default defineConfig({
         {
           text: "Blog",
           items: [
-            { text: "build-with-lume", link: "/blog/build-with-lume/" },
+            { text: "Build with Lume", link: "/blog/build-with-lume/" },
             {
-              text: "add-blockquote-style",
+              text: "Add blockquote style",
               link: "/blog/add-blockquote-style/",
             },
             {
-              text: "add-mdit-plugin-alert",
+              text: "Add mdit plugin alert",
               link: "/blog/add-mdit-plugin-alert/",
             },
-            { text: "adjusted-img", link: "/blog/adjusted-img/" },
+            { text: "Adjusted img", link: "/blog/adjusted-img/" },
             {
-              text: "changed-bluesky-handle-to-my-domain",
+              text: "Changed Bluesky handle to my domain",
               link: "/blog/changed-bluesky-handle-to-my-domain/",
             },
             {
-              text: "updated-ogp-setting-in-post-page",
+              text: "Updated ogp setting in post page",
               link: "/blog/updated-ogp-setting-in-post-page/",
             },
             {
-              text: "customised-vitepress-search",
+              text: "Customised VitePress search",
               link: "/blog/customised-vitepress-search/",
+            },
+            {
+              text: "Migrated VitePress from Lume",
+              link: "/blog/migrated-vitepress-from-lume/",
             },
           ],
         },

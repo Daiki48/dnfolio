@@ -90,7 +90,7 @@
  * Font
  * -------------------------------------------------------------------------- */
 :root {
-	--vp-font-family-base: Sylfaen, serif, Comic Sans MS, sans-serif, system-ui;
+	--vp-font-family-base: serif, Comic Sans MS, sans-serif, system-ui;
 	--vp-font-family-mono: monospace, Lucida Console, Courier, sans-serif, system-ui;
 }
 

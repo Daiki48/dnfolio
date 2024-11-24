@@ -10,7 +10,7 @@
 		<h1>{{frontmatter.title}}</h1>
 		<p>{{frontmatter.description}}</p>
 		<ul>
-			<li v-for="tag in frontmatter.tags" >
+			<li v-for="tag in frontmatter.tags" class="tag">
 				#{{ tag }}
 			</li>
 		</ul>
@@ -22,7 +22,7 @@
 		padding-bottom: 2rem;
 	}
 
-	li {
+	.tag {
 		display: flex;
 		justify-content: start;
 		align-items: center;

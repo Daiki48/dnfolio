@@ -3,6 +3,7 @@ import { h } from "vue";
 import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import BlogHeader from "./BlogHeader.vue";
+import ToggleAppearance from "./ToggleAppearance.vue";
 import "./style.css";
 
 export default {
@@ -12,6 +13,7 @@ export default {
 			'doc-before': () => {
 				return h(BlogHeader)
 			},
+			ToggleAppearance,
     });
   },
   enhanceApp({ app, router, siteData }) {

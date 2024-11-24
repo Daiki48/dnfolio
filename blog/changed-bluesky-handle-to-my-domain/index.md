@@ -2,9 +2,9 @@
 title: Changed Bluesky's handle to my domain
 description: I changed the handle of my Bluesky account to the domain I hold.
 tags:
-  - life
-  - bluesky
-  - cloudflare
+  - Life
+  - Bluesky
+  - Cloudflare
 ---
 
 My Bluesky account used **daiki48.bsky.social** .

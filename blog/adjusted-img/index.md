@@ -2,7 +2,7 @@
 title: Adjusted images
 description: I have adjusted image view at my personal website.
 tags:
-  - tech
+  - Tech
 ---
 
 ## CSS difficult to...

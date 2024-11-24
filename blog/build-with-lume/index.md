@@ -2,10 +2,10 @@
 title: Build with lume
 description: This is the story of my personal website migration from SvelteKit to Lume.
 tags:
-  - tech
-  - lume
-  - deno deploy
-  - cloudflare pages
+  - Tech
+  - Lume
+  - Deno Deploy
+  - Cloudflare Pages
 ---
 
 ## I've decided to migrate my personal website from SvelteKit to Lume and from Cloudflare Pages to Deno Deploy

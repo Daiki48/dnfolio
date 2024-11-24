@@ -2,8 +2,8 @@
 title: Updated ogp setting in post page
 description: I changed the handle of my Bluesky account to the domain I hold.
 tags:
-  - tech
-  - ogp
+  - Tech
+  - OGP
 ---
 
 ## Added page data in post markdown

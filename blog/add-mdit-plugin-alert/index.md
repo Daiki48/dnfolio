@@ -2,8 +2,8 @@
 title: Add @mdit/plugin-alert
 description: I have added mdit-plugin-alert to my personal website.
 tags:
-  - tech
-  - css
+  - Tech
+  - CSS
 ---
 
 ## Added `@mdit/plugin-alert`

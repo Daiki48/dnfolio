@@ -2,9 +2,9 @@
 title: Customised VitePress search
 description: VitePress allows you to use the MiniSearch library for search functions. This time, I set the search field to Japanese.
 tags:
-  - tech
-  - vitepress
-  - minisearch
+  - Tech
+  - VitePress
+  - MiniSearch
 ---
 
 ## Default config

@@ -2,8 +2,8 @@
 title: Add blockquote style
 description: I have added a citation block to my personal website.
 tags:
-  - tech
-  - css
+  - Tech
+  - CSS
 ---
 
 ## Support blockquote

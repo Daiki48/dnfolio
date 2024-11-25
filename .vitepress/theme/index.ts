@@ -5,18 +5,21 @@ import DefaultTheme from "vitepress/theme";
 import BlogHeader from "./BlogHeader.vue";
 import ToggleAppearance from "./ToggleAppearance.vue";
 import "./style.css";
+import "./custom.css";
 
-export default {
+const theme: Theme = {
   extends: DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
-			'doc-before': () => {
-				return h(BlogHeader)
-			},
-			ToggleAppearance,
+      "doc-before": () => {
+        return h(BlogHeader);
+      },
+      ToggleAppearance,
     });
   },
   enhanceApp({ app, router, siteData }) {
     // ...
   },
 } satisfies Theme;
+
+export default theme;

@@ -46,7 +46,7 @@ export default defineConfig({
   title: "dnfolio",
   description: "Personal website maintained by Daiki48",
   srcExclude: ["**/README.md"],
-	ignoreDeadLinks: true,
+  ignoreDeadLinks: true,
   themeConfig: {
     outline: [2, 3],
     lastUpdated: {

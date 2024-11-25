@@ -49,6 +49,7 @@ export default defineConfig({
   ignoreDeadLinks: true,
   themeConfig: {
     outline: [2, 3],
+		outlineTitle: "Table of Contents",
     lastUpdated: {
       text: "Updated at",
       formatOptions: {

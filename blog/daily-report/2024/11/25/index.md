@@ -9,6 +9,8 @@ tags:
 
 - Article written by [Migrated VitePress from Lume](/blog/articles/migrated-vitepress-from-lume).
 - Setting font **serif**.
+- Changed brand color of dnfolio.
+  - See [Customizing CSS](https://vitepress.dev/guide/extending-default-theme#customizing-css)
 
 ## Working
 

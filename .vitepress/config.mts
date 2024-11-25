@@ -1,34 +1,34 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  async transformHead(context) {
-		const isBlog = context.pageData.filePath.startsWith("blog/");
-    return [
-      ["meta", { property: "og:title", content: context.pageData.title }],
-      [
-        "meta",
-        {
-          property: "og:description",
-          content: context.pageData.description,
-        },
-      ],
+  transformPageData(pageData) {
+    const isArticle = pageData.filePath.startsWith("blog/articles/");
+    const isDailyReport = pageData.filePath.startsWith("blog/daily-report/");
+    const canonicalUrl = `https://dnfolio.dev/${pageData.relativePath}`
+      .replace(/index\.md$/, "")
+      .replace(/\.md$/, ".html");
+
+    pageData.frontmatter.head ??= [];
+    pageData.frontmatter.head.push(
+      ["link", { rel: "canonical", href: canonicalUrl }],
+      ["meta", { property: "og:title", content: pageData.title }],
       [
         "meta",
         {
           property: "og:url",
-          content: `https://dnfolio.dev/${context.pageData.filePath
+          content: `https://dnfolio.dev/${pageData.filePath
             .replace(/^\//, "")
             .replace(/\.md$/, ".html")}`,
         },
       ],
-			[
-				"meta",
-				{
-					property: "og:type",
-					content: isBlog ? "blog" : "wetsite",
-				},
-			],
-    ];
+      [
+        "meta",
+        {
+          property: "og:type",
+          content: isArticle ? "article" : isDailyReport ? "blog" : "wetsite",
+        },
+      ]
+    );
   },
   head: [
     [
@@ -72,33 +72,49 @@ export default defineConfig({
     sidebar: {
       "/blog/": [
         {
-          text: "Blog",
+          text: "Articles",
+          collapsed: true,
           items: [
-            { text: "Build with Lume", link: "/blog/build-with-lume/" },
+            {
+              text: "Build with Lume",
+              link: "/blog/articles/build-with-lume/",
+            },
             {
               text: "Add blockquote style",
-              link: "/blog/add-blockquote-style/",
+              link: "/blog/articles/add-blockquote-style/",
             },
             {
               text: "Add mdit plugin alert",
-              link: "/blog/add-mdit-plugin-alert/",
+              link: "/blog/articles/add-mdit-plugin-alert/",
             },
-            { text: "Adjusted img", link: "/blog/adjusted-img/" },
+            { text: "Adjusted img", link: "/blog/articles/adjusted-img/" },
             {
               text: "Changed Bluesky handle to my domain",
-              link: "/blog/changed-bluesky-handle-to-my-domain/",
+              link: "/blog/articles/changed-bluesky-handle-to-my-domain/",
             },
             {
               text: "Updated ogp setting in post page",
-              link: "/blog/updated-ogp-setting-in-post-page/",
+              link: "/blog/articles/updated-ogp-setting-in-post-page/",
             },
             {
               text: "Customised VitePress search",
-              link: "/blog/customised-vitepress-search/",
+              link: "/blog/articles/customised-vitepress-search/",
             },
             {
               text: "Migrated VitePress from Lume",
-              link: "/blog/migrated-vitepress-from-lume/",
+              link: "/blog/articles/migrated-vitepress-from-lume/",
+            },
+          ],
+        },
+        {
+          text: "Daily Report",
+          items: [
+            {
+              text: "2024",
+              collapsed: true,
+              items: [
+                { text: "11/25", link: "/blog/daily-report/2024/11/25/" },
+              ],
             },
           ],
         },

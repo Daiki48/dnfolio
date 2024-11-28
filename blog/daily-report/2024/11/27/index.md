@@ -1,5 +1,5 @@
 ---
-title: 27mber 2024 Daily Report
+title: 27 November 2024 Daily Report
 description: This is the daily report for 27 November 2024.
 tags:
   - Diary

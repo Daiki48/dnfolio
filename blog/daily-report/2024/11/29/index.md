@@ -3,6 +3,9 @@ title: 29 November 2024 Daily Report
 description: This is the daily report for 29 November 2024.
 tags:
   - Diary
+  - Deno
+  - TypeScript
+  - Rust
 ---
 
 Today, I was developing a daily report management system for my work.

@@ -115,6 +115,7 @@ export default defineConfig({
               text: "2024",
               collapsed: true,
               items: [
+                { text: "12/9", link: "/blog/daily-report/2024/12/09/" },
                 { text: "12/8", link: "/blog/daily-report/2024/12/08/" },
                 { text: "12/7", link: "/blog/daily-report/2024/12/07/" },
                 { text: "12/6", link: "/blog/daily-report/2024/12/06/" },

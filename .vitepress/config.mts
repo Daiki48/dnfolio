@@ -78,6 +78,10 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
+              text: "Setting up monorepo development in Rust",
+              link: "/blog/articles/setting-up-monorepo-development-in-rust/",
+            },
+            {
               text: "Build with Lume",
               link: "/blog/articles/build-with-lume/",
             },

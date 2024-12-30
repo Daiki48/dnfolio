@@ -49,7 +49,7 @@ export default defineConfig({
   ignoreDeadLinks: true,
   themeConfig: {
     outline: [2, 3],
-		outlineTitle: "Table of Contents",
+    outlineTitle: "Table of Contents",
     lastUpdated: {
       text: "Updated at",
       formatOptions: {
@@ -119,6 +119,7 @@ export default defineConfig({
               text: "2024",
               collapsed: true,
               items: [
+                { text: "12/30", link: "/blog/daily-report/2024/12/30/" },
                 { text: "12/29", link: "/blog/daily-report/2024/12/29/" },
                 { text: "12/28", link: "/blog/daily-report/2024/12/28/" },
                 { text: "12/27", link: "/blog/daily-report/2024/12/27/" },

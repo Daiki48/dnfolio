@@ -78,6 +78,10 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
+              text: "Updated templates for Axum and Tera",
+              link: "/blog/articles/updated-templates-for-axum-and-tera/",
+            },
+            {
               text: "Setting up monorepo development in Rust",
               link: "/blog/articles/setting-up-monorepo-development-in-rust/",
             },

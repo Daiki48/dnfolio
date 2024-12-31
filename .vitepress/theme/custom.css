@@ -13,6 +13,15 @@
 }
 
 /**
+  * Custom Component: Local Search
+  * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-font-family-base: BIZ UDPGothic; /* normal text font */
+  --vp-font-family-mono: JetBrainsMono Nerd Font, monospace; /* code font */
+}
+
+/**
  * Customize
  * -------------------------------------------------------------------------- */
 

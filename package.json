@@ -1,4 +1,5 @@
 {
+	"version": "3.1.0",
   "dependencies": {},
   "devDependencies": {
     "vitepress": "^1.5.0",
@@ -8,5 +9,6 @@
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview"
-  }
+  },
+  "type": "module"
 }

@@ -1,6 +1,6 @@
 import { defineConfig } from "vitepress";
 
-export default defineConfig({
+export const en = defineConfig({
   transformPageData(pageData) {
     const isArticle = pageData.filePath.startsWith("blog/articles/");
     const isDailyReport = pageData.filePath.startsWith("blog/daily-report/");
@@ -41,12 +41,8 @@ export default defineConfig({
     ["meta", { property: "twitter:site", content: "@Daiki48engineer" }],
     ["link", { rel: "icon", href: "/icon/favicon.ico" }],
   ],
-  base: "/",
   lang: "en-US",
-  title: "dnfolio",
   description: "Personal website maintained by Daiki48",
-  srcExclude: ["**/README.md"],
-  ignoreDeadLinks: true,
   themeConfig: {
     outline: [2, 3],
     outlineTitle: "Table of Contents",
@@ -58,19 +54,12 @@ export default defineConfig({
       },
     },
     externalLinkIcon: true,
-    search: {
-      provider: "local",
-      options: {
-        detailedView: true,
-      },
-    },
     footer: {
       message: "Personal website for Daiki48",
-      copyright: "Copyright © 2024 Daiki Nakashima",
+      copyright: "Copyright © 2024 - 2025 Daiki Nakashima",
     },
     logo: "/icon/icon.svg",
     nav: [{ text: "Blog", link: "/blog" }],
-
     sidebar: {
       "/blog/": [
         {

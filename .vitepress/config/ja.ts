@@ -13,6 +13,8 @@ export const ja = defineConfig({
     pageData.frontmatter.head.push(
       ["link", { rel: "canonical", href: canonicalUrl }],
       ["meta", { property: "og:title", content: pageData.title }],
+      ["meta", { name: "twitter:title", content: pageData.title }],
+      ["meta", { name: "twitter:description", content: pageData.description }],
       [
         "meta",
         {
@@ -38,8 +40,8 @@ export const ja = defineConfig({
     ],
     ["meta", { property: "og:site_name", content: "dnfolio" }],
     ["meta", { property: "og:locale", content: "ja-JP" }],
-    ["meta", { property: "twitter:card", content: "summary" }],
-    ["meta", { property: "twitter:site", content: "@Daiki48engineer" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:site", content: "@Daiki48engineer" }],
     ["link", { rel: "icon", href: "/icon/favicon.ico" }],
   ],
   lang: "ja-JP",

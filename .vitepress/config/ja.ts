@@ -2,37 +2,6 @@ import { defineConfig } from "vitepress";
 import type { DefaultTheme } from "vitepress";
 
 export const ja = defineConfig({
-  transformPageData(pageData) {
-    const isArticle = pageData.filePath.startsWith("ja/blog/articles/");
-    const isDailyReport = pageData.filePath.startsWith("ja/blog/daily-report/");
-    const canonicalUrl = `https://dnfolio.dev/${pageData.relativePath}`
-      .replace(/index\.md$/, "")
-      .replace(/\.md$/, ".html");
-
-    pageData.frontmatter.head ??= [];
-    pageData.frontmatter.head.push(
-      ["link", { rel: "canonical", href: canonicalUrl }],
-      ["meta", { property: "og:title", content: pageData.title }],
-      ["meta", { name: "twitter:title", content: pageData.title }],
-      ["meta", { name: "twitter:description", content: pageData.description }],
-      [
-        "meta",
-        {
-          property: "og:url",
-          content: `https://dnfolio.dev/${pageData.filePath
-            .replace(/^\//, "")
-            .replace(/\.md$/, ".html")}`,
-        },
-      ],
-      [
-        "meta",
-        {
-          property: "og:type",
-          content: isArticle ? "article" : isDailyReport ? "blog" : "wetsite",
-        },
-      ]
-    );
-  },
   head: [
     [
       "meta",
@@ -40,7 +9,8 @@ export const ja = defineConfig({
     ],
     ["meta", { property: "og:site_name", content: "dnfolio" }],
     ["meta", { property: "og:locale", content: "ja-JP" }],
-    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:card", content: "summary" }],
+    ["meta", { name: "twitter:creator", content: "@Daiki48engineer" }],
     ["meta", { name: "twitter:site", content: "@Daiki48engineer" }],
     [
       "meta",

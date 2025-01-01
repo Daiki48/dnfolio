@@ -74,6 +74,10 @@ export const ja = defineConfig({
           collapsed: true,
           items: [
             {
+              text: "dnfolioを日本語に対応した",
+              link: "/ja/blog/articles/support-japanese/",
+            },
+            {
               text: "AxumとTeraのお試しリポジトリを更新した",
               link: "/ja/blog/articles/updated-templates-for-axum-and-tera/",
             },
@@ -98,12 +102,12 @@ export const ja = defineConfig({
   },
 });
 
-export const search: DefaultTheme.LocalSearchOptions['locales'] = {
-	ja: {
-		translations: {
-			button: {
-				buttonText: "検索"
-			}
-		}
-	}
-}
+export const search: DefaultTheme.LocalSearchOptions["locales"] = {
+  ja: {
+    translations: {
+      button: {
+        buttonText: "検索",
+      },
+    },
+  },
+};

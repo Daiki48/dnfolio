@@ -42,6 +42,10 @@ export const ja = defineConfig({
     ["meta", { property: "og:locale", content: "ja-JP" }],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
     ["meta", { name: "twitter:site", content: "@Daiki48engineer" }],
+    [
+      "meta",
+      { name: "twitter:image", content: "https://dnfolio.dev/icon/icon.webp" },
+    ],
     ["link", { rel: "icon", href: "/icon/favicon.ico" }],
   ],
   lang: "ja-JP",

@@ -80,6 +80,11 @@ export const en = defineConfig({
           text: "Daily Report",
           items: [
             {
+              text: "2025",
+              collapsed: true,
+              items: [{ text: "1/2", link: "/blog/daily-report/2025/1/2/" }],
+            },
+            {
               text: "2024",
               collapsed: true,
               items: [

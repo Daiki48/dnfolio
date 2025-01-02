@@ -5,7 +5,6 @@ import { en } from "./en";
 import { ja } from "./ja";
 
 export default defineConfig({
-	...shared,
   transformPageData(pageData) {
     const isArticle = pageData.filePath.startsWith("ja/blog/articles/");
     const isDailyReport = pageData.filePath.startsWith("ja/blog/daily-report/");
@@ -37,6 +36,7 @@ export default defineConfig({
       ]
     );
   },
+	...shared,
 	locales: {
 		root: { label: "English", ...en },
 		ja: { label: "日本語", ...ja },

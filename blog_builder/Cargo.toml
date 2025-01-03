@@ -1,0 +1,8 @@
+[package]
+name = "blog_builder"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[dependencies]

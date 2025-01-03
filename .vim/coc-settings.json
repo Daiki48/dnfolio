@@ -1,3 +1,4 @@
 {
-	"tsserver.enable": true
+	"tsserver.enable": true,
+	"rust-analyzer.linkedProjects": ["blog_builder/Cargo.toml"]
 }

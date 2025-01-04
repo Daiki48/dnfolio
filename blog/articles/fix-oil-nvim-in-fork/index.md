@@ -67,6 +67,10 @@ file_columns.size = {
 
   render = function(entry, conf)
     local meta = entry[FIELD_META]
+    if not meta then
+      meta = {}
+      entry[FIELD_META] = meta
+    end
     local stat = meta.stat
     if not stat then
       return columns.EMPTY

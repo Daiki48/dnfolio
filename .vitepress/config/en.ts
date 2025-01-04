@@ -38,6 +38,10 @@ export const en = defineConfig({
           collapsed: true,
           items: [
             {
+              text: "Fix oil.nvim in fork",
+              link: "/blog/articles/fix-oil-nvim-in-fork/",
+            },
+            {
               text: "Updated templates for Axum and Tera",
               link: "/blog/articles/updated-templates-for-axum-and-tera/",
             },

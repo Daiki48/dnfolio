@@ -38,6 +38,10 @@ export const en = defineConfig({
           collapsed: true,
           items: [
             {
+              text: "Security.txt not configured",
+              link: "/blog/articles/security-text-not-configured/",
+            },
+            {
               text: "Fix oil.nvim in fork",
               link: "/blog/articles/fix-oil-nvim-in-fork/",
             },
@@ -87,10 +91,11 @@ export const en = defineConfig({
               text: "2025",
               collapsed: true,
               items: [
-								{ text: "1/4", link: "/blog/daily-report/2025/1/4/" },
-								{ text: "1/3", link: "/blog/daily-report/2025/1/3/" },
-								{ text: "1/2", link: "/blog/daily-report/2025/1/2/" }
-							],
+                { text: "1/5", link: "/blog/daily-report/2025/1/5/" },
+                { text: "1/4", link: "/blog/daily-report/2025/1/4/" },
+                { text: "1/3", link: "/blog/daily-report/2025/1/3/" },
+                { text: "1/2", link: "/blog/daily-report/2025/1/2/" },
+              ],
             },
             {
               text: "2024",

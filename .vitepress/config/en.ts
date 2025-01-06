@@ -91,6 +91,7 @@ export const en = defineConfig({
               text: "2025",
               collapsed: true,
               items: [
+                { text: "1/6", link: "/blog/daily-report/2025/1/6/" },
                 { text: "1/5", link: "/blog/daily-report/2025/1/5/" },
                 { text: "1/4", link: "/blog/daily-report/2025/1/4/" },
                 { text: "1/3", link: "/blog/daily-report/2025/1/3/" },

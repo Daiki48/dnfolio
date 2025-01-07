@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block content %}
 <div>
-	<div class="tags-single-header">
-		<h2>Tag: #{{ term.name }} ({{ term.pages | length }})</h2>
-		<a href="{{ config.base_url | safe }}/tags">Show all tags</a>
-	</div>
+  <div class="tags-single-header">
+    <h2>Tag: #{{ term.name }} ({{ term.pages | length }})</h2>
+    <a href="{{ config.base_url | safe }}/tags">Show all tags</a>
+  </div>
 
   <ul>
     {% for page in term.pages %}

@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "deno task dprint fmt && zola serve",
+    "build": "zola build",
+    "fmt": "deno task dprint fmt",
+    "fmt:check": "deno task dprint check",
+    "dprint": "deno run -A npm:dprint"
+  }
+}

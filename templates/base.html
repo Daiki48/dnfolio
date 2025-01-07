@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>dnfolio</title>
     <link rel="stylesheet" href="/style.css" />
-    <link rel="icon" href="{{ get_url(path="/icons/favicon.ico") | safe }}"
-    sizes="any">
+    <link
+      rel="icon"
+      href="{"
+      `${{
+      get_url(path="/icons/favicon.ico"
+      )
+      |
+      safe
+      }}`}
+      sizes="any"
+    >
   </head>
 
   <body>

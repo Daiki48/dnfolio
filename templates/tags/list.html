@@ -1,16 +1,14 @@
-{% extends "base.html" %}
-
-{% block content %}
-  <div>
-    <h1 class="title">All Tags</h1>
-    <ul>
-      {% for term in terms %}
-        <li>
-          <a href="{{ term.permalink | safe }}">
-            {{ term.name }} ({{ term.pages | length }})
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
+{% extends "base.html" %} {% block content %}
+<div>
+  <h1 class="title">All Tags</h1>
+  <ul>
+    {% for term in terms %}
+    <li>
+      <a href="{{ term.permalink | safe }}">
+        {{ term.name }} ({{ term.pages | length }})
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock content %}

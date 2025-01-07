@@ -1,0 +1,36 @@
+# Base configuration
+base_url = "https://dnfolio.dev"
+title = "dnfolio"
+description = "Peronal website maintained by Daiki48"
+default_language = "en"
+output_dir = "dist"
+author = "Daiki Nakashima"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = true
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = false
+
+taxonomies = [
+    { name = "tags", feed = true},
+    { name = "languages", feed = true},
+]
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = true
+highlight_theme = "nord"
+render_emoji = true
+
+[extra]
+# Put all your custom variables here
+
+# [languages.ja]
+# generate_feeds = true
+# build_search_index = false
+# taxonomies = [
+#     { name = "tags", feed = true},
+#     { name = "languages", feed = true},
+# ]

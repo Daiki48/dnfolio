@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dnfolio</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="{{ get_url(path="/icons/favicon.ico") | safe }}"
+    sizes="any">
+  </head>
+
+  <body>
+    {% include "components/header.html" %}
+    <section class="section">
+      <div class="container">{% block content %} {% endblock %}</div>
+    </section>
+    <footer>
+      <span>© 2024 - 2025 dnfolio</span>
+    </footer>
+  </body>
+</html>

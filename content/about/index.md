@@ -1,5 +1,6 @@
 +++
 title = "About me"
+description = "This page is about me. Hi there! I'm Daiki Nakashima. I'm software engineer from Japan. Coding is my passion, and I love doing it even when I'm not at work."
 date = "2025-01-07"
 template = "about.html"
 +++

@@ -1,0 +1,14 @@
+:root {
+  background-color: #373f4a;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  body {
+    max-width: 100%;
+  }
+
+  .container {
+    width: 95%;
+  }
+}

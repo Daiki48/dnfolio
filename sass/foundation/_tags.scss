@@ -1,0 +1,69 @@
+header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: BIZ UDPGothic, sans-serif;
+  background-color: #22272e;
+  color: #caccca;
+  width: 70%;
+  max-width: 1000px;
+  margin: 10px auto;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+a {
+  text-decoration: none;
+  color: #caccca;
+}
+
+ul li {
+  padding-bottom: 10px;
+  line-height: 20px;
+}
+
+p {
+  line-height: 30px;
+}
+
+pre {
+  padding: 20px 10px;
+  margin: 4px auto;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(55, 63, 74, 0.6);
+  overflow: auto;
+}
+
+pre code {
+  font-family: BIZ UDPGothic;
+  line-height: 30px;
+  background-color: unset;
+  padding: unset;
+  border-radius: unset;
+}
+
+code {
+  font-family: BIZ UDPGothic;
+  background-color: #373f4a;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+hr {
+  margin: 2rem;
+  box-shadow: 0 0 10px rgba(99, 113, 133, 0.6);
+}

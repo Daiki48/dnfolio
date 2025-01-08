@@ -1,6 +1,7 @@
 +++
 title = "dnfolioをVitePressからZolaへ移行中"
 description = "n回目の個人サイト移行作業です。とにかく落ち付かないdnfolioサイト。"
+slug = "dnfolioをVitePressからZolaへ移行中"
 [taxonomies]
 tags = ["Zola"]
 languages = ["日本語"]

@@ -8,6 +8,7 @@
   "malva": {
   },
   "markup": {
+    "printWidth": 160
   },
   "excludes": [
     "**/*-lock.json",

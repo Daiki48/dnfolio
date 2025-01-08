@@ -18,17 +18,25 @@ body {
   font-family: BIZ UDPGothic, sans-serif;
   background-color: #22272e;
   color: #caccca;
-  width: 70%;
-  max-width: 1000px;
+  width: 50%;
+  max-width: 100%;
   margin: 10px auto;
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+section {
+  width: 100%;
+}
+
 a {
   text-decoration: none;
   color: #caccca;
+}
+
+ul {
+  padding-left: 0;
 }
 
 ul li {
@@ -41,11 +49,14 @@ p {
 }
 
 pre {
+  display: flex;
+  justify-content: start;
   padding: 20px 10px;
   margin: 4px auto;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(55, 63, 74, 0.6);
   overflow: auto;
+  width: 90%;
 }
 
 pre code {
@@ -54,6 +65,7 @@ pre code {
   background-color: unset;
   padding: unset;
   border-radius: unset;
+  word-wrap: unset;
 }
 
 code {
@@ -61,9 +73,33 @@ code {
   background-color: #373f4a;
   padding: 4px;
   border-radius: 4px;
+  word-wrap: break-word;
 }
 
 hr {
   margin: 2rem;
   box-shadow: 0 0 10px rgba(99, 113, 133, 0.6);
+}
+
+@media (max-width: 768px) {
+  body {
+    max-width: 100%;
+    width: 80%;
+  }
+
+  section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  p {
+    font-size: 0.9rem;
+    line-height: 20px;
+  }
+
+  pre code {
+    font-size: 0.8rem;
+  }
 }

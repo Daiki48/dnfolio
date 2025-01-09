@@ -26,23 +26,53 @@ development of a new product using Google Cloud Platform.
 
 ## Skills
 
-- Programing language
-  - TypeScript
-    - I've been using TypeScript extensively in developing user guides with
-      frameworks like **SvelteKit** and **VitePress**. I also utilized it for
-      building this personal website using **Lume**.
-  - Rust
-    - I've been developing small CLI tools with Rust. It's a **unique language**
-      that I find enjoyable to learn.
-  - Go
-    - I've had **limited exposure** to Go while working on application
-      development on Google Cloud Platform.
-- Framework
-  - Sveltekit
-    - I used Sveltekit to **develop static sites for user guides before
-      transitioning to VitePress**. I also experimented with it for this
-      personal website before settling on Lume.
-  - VitePress
-    - I'm currently using VitePress for **building user guides**.
-  - Lume
-    - I've **built this personal website** using Lume. However, I migrated my personal website [dnfolio](https://dnfolio.dev) from Lume to VitePress. Once I have mastered CSS, I would like to redesign my personal website from scratch.
+### Programing language
+
+[![My Skills](https://skillicons.dev/icons?i=html)](https://developer.mozilla.org/en/docs/Web/HTML)
+[![My Skills](https://skillicons.dev/icons?i=css)](https://developer.mozilla.org/en/docs/Web/CSS)
+[![My Skills](https://skillicons.dev/icons?i=js)](https://developer.mozilla.org/en/docs/Web/JavaScript)
+[![My Skills](https://skillicons.dev/icons?i=ts)](https://www.typescriptlang.org/)
+
+I do basic web development at work.
+
+[![My Skills](https://skillicons.dev/icons?i=rust)](https://www.rust-lang.org/)
+
+I've been developing small CLI tools with Rust. It's a **unique language** that I find enjoyable to learn.\
+I using at hobby projects.
+
+[![My Skills](https://skillicons.dev/icons?i=svelte)](https://svelte.dev/)
+
+I used Sveltekit to **develop static sites for user guides in work.
+
+## GitHub
+
+I use GitHub.
+You can check my development activities on my GitHub activity.
+
+### Activity graph
+
+[![Ashutosh's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=Daiki48&bg_color=373f4a&color=caccca&line=22272e&point=caccca&radius=8)](https://github.com/Daiki48)
+
+### Stats Card
+
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=Daiki48&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48)
+
+### Released themes
+
+For [Neovim](https://neovim.io/)
+
+[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=sakurajima.nvim&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/sakurajima.nvim)
+
+For [Obsidian](https://obsidian.md)
+
+[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=sakurajima.obsidian&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/sakurajima.obsidian)
+
+For [Inkdrop](https://inkdrop.app)
+
+[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=inkdrop-terracecat-dark-ui-theme&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/inkdrop-terracecat-dark-ui-theme)
+
+## SNS
+
+I am transmitting via [Bluesky](https://bsky.social/about).
+
+<script async src="https://bst.heion.net/timeline.js" data-handle="dnfolio.dev" data-theme="gray" data-width="420" data-height="500" data-lang="ja" data-pin="0"></script>

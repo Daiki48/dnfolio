@@ -27,4 +27,5 @@
   <span>{{ page.description }}</span>
   <p class="subtitle"><strong>{{ page.date }}</strong></p>
 </header>
-{{ page.content | safe }} {{ share::bsky(text=page.title, url="https://dnfolio.dev/" ~ page.slug) }} {% endblock content %}
+{{ page.content | safe }} {{ share::bsky(text=page.title, url="https://dnfolio.dev/" ~ page.slug) }} {{ share::twitter(text=page.title,
+url="https://dnfolio.dev/" ~ page.slug) }} {% endblock content %}

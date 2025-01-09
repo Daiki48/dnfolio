@@ -7,4 +7,13 @@
       height="auto"
     />Share on Bluesky</a>
 </div>
-{% endmacro bsky %}
+{% endmacro bsky %} {% macro twitter(text, url) %}
+<div class="share-button">
+  <a href="https://twitter.com/intent/tweet?text={{text}}&url={{url}}" target="_blank"><img
+      src="/sns/x-logo.svg"
+      alt="x icon"
+      width="30px"
+      height="auto"
+    />Share on X</a>
+</div>
+{% endmacro twitter %}

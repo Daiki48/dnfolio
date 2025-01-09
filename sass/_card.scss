@@ -1,5 +1,7 @@
+@use "vars";
+
 .card-container {
-  background-color: #373f4a;
+  background-color: vars.$secondary-bg-color;
   padding: 20px;
   margin: 20px 60px;
   border-radius: 4px;
@@ -16,7 +18,7 @@
 }
 
 @media (max-width: 1200px) {
-  .container {
-    margin: 10px 20px;
+  .card-container {
+    margin: 4px;
   }
 }

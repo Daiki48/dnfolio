@@ -1,16 +1,18 @@
+@use "vars";
+
 .container h2 {
   padding-top: 40px;
   padding-bottom: 10px;
   margin: 0 10px;
-  border-bottom: 2px solid #caccca;
+  border-bottom: 2px solid vars.$primary-fg-color;
 }
 
 .container blockquote {
-  display: block;
-  margin-left: 10px;
-  padding: 10px 20px;
-  border-left: 4px solid #caccca;
-  background-color: #373f4a;
+  margin: 4px;
+  padding: 10px 16px;
+  border-left: 6px solid vars.$primary-fg-color;
+  background-color: vars.$secondary-bg-color;
+  color: vars.$secondary-fg-color;
   border-radius: 4px;
 }
 
@@ -71,7 +73,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.6rem;
-  border: 1px solid #caccca;
+  border: 1px solid vars.$primary-fg-color;
   border-radius: 4px;
   padding: 6px;
   margin: 10px 0;
@@ -84,7 +86,7 @@
 
 .privacy {
   padding-bottom: 4px;
-  border-bottom: 1px dashed #caccca;
+  border-bottom: 1px dashed vars.$primary-fg-color;
 }
 
 @media (max-width: 768px) {

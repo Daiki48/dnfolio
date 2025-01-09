@@ -82,6 +82,11 @@
   box-shadow: 0 0 10px rgba(99, 113, 133, 0.8);
 }
 
+.privacy {
+  padding-bottom: 4px;
+  border-bottom: 1px dashed #caccca;
+}
+
 @media (max-width: 768px) {
   .container {
     width: 95%;

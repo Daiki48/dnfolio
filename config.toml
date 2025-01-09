@@ -5,6 +5,7 @@ description = "Peronal website maintained by Daiki48"
 default_language = "en"
 output_dir = "dist"
 author = "Daiki Nakashima"
+ignored_content = ["**/content/template.ja.md", "**/content/template.md"]
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true

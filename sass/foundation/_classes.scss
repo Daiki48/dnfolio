@@ -48,6 +48,18 @@
   width: 90%;
 }
 
+.sns-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+.sns-icons a {
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .container {
     width: 95%;

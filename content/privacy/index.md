@@ -38,7 +38,9 @@ For more information, please check the official website.
 ## Enactment date / 制定日
 
 - 9 January 2025 / 2025年1月9日
+  - [⚡ Added privacy | GitHub](https://github.com/Daiki48/dnfolio/commit/c0432fbd2428392884899b0a283c664258b3fbc3)
 
 ## Revision / 改定日
 
 - 9 January 2025 / 2025年1月9日
+  - [⚡ Added privacy | GitHub](https://github.com/Daiki48/dnfolio/commit/c0432fbd2428392884899b0a283c664258b3fbc3)

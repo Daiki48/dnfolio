@@ -89,6 +89,14 @@
   border-bottom: 1px dashed vars.$primary-fg-color;
 }
 
+.copyright {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
 @media (max-width: 768px) {
   .container {
     width: 95%;

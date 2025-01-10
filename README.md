@@ -8,8 +8,11 @@
 
 ## Usage
 
-Required [deno](https://deno.com/)\
+Required [Deno](https://deno.com/)\
 Because it is developed using the `deno task` command.
+
+Required [Python](https://www.python.org/)\
+Because it is developed using the [djLint](https://www.djlint.com/).
 
 ## Architecture change log
 

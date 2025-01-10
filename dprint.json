@@ -8,11 +8,15 @@
   "malva": {
   },
   "markup": {
-    "printWidth": 160
+    "printWidth": 80,
+    "formatComments": true,
+    "scriptIndent": true,
+    "styleIndent": true
   },
   "excludes": [
     "**/*-lock.json",
-    "**/node_modules"
+    "**/node_modules",
+    "**/templates"
   ],
   "plugins": [
     "https://plugins.dprint.dev/json-0.19.4.wasm",

@@ -1,19 +1,24 @@
-{% extends "base.html" %} {% block head %}
-<meta name="description" content="{{page.description}}">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://dnfolio.dev/icons/icon.png">
-<meta property="og:title" content="{{page.title}}">
-<meta property="og:description" content="{{page.description}}">
-<meta property="og:site_name" content="dnfolio" />
-<meta property="og:email" content="daiki48.engineer@gmail.com">
-<meta property="og:url" content="https://dnfolio.dev/about">
-
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@Daiki48engineer">
-<meta name="twitter:title" content="{{page.title}}">
-<meta name="twitter:description" content="{{page.description}}">
-<meta name="twitter:image" content="https://dnfolio.dev/icons/icon.png">
-
-{% endblock head %} {% block title %} {{ page.title }} {% endblock title %} {% block content %}
+{% extends "base.html" %}
+{% block head %}
+    <meta name="description" content="{{ page.description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://dnfolio.dev/icons/icon.png">
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:description" content="{{ page.description }}">
+    <meta property="og:site_name" content="dnfolio" />
+    <meta property="og:email" content="daiki48.engineer@gmail.com">
+    <meta property="og:url" content="https://dnfolio.dev/about">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@Daiki48engineer">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.description }}">
+    <meta name="twitter:image" content="https://dnfolio.dev/icons/icon.png">
+{% endblock head %}
+{% block title %}
+    {{ page.title }}
+{% endblock title %}
+{%
+block content %}
 <h1 class="title">{{ page.title }}</h1>
-{{ page.content | safe }} {% endblock content %}
+{{ page.content | safe }}
+{% endblock content %}

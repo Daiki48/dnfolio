@@ -1,27 +1,32 @@
-{% extends "base.html" %} {% block head %}
-<meta name="description" content="Personal website maintained by Daiki48">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://dnfolio.dev/icons/icon.png">
-<meta property="og:title" content="{{section.title}}">
-<meta property="og:description" content="Personal website maintained by Daiki48">
-<meta property="og:site_name" content="dnfolio" />
-<meta property="og:email" content="daiki48.engineer@gmail.com">
-<meta property="og:url" content="https://dnfolio.dev">
-
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@Daiki48engineer">
-<meta name="twitter:title" content="{{section.title}}">
-<meta name="twitter:description" content="Personal website maintained by Daiki48">
-<meta name="twitter:image" content="https://dnfolio.dev/icons/icon.png">
-
-{% endblock head %} {% block title %} {{ section.title }} {% endblock title %} {% block content %}
-<h1 class="title">{{ section.title }}</h1>
-<ul>
-  {% for page in section.pages %}
-  <li>
-    <span>{{ page.date }}</span>
-    <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
-  </li>
-  {% endfor %}
-</ul>
+{% extends "base.html" %}
+{% block head %}
+    <meta name="description" content="Personal website maintained by Daiki48">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://dnfolio.dev/icons/icon.png">
+    <meta property="og:title" content="{{ section.title }}">
+    <meta property="og:description"
+          content="Personal website maintained by Daiki48">
+    <meta property="og:site_name" content="dnfolio" />
+    <meta property="og:email" content="daiki48.engineer@gmail.com">
+    <meta property="og:url" content="https://dnfolio.dev">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@Daiki48engineer">
+    <meta name="twitter:title" content="{{ section.title }}">
+    <meta name="twitter:description"
+          content="Personal website maintained by Daiki48">
+    <meta name="twitter:image" content="https://dnfolio.dev/icons/icon.png">
+{% endblock head %}
+{% block title %}
+    {{ section.title }}
+{% endblock title %}
+{% block content %}
+    <h1 class="title">{{ section.title }}</h1>
+    <ul>
+        {% for page in section.pages %}
+            <li>
+                <span>{{ page.date }}</span>
+                <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock content %}

@@ -1,25 +1,30 @@
 {% import "macros/share.html" as share %} {% set url = get_url(path="/icons/favicon.ico") | safe %}
-
 <!DOCTYPE html>
 <html lang="en">
-  <head prefix="og: https://ogp.me/ns#">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block head %} {% endblock head %}
-    <title>{% block title %}{% endblock title %} | dnfolio</title>
-    <link rel="stylesheet" href="/style.css" />
-    <link rel="icon" href="{{url}}" sizes="any" />
-  </head>
-
-  <body>
-    {% include "components/header.html" %}
-    <section class="section">
-      <div class="container">{% block content %} {% endblock %}</div>
-    </section>
-    {% include "components/footer.html" %}
-
-    <!-- Cloudflare Web Analytics -->
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ed5ca5f76cc14b19a6d80ea399239836"}'></script>
-    <!-- End Cloudflare Web Analytics -->
-  </body>
+    <head prefix="og: https://ogp.me/ns#">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% block head %}
+        {% endblock head %}
+        <title>
+            {% block title %}
+            {% endblock title %}
+        | dnfolio</title>
+        <link rel="stylesheet" href="/style.css" />
+        <link rel="icon" href="{{ url }}" sizes="any" />
+    </head>
+    <body>
+        {% include "components/header.html" %}
+        <section class="section">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </section>
+        {% include "components/footer.html" %}
+        <!-- Cloudflare Web Analytics -->
+        <script defer
+                src="https://static.cloudflareinsights.com/beacon.min.js"
+                data-cf-beacon='{"token": "ed5ca5f76cc14b19a6d80ea399239836"}'></script>
+        <!-- End Cloudflare Web Analytics -->
+    </body>
 </html>

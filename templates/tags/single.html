@@ -1,33 +1,42 @@
-{% extends "base.html" %} {% block head %}
-<meta name="description" content="Published articles list about {{ term.name }}">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://dnfolio.dev/icons/icon.png">
-<meta property="og:title" content="Tag: #{{ term.name }} ({{ term.pages | length }})">
-<meta property="og:description" content="Published articles list about {{ term.name }}">
-<meta property="og:site_name" content="dnfolio" />
-<meta property="og:email" content="daiki48.engineer@gmail.com">
-<meta property="og:url" content="https://dnfolio.dev/tags/{{ term.name | lower }}">
-
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@Daiki48engineer">
-<meta name="twitter:title" content="Tag: #{{ term.name }} ({{ term.pages | length }})">
-<meta name="twitter:description" content="Published articles list about {{ term.name }}">
-<meta name="twitter:image" content="https://dnfolio.dev/icons/icon.png">
-
-{% endblock head %} {% block title %} Tag: #{{ term.name }} ({{ term.pages | length }}) {% endblock title %} {% block content %}
-<div>
-  <div class="tags-single-header">
-    <h2>Tag: #{{ term.name }} ({{ term.pages | length }})</h2>
-    <a href="{{ config.base_url | safe }}/tags">Show all tags</a>
-  </div>
-
-  <ul>
-    {% for page in term.pages %}
-    <li>
-      <span> {{ page.date | date(format="%Y-%m-%d") }} </span>
-      <a href="{{ page.permalink | safe }}"> {{ page.title }} </a>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+{% extends "base.html" %}
+{% block head %}
+    <meta name="description"
+          content="Published articles list about {{ term.name }}">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://dnfolio.dev/icons/icon.png">
+    <meta property="og:title"
+          content="Tag: #{{ term.name }} ({{ term.pages | length }})">
+    <meta property="og:description"
+          content="Published articles list about {{ term.name }}">
+    <meta property="og:site_name" content="dnfolio" />
+    <meta property="og:email" content="daiki48.engineer@gmail.com">
+    <meta property="og:url"
+          content="https://dnfolio.dev/tags/{{ term.name | lower }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@Daiki48engineer">
+    <meta name="twitter:title"
+          content="Tag: #{{ term.name }} ({{ term.pages | length }})">
+    <meta name="twitter:description"
+          content="Published articles list about {{ term.name }}">
+    <meta name="twitter:image" content="https://dnfolio.dev/icons/icon.png">
+{% endblock head %}
+{% block title %}
+    Tag: #{{ term.name }} ({{ term.pages |
+    length }})
+{% endblock title %}
+{% block content %}
+    <div>
+        <div class="tags-single-header">
+            <h2>Tag: #{{ term.name }} ({{ term.pages | length }})</h2>
+            <a href="{{ config.base_url | safe }}/tags">Show all tags</a>
+        </div>
+        <ul>
+            {% for page in term.pages %}
+                <li>
+                    <span>{{ page.date | date(format="%Y-%m-%d") }}</span>
+                    <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock content %}

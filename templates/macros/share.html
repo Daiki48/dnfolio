@@ -1,19 +1,19 @@
 {% macro bsky(text, url) %}
-    <div class="share-button">
-        <a href="https://bsky.app/intent/compose?text={{ text }}+{{ url }}"
-           target="_blank">
-            <img src="/sns/bluesky-logo.svg"
-                 alt="bluesky icon"
-                 width="30px"
-                 height="auto" />
-        Share on Bluesky</a>
-    </div>
+  <div class="share-button">
+    <a href="https://bsky.app/intent/compose?text={{ text }}+{{ url }}"
+       target="_blank">
+      <img src="/sns/bluesky-logo.svg"
+           alt="bluesky icon"
+           width="30px"
+           height="auto" />
+    Share on Bluesky</a>
+  </div>
 {% endmacro bsky %}
 {% macro twitter(text, url) %}
-    <div class="share-button">
-        <a href="https://twitter.com/intent/tweet?text={{ text }}&url={{ url }}"
-           target="_blank">
-            <img src="/sns/x-logo.svg" alt="x icon" width="30px" height="auto" />
-        Share on X</a>
-    </div>
+  <div class="share-button">
+    <a href="https://twitter.com/intent/tweet?text={{ text }}&url={{ url }}"
+       target="_blank">
+      <img src="/sns/x-logo.svg" alt="x icon" width="30px" height="auto" />
+    Share on X</a>
+  </div>
 {% endmacro twitter %}

@@ -7,3 +7,8 @@ node_modules
 target
 
 dist
+
+
+# Added by cargo
+
+/target

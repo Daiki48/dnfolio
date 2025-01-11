@@ -1,0 +1,86 @@
+############################################
+# Starting local server
+############################################
+[tasks.dev]
+dependencies = ["check", "fmt", "test"]
+command = "zola"
+args = ["serve"]
+
+############################################
+# Build
+############################################
+[tasks.build]
+dependencies = ["check", "fmt", "test"]
+command = "zola"
+args = ["build"]
+
+############################################
+# Check
+############################################
+[tasks.check]
+dependencies = ["check_dprint", "check_djlint", "clippy_cargo"]
+
+############################################
+# Format
+############################################
+[tasks.fmt]
+dependencies = ["fmt_dprint", "fmt_djlint", "fmt_cargo"]
+
+############################################
+# Test
+############################################
+[tasks.test]
+dependencies = ["test_cargo"]
+
+############################################
+# Cargo
+############################################
+[tasks.clean_cargo]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build_cargo]
+command = "cargo"
+args = ["build"]
+
+[tasks.test_cargo]
+command = "cargo"
+args = ["test"]
+
+[tasks.fmt_cargo]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt"]
+
+[tasks.clippy_cargo]
+install_crate = "clippy"
+command = "cargo"
+args = ["clippy"]
+
+############################################
+# https://dprint.dev
+############################################
+[tasks.install_dprint]
+command = "cargo"
+args = ["install", "dprint", "--locked"]
+
+[tasks.fmt_dprint]
+dependencies = ["install_dprint"]
+command = "dprint"
+args = ["--config", "dprint.json", "fmt"]
+
+[tasks.check_dprint]
+dependencies = ["install_dprint"]
+command = "dprint"
+args = ["--config", "dprint.json", "check"]
+
+############################################
+# https://djlint.com
+############################################
+[tasks.fmt_djlint]
+command = "djlint"
+args = [".", "--reformat"]
+
+[tasks.check_djlint]
+command = "djlint"
+args = [".", "--check"]

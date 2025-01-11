@@ -6,13 +6,47 @@
     <img width="305" alt="icon" src="https://github.com/user-attachments/assets/ab8b4125-3747-45b1-9511-c84e589a0a62">
 </div>
 
+## Install
+
+### [Rust](https://www.rust-lang.org)
+
+For `Rust` and `cargo` is install.
+
+Next, [cargo-make](https://github.com/sagiegurari/cargo-make?tab=readme-ov-file#installation) is installing.
+
+```sh
+cargo install --force cargo-make
+```
+
+### [Python](https://www.python.org/)
+
+For `Python` and `pip` is install.
+
+Next, [djLint](https://djlint.com) is installing.
+
+```sh
+pip install djlint
+```
+
 ## Usage
 
-Required [Deno](https://deno.com/)\
-Because it is developed using the `deno task` command.
+This project using [cargo-make](https://github.com/sagiegurari/cargo-make).
 
-Required [Python](https://www.python.org/)\
-Because it is developed using the [djLint](https://www.djlint.com/).
+See: [Install](#install)
+
+So I can using `makers` command.
+
+### Develop
+
+```sh
+makers dev
+```
+
+### Build
+
+```sh
+makers build
+```
 
 ## Architecture change log
 

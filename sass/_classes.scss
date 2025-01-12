@@ -101,6 +101,42 @@
   color: vars.$secondary-fg-color;
 }
 
+.toc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 50px;
+  border-radius: 4px;
+}
+
+.toc span {
+  padding: 0;
+  margin-bottom: 14px;
+}
+
+.toc table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid vars.$secondary-bg-color;
+  box-shadow: 0 0 10px rgba(99, 113, 133, 0.4);
+}
+
+.toc table td {
+  padding: 10px;
+  border: 1px solid vars.$secondary-bg-color;
+}
+
+.toc table td:first-child {
+  width: 30px;
+  text-align: center;
+}
+
+.toc table td a:hover {
+  color: vars.$secondary-fg-color;
+}
+
 @media (max-width: 768px) {
   .container {
     width: 95%;
@@ -112,5 +148,9 @@
 
   .container p {
     line-height: 30px;
+  }
+
+  .toc {
+    margin: 10px 0;
   }
 }

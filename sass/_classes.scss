@@ -97,6 +97,10 @@
   gap: 4px;
 }
 
+.zola-anchor:hover {
+  color: vars.$secondary-fg-color;
+}
+
 @media (max-width: 768px) {
   .container {
     width: 95%;

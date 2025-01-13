@@ -72,6 +72,14 @@ pre {
   width: 90%;
 }
 
+code {
+  font-family: BIZ UDPGothic;
+  background-color: vars.$secondary-bg-color;
+  padding: 4px;
+  border-radius: 4px;
+  word-wrap: break-word;
+}
+
 pre code {
   font-family: BIZ UDPGothic;
   line-height: 30px;
@@ -79,14 +87,6 @@ pre code {
   padding: unset;
   border-radius: unset;
   word-wrap: unset;
-}
-
-code {
-  font-family: BIZ UDPGothic;
-  background-color: vars.$secondary-bg-color;
-  padding: 4px;
-  border-radius: 4px;
-  word-wrap: break-word;
 }
 
 hr {

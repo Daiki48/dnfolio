@@ -1,6 +1,7 @@
 @use "vars";
 
-.card-container {
+a.card-container {
+  display: block;
   background-color: vars.$secondary-bg-color;
   padding: 20px;
   margin: 20px 60px;
@@ -8,18 +9,15 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   overflow-wrap: break-word;
 }
-
-.card-container:hover {
+a.card-container:hover {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
   cursor: pointer;
 }
-
-.card-container p {
+a.card-container p {
   font-size: 0.6rem;
 }
-
 @media (max-width: 768px) {
-  .card-container {
+  a.card-container {
     margin: 4px;
   }
 }

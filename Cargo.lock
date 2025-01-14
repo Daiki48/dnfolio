@@ -4,4 +4,4 @@ version = 4
 
 [[package]]
 name = "dnfolio"
-version = "4.11.1"
+version = "4.11.2"

@@ -5,15 +5,20 @@
       <img src="/sns/bluesky-logo.svg"
            alt="bluesky icon"
            width="30px"
-           height="auto" />
-    Share on Bluesky</a>
+           height="auto"
+           class="share-icon" />
+    </a>
   </div>
 {% endmacro bsky %}
 {% macro twitter(text, url) %}
   <div class="share-button">
     <a href="https://twitter.com/intent/tweet?text={{ text }}&url={{ url }}"
        target="_blank">
-      <img src="/sns/x-logo.svg" alt="x icon" width="30px" height="auto" />
-    Share on X</a>
+      <img src="/sns/x-logo.svg"
+           alt="x icon"
+           width="30px"
+           height="auto"
+           class="share-icon" />
+    </a>
   </div>
 {% endmacro twitter %}

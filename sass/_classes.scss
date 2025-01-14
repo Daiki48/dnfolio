@@ -68,6 +68,13 @@
   cursor: pointer;
 }
 
+.shares {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 .share-button {
   display: flex;
   justify-content: center;
@@ -79,15 +86,12 @@
   justify-content: center;
   align-items: center;
   gap: 0.6rem;
-  border: 1px solid vars.$primary-fg-color;
-  border-radius: 4px;
   padding: 6px;
   margin: 10px 0;
-  box-shadow: 0 0 10px rgba(99, 113, 133, 0.4);
 }
 
-.share-button a:hover {
-  box-shadow: 0 0 10px rgba(99, 113, 133, 0.8);
+.share-icon:hover {
+  filter: drop-shadow(0 0 2px vars.$primary-fg-color);
 }
 
 .privacy {

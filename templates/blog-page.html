@@ -64,7 +64,11 @@ title %}
       </table>
     {% endif %}
   </div>
-  {{ page.content | safe }} {{ share::bsky(text=page.title,
-   url="https://dnfolio.dev/" ~ page.slug) }} {{ share::twitter(text=page.title,
-   url="https://dnfolio.dev/" ~ page.slug) }}
+  {{ page.content | safe }}
+  <div class="shares">
+    <span>Share on</span>
+    {{ share::bsky(text=page.title,
+        url="https://dnfolio.dev/" ~ page.slug) }} {{ share::twitter(text=page.title,
+     url="https://dnfolio.dev/" ~ page.slug) }}
+  </div>
 {% endblock content %}

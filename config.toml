@@ -1,5 +1,5 @@
 # Base configuration
-base_url = "https://dnfolio.dev"
+base_url = "https://dnfolio.me"
 title = "dnfolio"
 description = "Peronal website maintained by Daiki48"
 default_language = "en"

@@ -69,10 +69,12 @@ For [Obsidian](https://obsidian.md)
 
 For [Inkdrop](https://inkdrop.app)
 
+> This repository has been archived by the owner on Jan 15, 2025. It is now read-only.
+
 [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=inkdrop-terracecat-dark-ui-theme&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/inkdrop-terracecat-dark-ui-theme)
 
 ## SNS
 
 I am transmitting via [Bluesky](https://bsky.social/about).
 
-<script async src="https://bst.heion.net/timeline.js" data-handle="dnfolio.dev" data-theme="gray" data-width="420" data-height="500" data-lang="ja" data-pin="0"></script>
+<script async src="https://bst.heion.net/timeline.js" data-handle="dnfolio.me" data-theme="gray" data-width="420" data-height="500" data-lang="ja" data-pin="0"></script>

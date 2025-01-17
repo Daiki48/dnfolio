@@ -16,6 +16,12 @@
   border-radius: 4px;
 }
 
+.blog-content img {
+  margin: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(99, 113, 133, 0.6);
+}
+
 .title {
   display: flex;
   flex-direction: column;

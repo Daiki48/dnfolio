@@ -64,7 +64,7 @@ title %}
       </table>
     {% endif %}
   </div>
-  {{ page.content | safe }}
+  <div class="blog-content">{{ page.content | safe }}</div>
   <div class="shares">
     <span>Share on</span>
     {{ share::bsky(text=page.title,

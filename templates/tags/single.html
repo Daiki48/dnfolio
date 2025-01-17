@@ -19,6 +19,13 @@
   <meta name="twitter:description"
         content="Published articles list about {{ term.name }}">
   <meta name="twitter:image" content="https://dnfolio.me/icons/icon.png">
+  {% block rss %}
+    {% set rss_path = "tags/" ~ term.name ~ "/rss.xml" %}
+    <link rel="alternate"
+          type="application/rss+xml"
+          title="RSS"
+          href="{ get_url(path=rss_path, trailing_slash=false) }}">
+  {% endblock rss %}
 {% endblock head %}
 {% block title %}
   Tag: #{{ term.name }} ({{ term.pages |

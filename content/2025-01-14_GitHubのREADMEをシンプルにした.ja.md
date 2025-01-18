@@ -13,7 +13,7 @@ languages = ["日本語"]
 個人サイトで自己紹介ページ「About」を作成したので、そっちを見てもらいたい。
 なので、GitHubのREADMEにも表示していたStatsなんかもこっちで表示するようにした。
 
-{{ card(title="About me | dnfolio", url="https://dnfolio.dev/about/") }}
+{{ card(title="About me | dnfolio", url="https://dnfolio.me/about/") }}
 
 基本的に英語で書いている。英語の練習！
 

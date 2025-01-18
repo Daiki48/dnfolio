@@ -35,7 +35,15 @@ title %}
     <span>{{ page.description }}</span>
     <p class="subtitle">
       <strong>{{ page.date }}</strong>
+      <span>{{ page.reading_time }} min read</span>
     </p>
+    <ul class="page-tags">
+      {% for tag in page.taxonomies.tags %}
+        <li>
+          <a href="/tags/{{ tag | lower }}/">#{{ tag }}</a>
+        </li>
+      {% endfor %}
+    </ul>
   </header>
   <div class="toc">
     <span>Table of Contents</span>

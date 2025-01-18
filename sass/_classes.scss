@@ -32,6 +32,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 }
 
 .menu {
@@ -151,6 +152,23 @@
 
 .toc table td a:hover {
   color: vars.$secondary-fg-color;
+}
+
+.page-tags {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-left: 0;
+}
+
+.page-tags li {
+  list-style: none;
+}
+
+.page-tags li a {
+  padding-bottom: 4px;
+  border-bottom: 1px dashed vars.$primary-fg-color;
 }
 
 @media (max-width: 768px) {

@@ -1,10 +1,13 @@
 # Dnfolio
 
 <div align="center">
-    <h1>Dnfolio</h1>
     <p>My personal site</p>
     <img width="305" alt="icon" src="https://github.com/user-attachments/assets/ab8b4125-3747-45b1-9511-c84e589a0a62">
 </div>
+
+## Published
+
+[dnfolio](https://dnfolio.me)
 
 ## Install
 
@@ -62,5 +65,17 @@ makers build
 ### Version 3
 
 - [VitePress](https://https://vitepress.dev)
+- [Cloudflare Pages](https://www.cloudflare.com/developer-platform/products/pages)
+- [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)
+
+### Version 2
+
+- [Lume](https://lume.land/)
+- [Deno Deploy](https://deno.com/deploy)
+- [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)
+
+### Version 1
+
+- [SvelteKit](https://svelte.dev)
 - [Cloudflare Pages](https://www.cloudflare.com/developer-platform/products/pages)
 - [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)

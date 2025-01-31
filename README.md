@@ -64,7 +64,7 @@ makers build
 
 ### Version 3
 
-- [VitePress](https://https://vitepress.dev)
+- [VitePress](https://vitepress.dev)
 - [Cloudflare Pages](https://www.cloudflare.com/developer-platform/products/pages)
 - [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)
 

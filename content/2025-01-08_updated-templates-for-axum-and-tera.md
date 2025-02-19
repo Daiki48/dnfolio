@@ -1,15 +1,15 @@
 +++
-title = "Updated templates for Axum and Tera"
-description = "I responded to an issue that was created in my past template projects for Axum and Tera."
-slug = "Updated templates for Axum and Tera"
+title = "Updated templates for axum and Tera"
+description = "I responded to an issue that was created in my past template projects for axum and Tera."
+slug = "Updated templates for axum and Tera"
 [taxonomies]
-tags = ["Rust", "Axum", "Tera"]
+tags = ["Rust", "axum", "Tera"]
 languages = ["English"]
 +++
 
-## I have a project I created to try out with Axum and Tera
+## I have a project I created to try out with axum and Tera
 
-Over a year ago, I deployed a simple website with [Axum](https://docs.rs/axum/0.6.18/axum/) and [Tera](https://docs.rs/tera/1.19.0/tera/index.html).
+Over a year ago, I deployed a simple website with [axum](https://docs.rs/axum/0.6.18/axum/) and [Tera](https://docs.rs/tera/1.19.0/tera/index.html).
 
 [axum-tera | Daiki48](https://github.com/Daiki48/axum-tera)
 

@@ -53,6 +53,37 @@ languages = ["日本語"]
 }
 ```
 
+## コードブロック内のフォントを変更
+
+これまでは、通常テキストと同様の `BIZ UDPGothic` だった。
+記事の抑揚が無くなってしまったので、 `JetBrainsMono Nerd Font Mono` と `monospace` を追加した。
+第一優先は `JetBrainsMono Nerd Font Mono` を指定。私が普段利用しているプログラミング用フォント。見やすい！
+
+```css
+pre code {
+  font-family: JetBrainsMono Nerd Font Mono, monospace, BIZ UDPGothic;
+  line-height: 22px;
+  background-color: unset;
+  padding: unset;
+  border-radius: unset;
+  word-wrap: unset;
+  font-size: 1rem;
+}
+```
+
+`code` 単体のフォントも同様に変更した。
+
+```css
+code {
+  font-family: JetBrainsMono Nerd Font Mono, monospace, BIZ UDPGothic;
+  background-color: vars.$secondary-bg-color;
+  padding: 4px;
+  border-radius: 4px;
+  word-wrap: break-word;
+  font-size: 0.8rem;
+}
+```
+
 ## 記事ページ冒頭に表示するタグをレスポンシブ対応
 
 付与するタグの数が増えた時にUIが壊れていた。要素が壊れないように折り返すよう変更した。

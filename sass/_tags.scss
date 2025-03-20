@@ -78,6 +78,12 @@ code {
   padding: 4px;
   border-radius: 4px;
   word-wrap: break-word;
+  font-size: 0.8rem;
+}
+
+h2 code {
+  padding: 2px;
+  font-size: 1.2rem;
 }
 
 pre code {
@@ -87,6 +93,7 @@ pre code {
   padding: unset;
   border-radius: unset;
   word-wrap: unset;
+  font-size: 1rem;
 }
 
 hr {

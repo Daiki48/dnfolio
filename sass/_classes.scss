@@ -8,12 +8,20 @@
 }
 
 .container blockquote {
-  margin: 30px 4px;
-  padding: 10px 16px;
+  margin: 10px 4px;
+  padding: 1px 10px;
   border-left: 6px solid vars.$primary-fg-color;
   background-color: vars.$secondary-bg-color;
   color: vars.$secondary-fg-color;
   border-radius: 4px;
+}
+
+.container blockquote p {
+  line-height: 20px;
+}
+
+.container blockquote code {
+  background-color: vars.$primary-bg-color;
 }
 
 .blog-content img {
@@ -158,6 +166,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
   padding-left: 0;
 }

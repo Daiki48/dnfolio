@@ -24,6 +24,15 @@
   background-color: vars.$primary-bg-color;
 }
 
+.blog-list li {
+  list-style: none;
+  padding-left: 0;
+}
+
+.blog-list li a:hover {
+  color: vars.$secondary-fg-color;
+}
+
 .blog-content img {
   margin: 10px;
   border-radius: 4px;

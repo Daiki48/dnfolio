@@ -2,7 +2,7 @@
 # Starting local server
 ############################################
 [tasks.dev]
-dependencies = ["check", "fmt", "test"]
+dependencies = ["fmt"]
 command = "zola"
 args = ["serve"]
 
@@ -10,7 +10,7 @@ args = ["serve"]
 # Build
 ############################################
 [tasks.build]
-dependencies = ["check", "fmt", "test"]
+dependencies = ["fmt"]
 command = "zola"
 args = ["build"]
 
@@ -18,44 +18,13 @@ args = ["build"]
 # Check
 ############################################
 [tasks.check]
-dependencies = ["check_dprint", "check_djlint", "clippy_cargo"]
+dependencies = ["check_dprint", "check_djlint"]
 
 ############################################
 # Format
 ############################################
 [tasks.fmt]
-dependencies = ["fmt_dprint", "fmt_djlint", "fmt_cargo"]
-
-############################################
-# Test
-############################################
-[tasks.test]
-dependencies = ["test_cargo"]
-
-############################################
-# Cargo
-############################################
-[tasks.clean_cargo]
-command = "cargo"
-args = ["clean"]
-
-[tasks.build_cargo]
-command = "cargo"
-args = ["build"]
-
-[tasks.test_cargo]
-command = "cargo"
-args = ["test"]
-
-[tasks.fmt_cargo]
-install_crate = "rustfmt"
-command = "cargo"
-args = ["fmt"]
-
-[tasks.clippy_cargo]
-install_crate = "clippy"
-command = "cargo"
-args = ["clippy"]
+dependencies = ["fmt_dprint", "fmt_djlint"]
 
 ############################################
 # https://dprint.dev

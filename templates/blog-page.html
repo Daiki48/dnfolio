@@ -47,30 +47,7 @@ title %}
   </header>
   <div class="toc">
     <span>Table of Contents</span>
-    {% if page.toc %}
-      <table>
-        <tbody>
-          {% for h1 in page.toc %}
-            <tr>
-              <td>#</td>
-              <td>
-                <a href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
-              </td>
-            </tr>
-            {% if h1.children %}
-              {% for h2 in h1.children %}
-                <tr>
-                  <td>##</td>
-                  <td>
-                    <a href="{{ h2.permalink | safe }}">{{ h2.title }}</a>
-                  </td>
-                </tr>
-              {% endfor %}
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
+    {% if page.toc %}{{ toc::page(heads=page.toc) }}{% endif %}
   </div>
   <div class="blog-content">{{ page.content | safe }}</div>
   <div class="shares">

@@ -22,7 +22,7 @@
 {% block content %}
   {% for year, posts in section.pages | group_by(attribute="year") %}
     <h3 class="subtitle">{{ year }}</h3>
-    <ul>
+    <ul class="blog-list">
       {% for post in posts %}
         <li>
           <span>{{ post.date }}</span>

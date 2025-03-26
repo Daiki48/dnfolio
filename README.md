@@ -62,6 +62,8 @@ makers build
 - [Cloudflare Pages](https://www.cloudflare.com/developer-platform/products/pages)
 - [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)
 
+![Image](https://github.com/user-attachments/assets/b0d98e0d-7717-4808-b68d-2dcf9169dc2a)
+
 ### Version 3
 
 - [VitePress](https://vitepress.dev)

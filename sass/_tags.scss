@@ -12,6 +12,10 @@ header {
   align-items: center;
 }
 
+header span {
+  line-height: 24px;
+}
+
 footer {
   display: flex;
   flex-direction: column;

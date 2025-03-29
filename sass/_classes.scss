@@ -39,6 +39,10 @@
   box-shadow: 0 0 20px rgba(99, 113, 133, 0.6);
 }
 
+.blog-content ol {
+  line-height: 24px;
+}
+
 .title {
   display: flex;
   flex-direction: column;
@@ -143,6 +147,7 @@
   padding: 10px;
   margin: 10px 50px;
   border-radius: 4px;
+  line-height: 24px;
 }
 
 .toc span {
@@ -204,5 +209,10 @@
 
   .toc {
     margin: 10px 0;
+  }
+
+  .blog-content ol {
+    padding-left: 0.8rem;
+    line-height: 24px;
   }
 }

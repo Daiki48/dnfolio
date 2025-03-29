@@ -8,7 +8,7 @@ jobs:
     name: Deploy to Cloudflare Pages from GitHub Actions
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Zola
         uses: taiki-e/install-action@v2
         with:
@@ -23,12 +23,11 @@ jobs:
         with:
           command: make
           args: build_gha
-      - name: Publish
-        uses: cloudflare/pages-action@v1
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
           branch: main
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: dnfolio
-          directory: dist
+          command: pages deploy dist --project-name=dnfolio
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

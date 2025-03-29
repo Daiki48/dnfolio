@@ -36,7 +36,11 @@ GitHubのリポジトリをCloudflare Pagesに統合する方法だ。
 設定した `.github/workflows/deploy.yaml` はこのようになった。
 
 ```yaml
-on: [push]
+on:
+  push:
+    branches:
+      - "main"
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -64,7 +68,6 @@ jobs:
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
-          branch: main
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=dnfolio
@@ -139,7 +142,6 @@ args = ["build"]
 - name: Deploy
   uses: cloudflare/wrangler-action@v3
   with:
-    branch: main
     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     command: pages deploy dist --project-name=dnfolio

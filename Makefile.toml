@@ -24,10 +24,10 @@ args = ["build"]
 ############################################
 # Deploy to Cloudflare Pages
 ############################################
-[tasks.deploy]
-dependencies = ["build", "wrangler_login"]
-command = "npx"
-args = ["wrangler@latest", "pages", "deploy", "dist", "--commit-dirty=true", "--project-name", "dnfolio"]
+# [tasks.deploy]
+# dependencies = ["build", "wrangler_login"]
+# command = "npx"
+# args = ["wrangler@latest", "pages", "deploy", "dist", "--commit-dirty=true", "--project-name", "dnfolio"]
 
 ############################################
 # Check
@@ -72,10 +72,10 @@ args = [".", "--check"]
 ############################################
 # Wrangler CLI
 ############################################
-[tasks.wrangler_login]
-command = "npx"
-args = ["wrangler@latest", "login"]
+# [tasks.wrangler_login]
+# command = "npx"
+# args = ["wrangler@latest", "login"]
 
-[tasks.wrangler_whoami]
-command = "npx"
-args = ["wrangler@latest", "whoami"]
+# [tasks.wrangler_whoami]
+# command = "npx"
+# args = ["wrangler@latest", "whoami"]

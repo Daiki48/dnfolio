@@ -15,6 +15,21 @@ command = "zola"
 args = ["build"]
 
 ############################################
+# Build for GitHub Actions
+############################################
+[tasks.build_gha]
+command = "zola"
+args = ["build"]
+
+############################################
+# Deploy to Cloudflare Pages
+############################################
+[tasks.deploy]
+dependencies = ["build", "wrangler_login"]
+command = "npx"
+args = ["wrangler@latest", "pages", "deploy", "dist", "--commit-dirty=true", "--project-name", "dnfolio"]
+
+############################################
 # Check
 ############################################
 [tasks.check]
@@ -53,3 +68,14 @@ args = [".", "--reformat"]
 [tasks.check_djlint]
 command = "djlint"
 args = [".", "--check"]
+
+############################################
+# Wrangler CLI
+############################################
+[tasks.wrangler_login]
+command = "npx"
+args = ["wrangler@latest", "login"]
+
+[tasks.wrangler_whoami]
+command = "npx"
+args = ["wrangler@latest", "whoami"]

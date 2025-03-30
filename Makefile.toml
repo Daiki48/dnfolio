@@ -2,7 +2,7 @@
 # Starting local server
 ############################################
 [tasks.dev_search]
-dependencies = ["build"]
+dependencies = ["build_local"]
 command = "npx"
 args = ["-y", "pagefind", "--site", "dist", "--serve"]
 
@@ -12,10 +12,14 @@ command = "zola"
 args = ["serve"]
 
 ############################################
-# Build
+# Local build
 ############################################
-[tasks.build]
+[tasks.build_local]
 dependencies = ["fmt"]
+command = "zola"
+args = ["build"]
+
+[tasks.build_zola]
 command = "zola"
 args = ["build"]
 
@@ -23,21 +27,9 @@ args = ["build"]
 # Build for GitHub Actions
 ############################################
 [tasks.build_gha]
-command = "zola"
-args = ["build"]
-
-[tasks.deploy]
-dependencies = ["build_gha"]
+dependencies = ["build_zola"]
 command = "npx"
 args = ["-y", "pagefind", "--site", "dist"]
-
-############################################
-# Deploy to Cloudflare Pages
-############################################
-# [tasks.deploy]
-# dependencies = ["build", "wrangler_login"]
-# command = "npx"
-# args = ["wrangler@latest", "pages", "deploy", "dist", "--commit-dirty=true", "--project-name", "dnfolio"]
 
 ############################################
 # Check

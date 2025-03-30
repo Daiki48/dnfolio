@@ -29,11 +29,11 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: make
-          args: build_gha
+          args: build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=dnfolio
+          command: pages deploy dist --project-name=dnfolio --commit-dirty=true
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -2,7 +2,7 @@
 # Starting local server
 ############################################
 [tasks.dev_search]
-dependencies = ["build_local"]
+dependencies = ["fmt", "build_zola"]
 command = "npx"
 args = ["-y", "pagefind", "--site", "dist", "--serve"]
 
@@ -14,19 +14,11 @@ args = ["serve"]
 ############################################
 # Local build
 ############################################
-[tasks.build_local]
-dependencies = ["fmt"]
-command = "zola"
-args = ["build"]
-
 [tasks.build_zola]
 command = "zola"
 args = ["build"]
 
-############################################
-# Build for GitHub Actions
-############################################
-[tasks.build_gha]
+[tasks.build]
 dependencies = ["build_zola"]
 command = "npx"
 args = ["-y", "pagefind", "--site", "dist"]

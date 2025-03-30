@@ -23,9 +23,13 @@ args = ["build"]
 # Build for GitHub Actions
 ############################################
 [tasks.build_gha]
-dependencies = ["indexing"]
 command = "zola"
 args = ["build"]
+
+[tasks.deploy]
+dependencies = ["build_gha"]
+command = "npx"
+args = ["-y", "pagefind", "--site", "dist"]
 
 ############################################
 # Deploy to Cloudflare Pages

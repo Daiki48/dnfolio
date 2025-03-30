@@ -22,12 +22,12 @@
   </head>
   <body>
     {% include "components/header.html" %}
-    {% include "components/pagefind.html" %}
-    <section class="section">
+    <div class="search-pagefind">{% include "components/pagefind.html" %}</div>
+    <section class="section" data-pagefind-body>
       <div class="container">
         {% block content %}{% endblock %}
       </div>
-    </link>
+    </section>
     {% include "components/footer.html" %}
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-S0DTM6WBVT"></script>

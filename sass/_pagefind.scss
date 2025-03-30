@@ -13,3 +13,9 @@ body {
   --pagefind-ui-image-box-ratio: 3 / 2;
   --pagefind-ui-font: monospace, sans-serif;
 }
+
+@media (max-width: 768px) {
+  .search-pagefind {
+    display: none;
+  }
+}

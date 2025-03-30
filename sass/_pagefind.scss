@@ -1,0 +1,15 @@
+@use "vars";
+
+body {
+  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-primary: vars.$primary-bg-color;
+  --pagefind-ui-text: vars.$primary-fg-color;
+  --pagefind-ui-background: vars.$primary-bg-color;
+  --pagefind-ui-border: #caccca;
+  --pagefind-ui-tag: vars.$primary-bg-color;
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 4px;
+  --pagefind-ui-image-border-radius: 4px;
+  --pagefind-ui-image-box-ratio: 3 / 2;
+  --pagefind-ui-font: monospace, sans-serif;
+}

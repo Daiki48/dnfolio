@@ -31,6 +31,12 @@ Next, [djLint](https://djlint.com) is installing.
 pip install djlint
 ```
 
+### [nodejs](https://nodejs.org/)
+
+Via [nvm](https://github.com/nvm-sh/nvm).
+
+For [Prettier](https://prettier.io/)
+
 ## Usage
 
 This project using [cargo-make](https://github.com/sagiegurari/cargo-make).

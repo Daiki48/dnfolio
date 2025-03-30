@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 {% block head %}
-  <meta name="description" content="Personal website maintained by Daiki48">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://dnfolio.me/icons/icon.png">
-  <meta property="og:title" content="{{ page.title }}">
+  <meta name="description" content="Personal website maintained by Daiki48" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://dnfolio.me/icons/icon.png" />
+  <meta property="og:title" content="{{ page.title }}" />
   <meta property="og:site_name" content="dnfolio" />
-  <meta property="og:email" content="daiki48.engineer@gmail.com">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@dnfolio_me">
-  <meta name="twitter:title" content="{{ page.title }}">
-  <meta name="twitter:image" content="https://dnfolio.me/icons/icon.png">
+  <meta property="og:email" content="daiki48.engineer@gmail.com" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@dnfolio_me" />
+  <meta name="twitter:title" content="{{ page.title }}" />
+  <meta name="twitter:image" content="https://dnfolio.me/icons/icon.png" />
   {% if page.description %}
-    <meta property="og:description" content="{{ page.description }}">
-    <meta name="twitter:description" content="{{ page.description }}">
+    <meta property="og:description" content="{{ page.description }}" />
+    <meta name="twitter:description" content="{{ page.description }}" />
   {% else %}
     <meta property="og:description"
-          content="Personal website maintained by Daiki48">
+          content="Personal website maintained by Daiki48" />
     <meta name="twitter:description"
-          content="Personal website maintained by Daiki48">
+          content="Personal website maintained by Daiki48" />
   {% endif %}
   {% if page.slug %}
-    <meta property="og:url" content="https://dnfolio.me/{{ page.slug }}">
+    <meta property="og:url" content="https://dnfolio.me/{{ page.slug }}" />
   {% else %}
-    <meta property="og:url" content="https://dnfolio.me">
+    <meta property="og:url" content="https://dnfolio.me" />
   {% endif %}
 {% endblock head %}
 {% block title %}
@@ -52,8 +52,6 @@ title %}
   <div class="blog-content">{{ page.content | safe }}</div>
   <div class="shares">
     <span>Share on</span>
-    {{ share::bsky(text=page.title,
-        url="https://dnfolio.me/" ~ page.slug) }} {{ share::twitter(text=page.title,
-     url="https://dnfolio.me/" ~ page.slug) }}
+    {{ share::bsky(text=page.title, url="https://dnfolio.me/" ~ page.slug) }} {{ share::twitter(text=page.title, url="https://dnfolio.me/" ~ page.slug) }}
   </div>
 {% endblock content %}

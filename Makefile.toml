@@ -1,6 +1,11 @@
 ############################################
 # Starting local server
 ############################################
+[tasks.dev_search]
+dependencies = ["build"]
+command = "npx"
+args = ["-y", "pagefind", "--site", "dist", "--serve"]
+
 [tasks.dev]
 dependencies = ["fmt"]
 command = "zola"
@@ -18,6 +23,7 @@ args = ["build"]
 # Build for GitHub Actions
 ############################################
 [tasks.build_gha]
+dependencies = ["indexing"]
 command = "zola"
 args = ["build"]
 
@@ -39,7 +45,14 @@ dependencies = ["check_dprint", "check_djlint"]
 # Format
 ############################################
 [tasks.fmt]
-dependencies = ["fmt_dprint", "fmt_djlint"]
+dependencies = ["fmt_dprint", "fmt_djlint", "fmt_prettier"]
+
+############################################
+# Prettier
+############################################
+[tasks.fmt_prettier]
+command = "npx"
+args = ["prettier", "./sass", "--write"]
 
 ############################################
 # https://dprint.dev
@@ -79,3 +92,10 @@ args = [".", "--check"]
 # [tasks.wrangler_whoami]
 # command = "npx"
 # args = ["wrangler@latest", "whoami"]
+
+############################################
+# Pagefind
+############################################
+[tasks.indexing]
+command = "npx"
+args = ["-y", "pagefind", "--site", "dist"]

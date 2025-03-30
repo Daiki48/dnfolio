@@ -1,26 +1,27 @@
 {% extends "base.html" %}
 {% block head %}
-  <meta name="description" content="Personal website maintained by Daiki48">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://dnfolio.me/icons/icon.png">
-  <meta property="og:title" content="{{ section.title }}">
+  <meta name="description" content="Personal website maintained by Daiki48" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://dnfolio.me/icons/icon.png" />
+  <meta property="og:title" content="{{ section.title }}" />
   <meta property="og:description"
-        content="Personal website maintained by Daiki48">
+        content="Personal website maintained by Daiki48" />
   <meta property="og:site_name" content="dnfolio" />
-  <meta property="og:email" content="daiki48.engineer@gmail.com">
-  <meta property="og:url" content="https://dnfolio.me">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@dnfolio_me">
-  <meta name="twitter:title" content="{{ section.title }}">
+  <meta property="og:email" content="daiki48.engineer@gmail.com" />
+  <meta property="og:url" content="https://dnfolio.me" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@dnfolio_me" />
+  <meta name="twitter:title" content="{{ section.title }}" />
   <meta name="twitter:description"
-        content="Personal website maintained by Daiki48">
-  <meta name="twitter:image" content="https://dnfolio.me/icons/icon.png">
+        content="Personal website maintained by Daiki48" />
+  <meta name="twitter:image" content="https://dnfolio.me/icons/icon.png" />
 {% endblock head %}
 {% block title %}
   {{ section.title }}
 {% endblock title %}
 {% block content %}
-  {% for year, posts in section.pages | group_by(attribute="year") %}
+  {% for year, posts in section.pages |
+    group_by(attribute="year") %}
     <h3 class="subtitle">{{ year }}</h3>
     <ul class="blog-list">
       {% for post in posts %}

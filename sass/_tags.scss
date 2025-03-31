@@ -113,6 +113,31 @@ hr {
   box-shadow: 0 0 10px rgba(99, 113, 133, 0.6);
 }
 
+table {
+  border: 0.6px solid vars.$secondary-fg-color;
+}
+
+table > thead > tr > th {
+  background-color: vars.$secondary-bg-color;
+  border: 0.6px solid vars.$secondary-fg-color;
+  padding: 10px;
+}
+
+table > tbody > tr > td {
+  border: 0.4px solid vars.$secondary-fg-color;
+  padding: 10px;
+  line-height: 20px;
+}
+
+table > tbody > tr > td > a {
+  border-bottom: 0.8px dashed vars.$primary-fg-color;
+  padding-bottom: 3px;
+}
+
+table > tbody > tr > td > a:hover {
+  color: vars.$secondary-fg-color;
+}
+
 @media (max-width: 768px) {
   body {
     max-width: 100%;
@@ -146,5 +171,14 @@ hr {
 
   pre code span {
     font-size: 0.8rem;
+  }
+
+  table > thead > tr > th {
+    font-size: 0.8rem;
+  }
+
+  table > tbody > tr > td {
+    font-size: 0.8rem;
+    line-height: 23px;
   }
 }

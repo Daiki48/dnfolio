@@ -9,20 +9,26 @@ $modal-padding: 30px;
 .search-button {
   padding: 10px 20px;
   background-color: vars.$secondary-bg-color;
-  color: vars.$primary-fg-color;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 16px;
   text-decoration: none;
 
   a {
-    color: white;
     text-decoration: none;
+    font-family:
+      BIZ UDPGothic,
+      sans-serif;
+    color: vars.$primary-fg-color;
+    cursor: pointer;
+
+    &:hover {
+      color: vars.$secondary-fg-color;
+    }
   }
 
   &:hover {
-    color: vars.$secondary-fg-color;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
   }
 }
 

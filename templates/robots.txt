@@ -1,4 +1,3 @@
 User-agent: *
-Disallow:
 Allow: /
-Sitemap: {{ get_url(path="sitemap.xml") }}
+Sitemap: https://dnfolio.me/sitemap.xml

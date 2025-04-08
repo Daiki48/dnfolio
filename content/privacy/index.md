@@ -53,5 +53,7 @@ For further details, please refer to the [Google Analytics Terms of Service](htt
 
 ## Revision / 改定日
 
+- 8 April 2025 / 2025年4月8日
+  - [🔨 Update privacy | GitHub](https://github.com/Daiki48/dnfolio/commit/700d4391c2110beedb5cdd345ba84055c19035ea)
 - 9 January 2025 / 2025年1月9日
   - [⚡ Added privacy | GitHub](https://github.com/Daiki48/dnfolio/commit/c0432fbd2428392884899b0a283c664258b3fbc3)

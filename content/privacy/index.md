@@ -1,7 +1,7 @@
 +++
 title = "Privacy Policy"
 description = "This page is privacy policy."
-date = "2025-01-09"
+date = "2025-04-08"
 template = "privacy.html"
 +++
 
@@ -20,6 +20,12 @@ This website using [Cloudflare Web Analytics](https://www.cloudflare.com/web-ana
 
 For more information, please check the official website.
 
+We also use the access analysis tool **"Google Analytics"** provided by Google.
+This Google Analytics uses Cookies to collect data.
+This data is collected anonymously and does not personally identify you.
+You can refuse this data collection by disabling Cookies in your browser settings.
+For further details, please refer to the [Google Analytics Terms of Service](https://marketingplatform.google.com/about/analytics/terms/us/) and [Google Privacy Policy](https://policies.google.com/technologies/ads?hl=en) .
+
 ## プライバシーポリシー
 
 このサイトでは、[Cloudflare Web Analytics](https://www.cloudflare.com/ja-jp/web-analytics/) を使用しています。
@@ -34,6 +40,11 @@ For more information, please check the official website.
 {{ card(title="日本語 | Cloudflare Web Analytics", url="https://www.cloudflare.com/ja-jp/web-analytics/") }}
 
 詳しい情報は、公式サイトをご確認ください。
+
+また、Googleによるアクセス解析ツール **「Googleアナリティクス」** も使用しています。
+このGoogleアナリティクスではデータ収集のためCookieを使用しています。このデータは匿名で収集されており、個人を特定するものではありません。
+この機能はCookieを無効にすることで収集を拒否することも出来ます。お使いのブラウザで設定をご確認ください。
+詳細は [Googleアナリティクス利用規約](https://marketingplatform.google.com/about/analytics/terms/jp/) と [Googleポリシーと規約](https://policies.google.com/technologies/ads?hl=ja) をご覧ください。
 
 ## Enactment date / 制定日
 

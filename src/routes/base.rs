@@ -51,7 +51,7 @@ pub fn layout(
                 }
 
                 style {
-                    "body { font-family: sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; lihe-height: 20px; }"
+                    "body { font-family: sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; line-height: 20px; }"
                     "header, footer { background-color: #f0f0f0; padding: 1em; text-align: center; }"
                     ".container { display: flex; flex: 1; align-items: flex-start; }"
                     ".sidebar-left {
@@ -64,7 +64,7 @@ pub fn layout(
                         height: 100vh;
                         overflow-y: auto;
                     }"
-                    ".main-content { flex: 1; padding: 1em; }"
+                    ".main-content { flex: 1; padding: 1em; min-width: 0; }"
                     ".sidebar-right {
                         flex: 0 0 200px; 
                         background-color: #f5f5f5; 

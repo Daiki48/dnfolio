@@ -12,7 +12,7 @@ use serde::Deserialize;
 use slug::slugify;
 use walkdir::WalkDir;
 
-use crate::routes::base;
+use crate::routes::{about, base, privacy};
 
 #[derive(Debug, Deserialize, Clone)]
 struct Taxonomies {
@@ -92,7 +92,7 @@ fn parse_markdown_file(
     pulldown_options.insert(pulldown_cmark::Options::ENABLE_SMART_PUNCTUATION);
     pulldown_options.insert(pulldown_cmark::Options::ENABLE_HEADING_ATTRIBUTES);
 
-    let parser = Parser::new_ext(&markdown_content,pulldown_options);
+    let parser = Parser::new_ext(&markdown_content, pulldown_options);
     let mut headings: Vec<Heading> = Vec::new();
     let mut id_counts: HashMap<String, usize> = HashMap::new();
     let mut html_output = String::new();
@@ -103,18 +103,33 @@ fn parse_markdown_file(
 
     for event in parser {
         match event {
-            Event::Start(Tag::Heading { level, id, classes, attrs }) => {
+            Event::Start(Tag::Heading {
+                level,
+                id,
+                classes,
+                attrs,
+            }) => {
                 is_in_heading = true;
                 current_heading_text_buffer.clear();
-                processed_events.push(Event::Start(Tag::Heading { level, id, classes, attrs }));
-            },
+                processed_events.push(Event::Start(Tag::Heading {
+                    level,
+                    id,
+                    classes,
+                    attrs,
+                }));
+            }
             Event::End(TagEnd::Heading(level)) => {
                 is_in_heading = false;
                 let text_content = current_heading_text_buffer.trim().to_string();
                 let mut final_id_to_use: Option<CowStr> = None;
 
                 for i in (0..processed_events.len()).rev() {
-                    if let Event::Start(Tag::Heading { level: h_level, id: existing_id_in_event, .. }) = &processed_events[i] {
+                    if let Event::Start(Tag::Heading {
+                        level: h_level,
+                        id: existing_id_in_event,
+                        ..
+                    }) = &processed_events[i]
+                    {
                         if *h_level == level {
                             if existing_id_in_event.is_some() {
                                 final_id_to_use = existing_id_in_event.clone();
@@ -148,7 +163,12 @@ fn parse_markdown_file(
                 });
                 let mut found_start = false;
                 for i in (0..processed_events.len()).rev() {
-                    if let Event::Start(Tag::Heading { level: h_level, id: h_id, .. }) = &mut processed_events[i] {
+                    if let Event::Start(Tag::Heading {
+                        level: h_level,
+                        id: h_id,
+                        ..
+                    }) = &mut processed_events[i]
+                    {
                         if *h_level == level && h_id.is_none() {
                             *h_id = Some(CowStr::from(id_string.clone()));
                             found_start = true;
@@ -157,16 +177,32 @@ fn parse_markdown_file(
                     }
                 }
                 if !found_start {
-                    eprintln!("Warning: Could not find matching Start(Heading) event to assign ID for heading: {text_content:?}");
+                    eprintln!(
+                        "Warning: Could not find matching Start(Heading) event to assign ID for heading: {text_content:?}"
+                    );
                 }
-                processed_events.push(Event::End(Tag::Heading { level, id: Some(CowStr::from(id_string)), classes: Vec::new(), attrs: Vec::new() }.into()));
-            },
+                processed_events.push(Event::End(
+                    Tag::Heading {
+                        level,
+                        id: Some(CowStr::from(id_string)),
+                        classes: Vec::new(),
+                        attrs: Vec::new(),
+                    }
+                    .into(),
+                ));
+            }
             Event::Text(text) => {
                 if is_in_heading {
                     current_heading_text_buffer.push_str(&text);
                 }
                 processed_events.push(Event::Text(text));
-            },
+            }
+            Event::Code(text) => {
+                if is_in_heading {
+                    current_heading_text_buffer.push_str(&text);
+                }
+                processed_events.push(Event::Code(text));
+            }
             other => {
                 processed_events.push(other);
             }
@@ -298,8 +334,6 @@ pub async fn run() -> Result<()> {
                 })?;
             }
 
-            // println!("Generating HTML for {:?}", article.output_path);
-
             let main_content_markup = html! {
                 h1 {
                     @if let Some(meta) = &article.metadata {
@@ -333,15 +367,17 @@ pub async fn run() -> Result<()> {
         })
         .collect::<Result<Vec<()>>>()?;
 
+    let about_page = about::layout();
+
     let index_main_content_markup = html! {
         h1 { "dnfolioへようこそ" }
         p { "これは私の個人サイトです。プログラミングや日々の出来事について書いています。" }
-        p { "左サイドバーから記事を選択してください。" }
+        (about_page)
     };
 
     let index_sidebar_right_markup = html! {
         h2 { "サイト情報" }
-        p { "サイト全体の概要やリンクなど" }
+        a href="privacy.html" target="_blank" { "Privacy Policy" }
     };
 
     let index_html_output = base::layout(
@@ -353,5 +389,9 @@ pub async fn run() -> Result<()> {
     .into_string();
 
     fs::write(dist_dir.join("index.html"), index_html_output)?;
+    fs::write(
+        dist_dir.join("privacy.html"),
+        privacy::layout().into_string(),
+    )?;
     Ok(())
 }

@@ -9,57 +9,15 @@
 
 [dnfolio](https://dnfolio.me)
 
-## Install
-
-### [Rust](https://www.rust-lang.org)
-
-For `Rust` and `cargo` is install.
-
-Next, [cargo-make](https://github.com/sagiegurari/cargo-make?tab=readme-ov-file#installation) is installing.
-
-```sh
-cargo install --force cargo-make
-```
-
-### [Python](https://www.python.org/)
-
-For `Python` and `pip` is install.
-
-Next, [djLint](https://djlint.com) is installing.
-
-```sh
-pip install djlint
-```
-
-### [nodejs](https://nodejs.org/)
-
-Via [nvm](https://github.com/nvm-sh/nvm).
-
-For [Prettier](https://prettier.io/)
-
-## Usage
-
-This project using [cargo-make](https://github.com/sagiegurari/cargo-make).
-
-See: [Install](#install)
-
-So I can using `makers` command.
-
-### Develop
-
-```sh
-makers dev
-```
-
-### Build
-
-```sh
-makers build
-```
-
 ## Architecture change log
 
-### Version 4 (Latest)
+### Version 5 (Latest)
+
+- [Rust](https://www.rust-lang.org/)
+
+Built entirely in Rust.
+
+### Version 4
 
 > [!NOTE]
 > Since 7 January 2025.

@@ -17,10 +17,7 @@ jobs:
         with:
           node-version: 23.8.0
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: build
+        run: cargo run -- build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:

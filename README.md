@@ -13,6 +13,9 @@
 
 ### Version 5 (Latest)
 
+> [!NOTE]
+> Since 31 July 2025.
+
 - [Rust](https://www.rust-lang.org/)
 
 Built entirely in Rust.

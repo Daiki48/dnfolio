@@ -1,11 +1,25 @@
+use crate::metadata::MetaData;
 use maud::{DOCTYPE, Markup, html};
 
 pub fn layout(
     page_title: &str,
+    metadata: Option<&MetaData>,
+    ogp_image_path: Option<&str>,
     sidebar_left_markup: Markup,
     main_content_markup: Markup,
     sidebar_right_markup: Markup,
 ) -> Markup {
+    let description = metadata
+        .and_then(|m| m.description.as_ref())
+        .map(|d| d.as_str())
+        .unwrap_or("プログラムを良く書く人の個人サイトです。");
+
+    let keywords = metadata
+        .and_then(|m| m.taxonomies.as_ref())
+        .and_then(|t| t.tags.as_ref())
+        .map(|tags| tags.join(", "))
+        .unwrap_or_else(|| "ポエム".to_string());
+
     html! {
         (DOCTYPE)
         html lang="ja" {
@@ -13,11 +27,33 @@ pub fn layout(
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1";
                 title { (page_title) }
+                meta name="description" content=(description);
+                meta name="keywords" content=(keywords);
+                meta name="author" content="Daiki Nakashima";
+
+                meta property="og:title" content=(page_title);
+                meta property="og:description" content=(description);
+                meta property="og:type" content="website";
+                meta property="og:site_name" content="dnfolio";
+                @if let Some(image_path) = ogp_image_path {
+                    meta property="og:image" content=(format!("https://dnfolio.me{image_path}"));
+                    meta property="og:image:width" content="1200";
+                    meta property="og:image:height" content="630";
+                    meta property="og:image:type" content="image/svg+xml";
+                }
+
+
+                meta name="twitter:card" content="summary";
+                meta name="twitter:title" content=(page_title);
+                meta name="twitter:description" content=(description);
+                @if let Some(image_path) = ogp_image_path {
+                    meta name="twitter:image" content=(format!("https://dnfolio.me{image_path}"));
+                }
+
                 style {
                     "body { font-family: sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; lihe-height: 20px; }"
                     "header, footer { background-color: #f0f0f0; padding: 1em; text-align: center; }"
                     ".container { display: flex; flex: 1; align-items: flex-start; }"
-
                     ".sidebar-left {
                         flex: 0 0 250px; 
                         background-color: #e0e0e0; 
@@ -28,9 +64,7 @@ pub fn layout(
                         height: 100vh;
                         overflow-y: auto;
                     }"
-
                     ".main-content { flex: 1; padding: 1em; }"
-
                     ".sidebar-right {
                         flex: 0 0 200px; 
                         background-color: #f5f5f5; 
@@ -41,7 +75,6 @@ pub fn layout(
                         height: 100vh;
                         overflow-y: auto;
                     }"
-
                     "ul { list-style: none; padding: 4px 0; }"
                     "li { margin-bottom: 0.5em; }"
                     "a { text-decoration: none; color: blue; }"

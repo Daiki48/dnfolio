@@ -8,32 +8,12 @@ use gray_matter::{Matter, ParsedEntity};
 use maud::{Markup, html};
 use pulldown_cmark::{CowStr, Event, Parser, Tag, TagEnd};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
-use serde::Deserialize;
 use slug::slugify;
 use walkdir::WalkDir;
 
+use crate::metadata::MetaData;
+use crate::ogp;
 use crate::routes::{about, base, privacy};
-
-#[derive(Debug, Deserialize, Clone)]
-struct Taxonomies {
-    #[serde(default)]
-    tags: Option<Vec<String>>,
-    #[serde(default)]
-    languages: Option<Vec<String>>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-struct MetaData {
-    title: String,
-    #[serde(default)]
-    description: Option<String>,
-    #[serde(default)]
-    slug: Option<String>,
-    #[serde(default)]
-    draft: Option<bool>,
-    #[serde(default)]
-    taxonomies: Option<Taxonomies>,
-}
 
 #[derive(Debug, Clone)]
 struct Article {
@@ -249,12 +229,14 @@ pub async fn run() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let dist_dir = Path::new("dist");
     let output_content_dir = dist_dir.join("content");
+    let ogp_dir = dist_dir.join("ogp");
 
     if dist_dir.exists() {
         fs::remove_dir_all(dist_dir)?;
     }
     fs::create_dir_all(dist_dir)?;
     fs::create_dir_all(&output_content_dir)?;
+    fs::create_dir_all(&ogp_dir)?;
 
     for entry in WalkDir::new("static").into_iter().filter_map(|e| e.ok()) {
         let target_path = dist_dir.join(entry.path().strip_prefix("static")?);
@@ -354,8 +336,14 @@ pub async fn run() -> Result<()> {
                 .as_ref()
                 .map(|m| m.title.as_str())
                 .unwrap_or("記事");
+
+            let ogp_image_path = ogp::generate_ogp_svg(page_title, &ogp_dir)
+                .map_err(|e| anyhow::Error::msg(format!("OGP image generation failed: {e}")))?;
+
             let full_article_html = base::layout(
                 page_title,
+                article.metadata.as_ref(),
+                Some(&ogp_image_path),
                 articles_list_markup.clone(),
                 main_content_markup,
                 sidebar_right_markup,
@@ -380,8 +368,12 @@ pub async fn run() -> Result<()> {
         a href="privacy.html" target="_blank" { "Privacy Policy" }
     };
 
+    let index_ogp_path = ogp::generate_ogp_svg("dnfolio", &ogp_dir)?;
+
     let index_html_output = base::layout(
         "dnfolio",
+        None,
+        Some(&index_ogp_path),
         articles_list_markup,
         index_main_content_markup,
         index_sidebar_right_markup,

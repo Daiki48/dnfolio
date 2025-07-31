@@ -16,15 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 23.8.0
-      - name: Setup Zola
-        uses: taiki-e/install-action@v2
-        with:
-          tool: zola@0.20.0
-      - name: Setup cargo-make
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: --debug cargo-make
       - name: Build
         uses: actions-rs/cargo@v1
         with:

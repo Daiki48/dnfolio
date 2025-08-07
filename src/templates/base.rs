@@ -259,14 +259,24 @@ pub fn layout(
                     meta property="og:image:width" content="1200";
                     meta property="og:image:height" content="630";
                     meta property="og:image:type" content="image/svg+xml";
+                } @else {
+                    meta property="og:image" content=(format!("https://dnfolio.me/icons/icon.png"));
+                    meta property="og:image:width" content="1200";
+                    meta property="og:image:height" content="630";
+                    meta property="og:image:type" content="image/png";
                 }
 
-                meta name="twitter:card" content="summary";
+                meta name="twitter:card" content="summary_large_image";
                 meta name="twitter:title" content=(page_title);
                 meta name="twitter:description" content=(description);
+                meta name="twitter:site" content="@dnfolio_me";
                 @if let Some(image_path) = ogp_image_path {
                     meta name="twitter:image" content=(format!("https://dnfolio.me{image_path}"));
+                } @else {
+                    meta name="twitter:image" content=(format!("https://dnfolio.me/icons/icon.png"));
                 }
+
+                link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon";
 
                 style { (PreEscaped(css)) }
             }

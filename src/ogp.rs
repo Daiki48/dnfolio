@@ -133,7 +133,11 @@ fn split_title_into_lines(title: &str, max_lines: usize) -> Vec<String> {
             break;
         }
 
-        let search_end = remaining.char_indices().nth(chars_per_line + 10).map(|(idx, _)| idx).unwrap_or(remaining.len());
+        let search_end = remaining
+            .char_indices()
+            .nth(chars_per_line + 10)
+            .map(|(idx, _)| idx)
+            .unwrap_or(remaining.len());
 
         let split_pos = remaining[..search_end]
             .rfind(|c: char| c.is_whitespace() || "、。!?)】」".contains(c))
@@ -146,7 +150,11 @@ fn split_title_into_lines(title: &str, max_lines: usize) -> Vec<String> {
                 }
             })
             .unwrap_or_else(|| {
-                remaining.char_indices().nth(chars_per_line).map(|(idx, _)| idx).unwrap_or(remaining.len())
+                remaining
+                    .char_indices()
+                    .nth(chars_per_line)
+                    .map(|(idx, _)| idx)
+                    .unwrap_or(remaining.len())
             });
         let (line, rest) = remaining.split_at(split_pos);
         if !line.trim().is_empty() {

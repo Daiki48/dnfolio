@@ -1,11 +1,10 @@
 +++
 title = "dnfolioのUIを若干変更した"
 description = "個人サイトdnfolioのUIを若干変更した。ちょっと見やすくなった。"
-slug = "dnfolioのUIを若干変更した"
 draft = false
 [taxonomies]
 tags = ["Zola", "CSS"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## `body` の幅を変更

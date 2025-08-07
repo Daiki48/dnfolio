@@ -1,11 +1,10 @@
 +++
 title = "I am developing a CLI tool called thumbgen"
 description = "I would like to introduce a CLI tool I am developing called thumbgen."
-slug = "I am developing a CLI tool called thumbgen that generates thumbnail images"
 draft = false
 [taxonomies]
 tags = ["Rust", "thumbgen", "CLI"]
-languages = ["English"]
+languages = ["en"]
 +++
 
 ## About this tool

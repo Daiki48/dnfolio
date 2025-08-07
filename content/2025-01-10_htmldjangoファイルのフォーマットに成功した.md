@@ -1,11 +1,10 @@
 +++
 title = "htmldjangoファイルのフォーマットに成功した"
 description = "dnfolioでは、TeraというHTMLテンプレートファイルを使用している。このTeraの文法で書くとファイルタイプがhtmldjangoとなりHTMLのフォーマットが変になる。その問題を解決した。"
-slug = "htmldjangoファイルのフォーマットに成功した"
 draft = false
 [taxonomies]
 tags = ["htmldjango", "Tera", "Python", "coc-htmldjango", "djLint"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## 困っていること

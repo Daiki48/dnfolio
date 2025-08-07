@@ -1,11 +1,10 @@
 +++
 title = "Created sample project powerd by Hono + Cloudflare Workers + Bun"
 description = "First time using Cloudflare Workers and Hono. I am very easy to use."
-slug = "Created sample project powerd by Hono + Cloudflare Workers + Bun"
 draft = false
 [taxonomies]
 tags = ["Cloudflare Workers", "Hono", "Bun"]
-languages = ["English"]
+languages = ["en"]
 +++
 
 I am writing to express my interest in developing a web application.

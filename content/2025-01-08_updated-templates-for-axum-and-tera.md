@@ -1,10 +1,9 @@
 +++
 title = "Updated templates for axum and Tera"
 description = "I responded to an issue that was created in my past template projects for axum and Tera."
-slug = "Updated templates for axum and Tera"
 [taxonomies]
 tags = ["Rust", "axum", "Tera"]
-languages = ["English"]
+languages = ["en"]
 +++
 
 ## I have a project I created to try out with axum and Tera

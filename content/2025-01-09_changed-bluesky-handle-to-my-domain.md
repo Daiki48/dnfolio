@@ -1,11 +1,10 @@
 +++
 title = "Changed Bluesky's handle to my domain"
 description = "I changed the handle of my Bluesky account to the domain I hold."
-slug = "Changed Bluesky's handle to my domain"
 draft = false
 [taxonomies]
 tags = ["Bluesky", "Cloudflare"]
-languages = ["English"]
+languages = ["en"]
 +++
 
 My Bluesky account used **daiki48.bsky.social** .

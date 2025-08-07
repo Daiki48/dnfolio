@@ -42,7 +42,6 @@ pub fn layout(
                     meta property="og:image:type" content="image/svg+xml";
                 }
 
-
                 meta name="twitter:card" content="summary";
                 meta name="twitter:title" content=(page_title);
                 meta name="twitter:description" content=(description);

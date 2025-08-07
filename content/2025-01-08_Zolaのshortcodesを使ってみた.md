@@ -1,10 +1,9 @@
 +++
 title = "Zolaのshortcodesを使ってみた"
 description = "Zolaにshortcodesという機能があるらしい。使ってみよう。"
-slug = "Zolaのshortcodesを使ってみた"
 [taxonomies]
 tags = ["Zola"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## Youtube動画の埋め込み

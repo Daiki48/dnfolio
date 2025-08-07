@@ -1,11 +1,10 @@
 +++
 title = "workers-rsを試してみた"
 description = "Cloudflare workersにRustアプリをデプロイしてみたいのでworkers-rsクレートを試してみる。"
-slug = "workers-rsを試してみた"
 draft = false
 [taxonomies]
 tags = ["Cloudflare", "workers-rs"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## `workers-rs` とは

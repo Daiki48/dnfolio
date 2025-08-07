@@ -1,11 +1,10 @@
 +++
 title = "WSL2のUbuntuにZigをインストールする"
 description = "ZigをUbuntuにインストールしてみる。"
-slug = "WSL2のUbuntuにZigをインストールする"
 draft = false
 [taxonomies]
 tags = ["Zig"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## ダウンロード

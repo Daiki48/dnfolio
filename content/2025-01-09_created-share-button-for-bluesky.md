@@ -1,11 +1,10 @@
 +++
 title = "Created share button for Bluesky"
 description = "I created share button for Bluesky. Because I use Bluesky frequently."
-slug = "Created share button for Bluesky"
 draft = false
 [taxonomies]
 tags = ["Bluesky", "Tera"]
-languages = ["English"]
+languages = ["en"]
 +++
 
 ## Bluesky official documentation

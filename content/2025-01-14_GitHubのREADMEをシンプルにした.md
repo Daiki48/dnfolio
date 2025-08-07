@@ -1,11 +1,10 @@
 +++
 title = "GitHubのREADMEをシンプルにした"
 description = "自己紹介としてちょっとかっこよく頑張ってたGitHubのREADMEをシンプルにして、個人サイトで詳細に書くようにした。"
-slug = "GitHubのREADMEをシンプルにした"
 draft = false
 [taxonomies]
 tags = ["GitHub", "README"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## 理由

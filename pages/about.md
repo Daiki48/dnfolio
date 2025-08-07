@@ -1,80 +1,56 @@
-+++
-title = "About me"
-description = "This page is about me. Hi there! I'm Daiki Nakashima. I'm software engineer from Japan. Coding is my passion, and I love doing it even when I'm not at work."
-date = "2025-01-07"
-template = "about.html"
-+++
+# dnfolioへようこそ
 
-Hi there! I'm Daiki Nakashima. I'm software engineer from Japan.
-Coding is my passion, and I love doing it even when I'm not at work.
+[Daiki48](https://github.com/Daiki48) の個人サイトです。  
+仕事やプライベートでインプットした技術的なメモを公開する目的で運用しています。
+稀に私生活の記事を公開するかもしれません。
 
-I also enjoy hitting the open road for a drive.
+dnfolioは、現在バージョン5になりました。
+主に、私自身の勉強材料として運用しているため、過去の記事へのURLが安定しません。ごめんなさい。
 
-Traveling with my wife a few times a year is something I really look forward
-to.
-I feel truly fulfilled when I'm writing code.
+## dnfolioの歴史
 
-## Experience
+## スキル
 
-**Software Engineer** Kagoshima, Japan
-Since June 2020
-
-I am responsible for the operation and maintenance of our in-house SaaS product,
-which is used by hundreds of companies nationwide.
-I also create user guides for the product. Additionally, I am involved in the
-development of a new product using Google Cloud Platform.
-
-## Skills
-
-### Programing language
+私が書けるプログラミング言語とWebフレームワークです。
 
 [![My Skills](https://skillicons.dev/icons?i=html)](https://developer.mozilla.org/en/docs/Web/HTML)
 [![My Skills](https://skillicons.dev/icons?i=css)](https://developer.mozilla.org/en/docs/Web/CSS)
 [![My Skills](https://skillicons.dev/icons?i=js)](https://developer.mozilla.org/en/docs/Web/JavaScript)
 [![My Skills](https://skillicons.dev/icons?i=ts)](https://www.typescriptlang.org/)
-
-I do basic web development at work.
-
 [![My Skills](https://skillicons.dev/icons?i=rust)](https://www.rust-lang.org/)
-
-I've been developing small CLI tools with Rust. It's a **unique language** that I find enjoyable to learn.\
-I using at hobby projects.
-
 [![My Skills](https://skillicons.dev/icons?i=svelte)](https://svelte.dev/)
-
-I used Sveltekit to **develop static sites for user guides in work.
 
 ## GitHub
 
-I use GitHub.
-You can check my development activities on my GitHub activity.
+プライベートでGitHubを利用しています。
 
-### Activity graph
+### 活動グラフ
 
 [![Ashutosh's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=Daiki48&bg_color=373f4a&color=caccca&line=22272e&point=caccca&radius=8)](https://github.com/Daiki48)
 
-### Stats Card
+### スタッツ
 
 [![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=Daiki48&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48)
 
-### Released themes
+### リリースしたカラーテーマ
 
-For [Neovim](https://neovim.io/)
+[Neovim](https://neovim.io/) 用
 
 [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=sakurajima.nvim&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/sakurajima.nvim)
 
-For [Obsidian](https://obsidian.md)
+[Obsidian](https://obsidian.md) 用
 
 [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=sakurajima.obsidian&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/sakurajima.obsidian)
 
-For [Inkdrop](https://inkdrop.app)
+[Inkdrop](https://inkdrop.app) 用
 
-> This repository has been archived by the owner on Jan 15, 2025. It is now read-only.
+> 2025年1月にInkdropからObsidianへ移行したため、こちらのテーマはアーカイブしています。
+> 気に入ってくれた方がいらっしゃったらフォークして利用してください。
 
 [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=inkdrop-terracecat-dark-ui-theme&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/inkdrop-terracecat-dark-ui-theme)
 
 ## SNS
 
-I am transmitting via [Bluesky](https://bsky.social/about).
+[Bluesky](https://bsky.social/about) で英語発信の練習中です。
 
 <script async src="https://bst.heion.net/timeline.js" data-handle="dnfolio.me" data-theme="gray" data-width="420" data-height="500" data-lang="ja" data-pin="0"></script>

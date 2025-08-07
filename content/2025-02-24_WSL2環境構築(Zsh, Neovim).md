@@ -1,11 +1,10 @@
 +++
 title = "WSL2環境構築(Zsh, Neovim)"
 description = "WSL2にZshとNeovim環境を構築した。WSL2はデフォルトでBashとViが導入されているが、私自身他のLinux環境ではZshとNeovimを利用しているため。"
-slug = "WSL2環境構築(Zsh, Neovim)"
 draft = false
 [taxonomies]
 tags = ["WSL2", "Zsh", "Neovim"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## なぜWSL2の環境構築をするのか

@@ -1,11 +1,10 @@
 +++
 title = "Cloudflare Pagesへのデプロイ手段をGit統合からGitHub Actionsに変更した"
 description = "個人サイトのデプロイ手順を大きく変更した。GitHub ActionsでCloudflare Pagesにデプロイ出来ることを知ったので実装した。"
-slug = "Cloudflare Pagesへのデプロイ手段をGit統合からGitHub Actionsに変更した"
 draft = false
 [taxonomies]
 tags = ["Cloudflare Pages", "GitHub Actions", "Zola", "cargo-make"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## 今までの構成

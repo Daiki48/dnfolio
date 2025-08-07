@@ -1,11 +1,10 @@
 +++
 title = "Changed Top Level Domain"
 description = "I changed TLD for personal website."
-slug = "Changed Top Level Domain"
 draft = false
 [taxonomies]
 tags = ["Cloudflare"]
-languages = ["English"]
+languages = ["en"]
 +++
 
 ## Why did I change my domain?

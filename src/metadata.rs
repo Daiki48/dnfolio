@@ -14,8 +14,6 @@ pub struct MetaData {
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
-    pub slug: Option<String>,
-    #[serde(default)]
     pub draft: Option<bool>,
     #[serde(default)]
     pub taxonomies: Option<Taxonomies>,

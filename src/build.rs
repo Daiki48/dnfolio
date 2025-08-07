@@ -13,7 +13,15 @@ use walkdir::WalkDir;
 
 use crate::metadata::MetaData;
 use crate::ogp;
-use crate::routes::{about, base, privacy};
+use crate::routes::{base, privacy};
+
+#[derive(Debug, Clone)]
+struct Page {
+    content_html: String,
+    output_path: PathBuf,
+    relative_url: PathBuf,
+    filename: String,
+}
 
 #[derive(Debug, Clone)]
 struct Article {
@@ -35,7 +43,6 @@ fn parse_markdown_file(
     input_path: &Path,
     content_dir: &Path,
     output_content_dir: &Path,
-    _dist_dir: &Path,
 ) -> anyhow::Result<Article> {
     let markdown_with_metadata = fs::read_to_string(input_path)?;
 
@@ -222,6 +229,37 @@ fn parse_markdown_file(
     })
 }
 
+fn parse_page_file(input_path: &Path, _pages_dir: &Path, dist_dir: &Path) -> anyhow::Result<Page> {
+    let markdown_content = fs::read_to_string(input_path)?;
+
+    let mut pulldown_options = pulldown_cmark::Options::empty();
+    pulldown_options.insert(pulldown_cmark::Options::ENABLE_TABLES);
+    pulldown_options.insert(pulldown_cmark::Options::ENABLE_FOOTNOTES);
+    pulldown_options.insert(pulldown_cmark::Options::ENABLE_STRIKETHROUGH);
+    pulldown_options.insert(pulldown_cmark::Options::ENABLE_TASKLISTS);
+    pulldown_options.insert(pulldown_cmark::Options::ENABLE_SMART_PUNCTUATION);
+    pulldown_options.insert(pulldown_cmark::Options::ENABLE_HEADING_ATTRIBUTES);
+
+    let parser = Parser::new_ext(&markdown_content, pulldown_options);
+    let mut html_content = String::new();
+    pulldown_cmark::html::push_html(&mut html_content, parser);
+
+    let file_stem = input_path
+        .file_stem()
+        .unwrap()
+        .to_string_lossy()
+        .to_string();
+    let output_path = dist_dir.join(format!("{file_stem}.html"));
+    let relative_url = PathBuf::from(format!("/{file_stem}.html"));
+
+    Ok(Page {
+        content_html: html_content,
+        output_path,
+        relative_url,
+        filename: file_stem,
+    })
+}
+
 pub async fn run() -> Result<()> {
     println!("cargo:rerun-if-chaged=static/*");
     println!("cargo:rerun-if-chaged=content/*");
@@ -230,6 +268,7 @@ pub async fn run() -> Result<()> {
     let dist_dir = Path::new("dist");
     let output_content_dir = dist_dir.join("content");
     let ogp_dir = dist_dir.join("ogp");
+    let pages_dir = PathBuf::from("pages");
 
     if dist_dir.exists() {
         fs::remove_dir_all(dist_dir)?;
@@ -265,7 +304,7 @@ pub async fn run() -> Result<()> {
         .filter_map(|input_path| {
             println!("Parsing {input_path:?}");
 
-            match parse_markdown_file(input_path, &content_dir, &output_content_dir, dist_dir) {
+            match parse_markdown_file(input_path, &content_dir, &output_content_dir) {
                 Ok(article) => Some(article),
                 Err(e) => {
                     if e.to_string().contains("Draft article skipped") {
@@ -285,6 +324,39 @@ pub async fn run() -> Result<()> {
             .map(|m| &m.title)
             .cmp(&b.metadata.as_ref().map(|m| &m.title))
     });
+
+    let pages_files: Vec<PathBuf> = WalkDir::new(&pages_dir)
+        .into_iter()
+        .filter_map(|entry_result| {
+            let entry = entry_result.ok()?;
+            let path = entry.path().to_path_buf();
+            if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
+                Some(path)
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    let pages: Vec<Page> = pages_files
+        .par_iter()
+        .filter_map(|input_path| {
+            println!("Parsing page {input_path:?}");
+            match parse_page_file(input_path, &pages_dir, dist_dir) {
+                Ok(page) => Some(page),
+                Err(e) => {
+                    eprintln!("Error processing page {input_path:?}: {e}");
+                    None
+                }
+            }
+        })
+        .collect();
+
+    let about_content = pages
+        .iter()
+        .find(|page| page.filename == "about")
+        .map(|page| maud::PreEscaped(page.content_html.clone()))
+        .unwrap_or_else(|| maud::PreEscaped("About content not found".to_string()));
 
     let articles_arc = Arc::new(articles.clone());
 
@@ -355,17 +427,20 @@ pub async fn run() -> Result<()> {
         })
         .collect::<Result<Vec<()>>>()?;
 
-    let about_page = about::layout();
-
     let index_main_content_markup = html! {
-        h1 { "dnfolioへようこそ" }
-        p { "これは私の個人サイトです。プログラミングや日々の出来事について書いています。" }
-        (about_page)
+        (about_content)
     };
 
     let index_sidebar_right_markup = html! {
         h2 { "サイト情報" }
-        a href="privacy.html" target="_blank" { "Privacy Policy" }
+        ul {
+            li {
+                a href="index.html" { "ホーム" }
+            }
+            li {
+                a href="privacy.html" target="_blank" { "プライバシーポリシー" }
+            }
+        }
     };
 
     let index_ogp_path = ogp::generate_ogp_svg("dnfolio", &ogp_dir)?;
@@ -374,16 +449,46 @@ pub async fn run() -> Result<()> {
         "dnfolio",
         None,
         Some(&index_ogp_path),
-        articles_list_markup,
+        articles_list_markup.clone(),
         index_main_content_markup,
         index_sidebar_right_markup,
     )
     .into_string();
 
     fs::write(dist_dir.join("index.html"), index_html_output)?;
-    fs::write(
-        dist_dir.join("privacy.html"),
-        privacy::layout().into_string(),
-    )?;
+
+    if let Some(privacy_page) = pages.iter().find(|page| page.filename == "privacy") {
+        let privacy_main_content_markup = html! {
+            h1 {
+                "プライバシーポリシー"
+            }
+            (maud::PreEscaped(&privacy_page.content_html))
+        };
+
+        let privacy_sidebar_right_markup = html! {
+            h2 { "サイト情報" }
+            ul {
+                li {
+                    a href="index.html" { "ホームに戻る" }
+                }
+            }
+        };
+
+        let privacy_html_output = base::layout(
+            "プライバシーポリシー",
+            None,
+            None,
+            articles_list_markup.clone(),
+            privacy_main_content_markup,
+            privacy_sidebar_right_markup,
+        )
+        .into_string();
+        fs::write(dist_dir.join("privacy.html"), privacy_html_output)?;
+    } else {
+        fs::write(
+            dist_dir.join("privacy.html"),
+            privacy::layout().into_string(),
+        )?;
+    }
     Ok(())
 }

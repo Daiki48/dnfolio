@@ -1,11 +1,10 @@
 +++
 title = "bun upgradeに失敗した"
 description = "bun v1.1.42からv1.1.43にアップグレードしようとした時に失敗した。"
-slug = "bun upgradeに失敗した"
 draft = false
 [taxonomies]
 tags = ["Bun"]
-languages = ["日本語"]
+languages = ["ja"]
 +++
 
 ## 実行した結果

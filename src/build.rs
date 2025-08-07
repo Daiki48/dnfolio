@@ -13,7 +13,7 @@ use walkdir::WalkDir;
 
 use crate::metadata::MetaData;
 use crate::ogp;
-use crate::routes::{base, privacy};
+use crate::templates::{base, privacy};
 
 #[derive(Debug, Clone)]
 struct Page {

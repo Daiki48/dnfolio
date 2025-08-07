@@ -20,9 +20,7 @@ pub fn layout(
         .map(|tags| tags.join(", "))
         .unwrap_or_else(|| "ポエム".to_string());
 
-    // --- CSS: 修正点を反映 ---
     let css = r#"
-        /* --- Base Styles --- */
         :root { --header-height: 60px; }
         *, *::before, *::after { box-sizing: border-box; }
         html { font-size: 16px; scroll-padding-top: var(--header-height); }
@@ -35,7 +33,7 @@ pub fn layout(
             line-height: 1.7;
             background-color: #fff;
             color: #333;
-            overflow-x: hidden; /* 意図しない横スクロールを防止 */
+            overflow-x: hidden;
         }
         header {
             background-color: #f8f9fa;
@@ -85,15 +83,13 @@ pub fn layout(
         .main-content {
             flex: 1;
             padding: 1.5em;
-            min-width: 0; /* Flexアイテムがコンテンツによって無限に拡大するのを防ぐ */
-            overflow-wrap: break-word; /* 長い単語やURLを折り返す */
+            min-width: 0;
+            overflow-wrap: break-word;
         }
-        /* --↓↓-- [新規追加] 画像がコンテナをはみ出さないようにする --↓↓-- */
         .main-content img {
             max-width: 100%;
             height: auto;
         }
-        /* --↑↑-- [新規追加] ここまで --↑↑-- */
         .sidebar-right {
             flex: 0 0 220px;
             padding: 1.5em;
@@ -110,13 +106,13 @@ pub fn layout(
         a {
             text-decoration: none;
             color: #007bff;
-            overflow-wrap: break-word; /* 長いURLを折り返す */
+            overflow-wrap: break-word;
         }
         a:hover { text-decoration: underline; }
         h1, h2, h3, h4, h5, h6 { margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.3; }
         p {
             margin: 0 0 1em;
-            overflow-wrap: break-word; /* 長い単語を折り返す */
+            overflow-wrap: break-word;
         }
         code {
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
@@ -126,7 +122,7 @@ pub fn layout(
             margin: 0 0.1em;
             font-size: 85%;
             border-radius: 3px;
-            word-break: break-all; /* インラインコードも折り返す */
+            word-break: break-all;
         }
         pre {
             background-color: #2d2d2d;
@@ -134,10 +130,10 @@ pub fn layout(
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
             padding: 1em;
             margin: 1.5em 0;
-            overflow-x: auto; /* コードブロック内部で横スクロール */
+            overflow-x: auto;
             border-radius: 6px;
             font-size: 0.9rem;
-            max-width: 100%; /* 親要素の幅を超えないようにする */
+            max-width: 100%;
         }
         pre code {
             background: transparent;
@@ -145,7 +141,7 @@ pub fn layout(
             font-size: inherit;
             padding: 0;
             margin: 0;
-            word-break: normal; /* preの中では通常の折り返しルールに戻す */
+            word-break: normal;
         }
         blockquote {
             background-color: #f9f9f9;
@@ -153,7 +149,7 @@ pub fn layout(
             margin: 1.5em 0;
             padding: 1em 1.5em;
             color: #666;
-            overflow-wrap: break-word; /* 引用内の長い単語を折り返す */
+            overflow-wrap: break-word;
         }
         blockquote p:last-child { margin-bottom: 0; }
         .hamburger-btn, .overlay { display: none; }
@@ -285,7 +281,6 @@ pub fn layout(
                         h1 {
                             a href="/" { "dnfolio" }
                         }
-                        // PC表示時のハンバーガーボタンとのバランスをとるための空div
                         div style="width: 30px;" {}
                     }
                 }

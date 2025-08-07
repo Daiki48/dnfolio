@@ -433,8 +433,14 @@ pub async fn run() -> Result<()> {
 
     let index_sidebar_right_markup = html! {
         h2 { "サイト情報" }
-        a href="index.html" { "ホーム" }
-        a href="privacy.html" target="_blank" { "プライバシーポリシー" }
+        ul {
+            li {
+                a href="index.html" { "ホーム" }
+            }
+            li {
+                a href="privacy.html" target="_blank" { "プライバシーポリシー" }
+            }
+        }
     };
 
     let index_ogp_path = ogp::generate_ogp_svg("dnfolio", &ogp_dir)?;
@@ -461,7 +467,11 @@ pub async fn run() -> Result<()> {
 
         let privacy_sidebar_right_markup = html! {
             h2 { "サイト情報" }
-            a href="index.html" { "ホームに戻る" }
+            ul {
+                li {
+                    a href="index.html" { "ホームに戻る" }
+                }
+            }
         };
 
         let privacy_html_output = base::layout(

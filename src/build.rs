@@ -39,6 +39,13 @@ struct Heading {
     text: String,
 }
 
+#[derive(Debug, Clone)]
+struct TagInfo {
+    name: String,
+    count: usize,
+    articles: Vec<Article>,
+}
+
 fn parse_markdown_file(
     input_path: &Path,
     content_dir: &Path,
@@ -267,6 +274,87 @@ fn language_display_name(language: &str) -> &str {
     }
 }
 
+fn collect_tags(articles: &[Article]) -> HashMap<String, TagInfo> {
+    let mut tag_map: HashMap<String, TagInfo> = HashMap::new();
+
+    for article in articles {
+        if let Some(metadata) = &article.metadata
+            && let Some(taxonomies) = &metadata.taxonomies
+            && let Some(tags) = &taxonomies.tags
+        {
+            for tag in tags {
+                let tag_info = tag_map.entry(tag.clone()).or_insert_with(|| TagInfo {
+                    name: tag.clone(),
+                    count: 0,
+                    articles: Vec::new(),
+                });
+                tag_info.count += 1;
+                tag_info.articles.push(article.clone());
+            }
+        }
+    }
+    tag_map
+}
+
+fn generate_tag_pages(
+    tag_map: &HashMap<String, TagInfo>,
+    dist_dir: &Path,
+    articles_list_markup: &Markup,
+) -> Result<()> {
+    let tags_dir = dist_dir.join("tags");
+    fs::create_dir_all(&tags_dir)?;
+
+    for (tag_name, tag_info) in tag_map {
+        let tag_slug = slugify(tag_name);
+        let tag_page_path = tags_dir.join(format!("{tag_slug}.html"));
+
+        let tag_main_content_markup = html! {
+            h1 { "タグ: " (tag_name) "(" (tag_info.count) "件)" }
+            ul {
+                @for article in &tag_info.articles {
+                    li {
+                        a href=(format!("../{}", article.relative_url.to_string_lossy())) {
+                            @if let Some(meta) = &article.metadata {
+                                (meta.title)
+                            } @else {
+                                (article.output_path.file_name().unwrap_or_default().to_string_lossy())
+                            }
+                        }
+                        @if let Some(meta) = &article.metadata &&  let Some(ref taxonomies) = meta.taxonomies && let Some(ref tags) = taxonomies.tags {
+                            " - "
+                                @for (i, tag) in tags.iter().enumerate() {
+                                    @if i > 0 { ", " }
+                                    span style="font-size: 0.9em; color: #666;" { (tag) }
+                                }
+                        }
+                    }
+                }
+            }
+        };
+
+        let tag_sidebar_right_markup = html! {
+            h2 { "サイト情報" }
+            ul {
+                li {
+                    a href="../index.html" { "ホームに戻る" }
+                }
+            }
+        };
+
+        let tag_html_output = base::layout(
+            &format!("タグ: {tag_name}"),
+            None,
+            None,
+            articles_list_markup.clone(),
+            tag_main_content_markup,
+            tag_sidebar_right_markup,
+        )
+        .into_string();
+        fs::write(tag_page_path, tag_html_output)?;
+    }
+    Ok(())
+}
+
 pub async fn run() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let dist_dir = Path::new("dist");
@@ -329,6 +417,10 @@ pub async fn run() -> Result<()> {
             .cmp(&b.metadata.as_ref().map(|m| &m.title))
     });
 
+    let tag_map = collect_tags(&articles);
+    let mut sorted_tags: Vec<_> = tag_map.values().collect();
+    sorted_tags.sort_by(|a, b| b.count.cmp(&a.count).then_with(|| a.name.cmp(&b.name)));
+
     let pages_files: Vec<PathBuf> = WalkDir::new(&pages_dir)
         .into_iter()
         .filter_map(|entry_result| {
@@ -380,6 +472,8 @@ pub async fn run() -> Result<()> {
             }
         }
     };
+
+    generate_tag_pages(&tag_map, dist_dir, &articles_list_markup)?;
 
     articles_arc
         .par_iter()
@@ -470,6 +564,16 @@ pub async fn run() -> Result<()> {
             } @else {
                 li {
                     a href="privacy.html" target="_blank" { "プライバシーポリシー" }
+                }
+            }
+        }
+        h2 { "タグ一覧" }
+        ul {
+            @for tag_info in &sorted_tags {
+                li {
+                    a href=(format!("tags/{}.html", slugify(&tag_info.name))) {
+                        (tag_info.name) " " span style="color: #666;" { "(" (tag_info.count) ")" }
+                    }
                 }
             }
         }

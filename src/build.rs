@@ -15,7 +15,7 @@ use crate::metadata::MetaData;
 use crate::ogp;
 use crate::templates::{base, privacy};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 struct Page {
     content_html: String,
     output_path: PathBuf,
@@ -116,14 +116,13 @@ fn parse_markdown_file(
                         id: existing_id_in_event,
                         ..
                     }) = &processed_events[i]
+                        && *h_level == level
                     {
-                        if *h_level == level {
-                            if existing_id_in_event.is_some() {
-                                final_id_to_use = existing_id_in_event.clone();
-                                break;
-                            } else {
-                                break;
-                            }
+                        if existing_id_in_event.is_some() {
+                            final_id_to_use = existing_id_in_event.clone();
+                            break;
+                        } else {
+                            break;
                         }
                     }
                 }
@@ -155,12 +154,12 @@ fn parse_markdown_file(
                         id: h_id,
                         ..
                     }) = &mut processed_events[i]
+                        && *h_level == level
+                        && h_id.is_none()
                     {
-                        if *h_level == level && h_id.is_none() {
-                            *h_id = Some(CowStr::from(id_string.clone()));
-                            found_start = true;
-                            break;
-                        }
+                        *h_id = Some(CowStr::from(id_string.clone()));
+                        found_start = true;
+                        break;
                     }
                 }
                 if !found_start {
@@ -260,10 +259,15 @@ fn parse_page_file(input_path: &Path, _pages_dir: &Path, dist_dir: &Path) -> any
     })
 }
 
-pub async fn run() -> Result<()> {
-    println!("cargo:rerun-if-chaged=static/*");
-    println!("cargo:rerun-if-chaged=content/*");
+fn language_display_name(language: &str) -> &str {
+    match language {
+        "en" => "English",
+        "ja" => "日本語",
+        _ => language,
+    }
+}
 
+pub async fn run() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let dist_dir = Path::new("dist");
     let output_content_dir = dist_dir.join("content");
@@ -396,6 +400,17 @@ pub async fn run() -> Result<()> {
                         (article.output_path.file_name().unwrap_or_default().to_string_lossy())
                     }
                 }
+                ul style="display: flex;" {
+                    @if let Some(meta) = &article.metadata {
+                        @if let Some(ref taxonomies) = meta.taxonomies {
+                            @if let Some(ref languages) = taxonomies.languages {
+                                @for language in languages {
+                                    li style="padding: 2px 4px; margin: 2px; border: 1px solid gray; border-radius: 4px; list-style: none; background-color: #252525; color: #fff;" { (language_display_name(language)) }
+                                }
+                            }
+                        }
+                    }
+                }
                 (maud::PreEscaped(&article.content_html))
             };
 
@@ -437,8 +452,14 @@ pub async fn run() -> Result<()> {
             li {
                 a href="index.html" { "ホーム" }
             }
-            li {
-                a href="privacy.html" target="_blank" { "プライバシーポリシー" }
+            @if let Some(privacy_page) = pages.iter().find(|page| page.filename == "privacy") {
+                li {
+                    a href=(privacy_page.relative_url.to_string_lossy()) target="_blank" { "プライバシーポリシー" }
+                }
+            } @else {
+                li {
+                    a href="privacy.html" target="_blank" { "プライバシーポリシー" }
+                }
             }
         }
     };
@@ -483,7 +504,7 @@ pub async fn run() -> Result<()> {
             privacy_sidebar_right_markup,
         )
         .into_string();
-        fs::write(dist_dir.join("privacy.html"), privacy_html_output)?;
+        fs::write(&privacy_page.output_path, privacy_html_output)?;
     } else {
         fs::write(
             dist_dir.join("privacy.html"),

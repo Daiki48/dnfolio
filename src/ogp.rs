@@ -1,11 +1,14 @@
 use std::fs;
-use std::path::Path;
+use std::io::Read;
+use std::path::{Path, PathBuf};
 
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use slug::slugify;
 
 pub fn generate_ogp_svg(page_title: &str, output_dir: &Path) -> anyhow::Result<String> {
     let filename = format!("{}.svg", slugify(page_title));
     let output_path = output_dir.join(&filename);
+    let static_icons_dir = PathBuf::from("static/icons");
 
     let title_lines = split_title_into_lines(page_title, 3);
     let line_count = title_lines.len();
@@ -44,56 +47,25 @@ pub fn generate_ogp_svg(page_title: &str, output_dir: &Path) -> anyhow::Result<S
         .collect::<Vec<String>>()
         .join("\n ");
 
-    let svg_content = format!(
-        r#"<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <!-- 背景: 淡い夜明けの空 -->
-        <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="rgba(135, 206, 235, 1)" /> <!-- 淡い空色 -->
-            <stop offset="50%" stop-color="rgba(255, 239, 213, 1)" /> <!-- パパイヤホイップ（淡いオレンジ） -->
-            <stop offset="100%" stop-color="rgba(240, 248, 255, 1)" /> <!-- アリスブルー（ごく淡い青） -->
-        </linearGradient>
+    let icon_path = static_icons_dir.join("icon-bg.png");
 
-        <!-- 桜島: 優しいシルエット -->
-        <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="rgba(70, 80, 100, 0.9)" />
-            <stop offset="100%" stop-color="rgba(50, 60, 80, 0.95)" />
-        </linearGradient>
+    let mut icon_file = fs::File::open(&icon_path)?;
+    let mut icon_data = Vec::new();
+    icon_file.read_to_end(&mut icon_data)?;
 
-        <!-- テキスト用ドロップシャドウ（少し柔らかく） -->
-        <filter id="textShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="rgba(0,0,0,0.35)"/>
-        </filter>
-    </defs>
+    let base64_icon_data = STANDARD.encode(icon_data);
+    let image_data_uri = format!("data:image/png;base64,{}", base64_icon_data);
 
-    <!-- 背景 -->
-    <rect width="1200" height="630" fill="url(#skyGradient)"/>
+    const OGP_TEMPLATE: &str = include_str!("./ogp_template.svg");
 
-    <!-- 桜島の山影 -->
-    <polygon points="800,630 700,400 750,350 850,380 900,420 950,500 1000,630"
-             fill="url(#mountainGradient)" />
-    <polygon points="0,630 100,500 200,480 300,520 400,550 500,630"
-             fill="url(#mountainGradient)" opacity="0.7"/>
-    <polygon points="1000,630 1050,550 1120,540 1200,580 1200,630"
-             fill="url(#mountainGradient)" opacity="0.6"/>
-    
-    <!-- 火山からの煙（控えめに） -->
-    <ellipse cx="775" cy="380" rx="30" ry="15" fill="rgba(200, 200, 200, 0.15)" />
-    <ellipse cx="790" cy="360" rx="40" ry="20" fill="rgba(200, 200, 200, 0.1)" />
-
-    <!-- メインタイトル -->
-    {title_svg}
-
-    <!-- サイト名（右下） -->
-    <text x="1150" y="590" text-anchor="end"
-        font-family="'Arial', sans-serif"
-        font-size="24px" font-weight="normal" fill="rgba(0, 0, 0, 0.8)"
-        filter="url(#textShadow)">
-        Daiki48
-    </text>
-
-</svg>"#
-    );
+    let svg_content = OGP_TEMPLATE
+        .replace("__Y_POS__", &(start_y - 80).to_string())
+        .replace(
+            "__HEIGHT__",
+            &((line_count as i32 * line_height) + 80).to_string(),
+        )
+        .replace("__TITLE_SVG__", &title_svg)
+        .replace("__PNG_IMAGE_DATA__", &image_data_uri);
 
     if !output_dir.exists() {
         fs::create_dir_all(output_dir)?;

@@ -411,6 +411,17 @@ pub async fn run() -> Result<()> {
                         }
                     }
                 }
+                ul style="display: flex;" {
+                    @if let Some(meta) = &article.metadata {
+                        @if let Some(ref taxonomies) = meta.taxonomies {
+                            @if let Some(ref tags) = taxonomies.tags {
+                                @for tag in tags {
+                                    li style="padding: 2px 6px; margin: 2px; border: 1px solid gray; border-radius: 10px; list-style: none; background-color: #9e9e9e; color: #000;" { (tag) }
+                                }
+                            }
+                        }
+                    }
+                }
                 (maud::PreEscaped(&article.content_html))
             };
 

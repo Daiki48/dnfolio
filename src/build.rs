@@ -486,39 +486,6 @@ pub async fn run() -> Result<()> {
                 })?;
             }
 
-            let main_content_markup = html! {
-                h1 {
-                    @if let Some(meta) = &article.metadata {
-                        (meta.title)
-                    } @else {
-                        (article.output_path.file_name().unwrap_or_default().to_string_lossy())
-                    }
-                }
-                ul style="display: flex;" {
-                    @if let Some(meta) = &article.metadata {
-                        @if let Some(ref taxonomies) = meta.taxonomies {
-                            @if let Some(ref languages) = taxonomies.languages {
-                                @for language in languages {
-                                    li style="padding: 2px 4px; margin: 2px; border: 1px solid gray; border-radius: 4px; list-style: none; background-color: #252525; color: #fff;" { (language_display_name(language)) }
-                                }
-                            }
-                        }
-                    }
-                }
-                ul style="display: flex;" {
-                    @if let Some(meta) = &article.metadata {
-                        @if let Some(ref taxonomies) = meta.taxonomies {
-                            @if let Some(ref tags) = taxonomies.tags {
-                                @for tag in tags {
-                                    li style="padding: 2px 6px; margin: 2px; border: 1px solid gray; border-radius: 10px; list-style: none; background-color: #9e9e9e; color: #000;" { (tag) }
-                                }
-                            }
-                        }
-                    }
-                }
-                (maud::PreEscaped(&article.content_html))
-            };
-
             let sidebar_right_markup = html! {
                 (maud::PreEscaped(&article.table_of_contents_html))
             };
@@ -531,6 +498,38 @@ pub async fn run() -> Result<()> {
 
             let ogp_image_path = ogp::generate_ogp_svg(page_title, &ogp_dir)
                 .map_err(|e| anyhow::Error::msg(format!("OGP image generation failed: {e}")))?;
+
+            let main_content_markup = html! {
+                @if let Some(meta) = &article.metadata {
+                    img src=(ogp_image_path) alt=(meta.title);
+                }
+                h1 {
+                    @if let Some(meta) = &article.metadata {
+                        (meta.title)
+                    } @else {
+                        (article.output_path.file_name().unwrap_or_default().to_string_lossy())
+                    }
+                }
+                ul style="display: flex;" {
+                    @if let Some(meta) = &article.metadata
+                    && let Some(ref taxonomies) = meta.taxonomies
+                    && let Some(ref languages) = taxonomies.languages {
+                        @for language in languages {
+                            li style="padding: 2px 4px; margin: 2px; border: 1px solid gray; border-radius: 4px; list-style: none; background-color: #252525; color: #fff;" { (language_display_name(language)) }
+                        }
+                    }
+                }
+                ul style="display: flex;" {
+                    @if let Some(meta) = &article.metadata
+                    && let Some(ref taxonomies) = meta.taxonomies
+                    && let Some(ref tags) = taxonomies.tags {
+                        @for tag in tags {
+                            li style="padding: 2px 6px; margin: 2px; border: 1px solid gray; border-radius: 10px; list-style: none; background-color: #9e9e9e; color: #000;" { (tag) }
+                        }
+                    }
+                }
+                (maud::PreEscaped(&article.content_html))
+            };
 
             let full_article_html = base::layout(
                 page_title,

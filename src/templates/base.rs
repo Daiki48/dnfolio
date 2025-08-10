@@ -311,6 +311,18 @@ pub fn layout(
                 }
 
                 script { (PreEscaped(js)) }
+
+                script async src="https://www.googletagmanager.com/gtag/js?id=G-S0DTM6WBVT" {}
+                script {
+                    (PreEscaped(r#"
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-S0DTM6WBVT');
+                    "#))
+                }
+
+                script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=r#"{"token": "1a65600118b6484abc3e7fdf12932538"}"# {}
             }
         }
     }

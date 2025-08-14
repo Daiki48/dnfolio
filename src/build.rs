@@ -11,9 +11,9 @@ use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use slug::slugify;
 use walkdir::WalkDir;
 
-use crate::models::{MetaData, Article, Page, TagInfo, Heading};
-use crate::ogp;
+use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::{base, privacy};
+use crate::{ogp, sitemap};
 
 fn parse_markdown_file(
     input_path: &Path,
@@ -594,5 +594,9 @@ pub async fn run() -> Result<()> {
             privacy::layout().into_string(),
         )?;
     }
+
+    let base_url = "https://dnfolio.me";
+    sitemap::generate_and_write_sitemap(base_url, &articles, &pages, &tag_map, dist_dir)?;
+
     Ok(())
 }

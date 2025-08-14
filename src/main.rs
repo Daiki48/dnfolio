@@ -1,7 +1,8 @@
 mod build;
-mod metadata;
+mod models;
 mod ogp;
 mod serve;
+mod sitemap;
 mod templates;
 
 use clap::{Parser, Subcommand};

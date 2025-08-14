@@ -1,4 +1,4 @@
-use crate::metadata::MetaData;
+use crate::models::MetaData;
 use maud::{DOCTYPE, Markup, PreEscaped, html};
 
 pub fn layout(

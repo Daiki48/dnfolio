@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use anyhow::Result;
+use chrono::NaiveDate;
 use gray_matter::{Matter, ParsedEntity};
 use maud::{Markup, html};
 use pulldown_cmark::{CowStr, Event, Parser, Tag, TagEnd};
@@ -14,6 +15,21 @@ use walkdir::WalkDir;
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::{base, privacy};
 use crate::{ogp, sitemap};
+
+fn extract_date_from_filename(path: &Path) -> Option<NaiveDate> {
+    let file_name = path.file_stem()?.to_str()?;
+
+    if let Some(date_part) = file_name.split('_').next() {
+        if date_part.len() >= 10 {
+            let date_str = &date_part[0..10];
+            NaiveDate::parse_from_str(date_str, "%Y-%m-%d").ok()
+        } else {
+            None
+        }
+    } else {
+        None
+    }
+}
 
 fn parse_markdown_file(
     input_path: &Path,
@@ -201,6 +217,7 @@ fn parse_markdown_file(
         output_path,
         relative_url,
         table_of_contents_html,
+        source_path: input_path.to_path_buf(),
     })
 }
 
@@ -380,10 +397,19 @@ pub async fn run() -> Result<()> {
         .collect();
 
     articles.sort_by(|a, b| {
-        a.metadata
-            .as_ref()
-            .map(|m| &m.title)
-            .cmp(&b.metadata.as_ref().map(|m| &m.title))
+        let date_a = extract_date_from_filename(&a.source_path);
+        let date_b = extract_date_from_filename(&b.source_path);
+
+        match (date_a, date_b) {
+            (Some(date_a), Some(date_b)) => date_b.cmp(&date_a),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => a
+                .metadata
+                .as_ref()
+                .map(|m| &m.title)
+                .cmp(&b.metadata.as_ref().map(|m| &m.title)),
+        }
     });
 
     let tag_map = collect_tags(&articles);

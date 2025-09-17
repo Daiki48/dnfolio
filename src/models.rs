@@ -39,6 +39,7 @@ pub struct Article {
     pub output_path: PathBuf,
     pub relative_url: PathBuf,
     pub table_of_contents_html: String,
+    pub source_path: PathBuf,
 }
 
 #[derive(Debug, Clone)]

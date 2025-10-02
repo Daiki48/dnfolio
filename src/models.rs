@@ -36,6 +36,7 @@ pub struct Page {
 pub struct Article {
     pub metadata: Option<MetaData>,
     pub content_html: String,
+    pub plain_content: String,
     pub output_path: PathBuf,
     pub relative_url: PathBuf,
     pub table_of_contents_html: String,

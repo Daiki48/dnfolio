@@ -75,12 +75,21 @@ fn parse_markdown_file(
     let mut headings: Vec<Heading> = Vec::new();
     let mut id_counts: HashMap<String, usize> = HashMap::new();
     let mut html_output = String::new();
+    let mut plain_content = String::new();
 
     let mut current_heading_text_buffer = String::new();
     let mut is_in_heading = false;
     let mut processed_events: Vec<Event> = Vec::new();
 
     for event in parser {
+        match &event {
+            Event::Text(text) | Event::Code(text) => {
+                plain_content.push_str(text);
+                plain_content.push(' ');
+            }
+            _ => {}
+        }
+
         match event {
             Event::Start(Tag::Heading {
                 level,
@@ -214,6 +223,7 @@ fn parse_markdown_file(
     Ok(Article {
         metadata,
         content_html: html_output,
+        plain_content,
         output_path,
         relative_url,
         table_of_contents_html,
@@ -341,6 +351,74 @@ fn generate_tag_pages(
     Ok(())
 }
 
+fn generate_search_js() -> String {
+    r#"
+async function initSearch() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  let articles = [];
+
+  try {
+    const response = await fetch('/search-index.json');
+    if (!response.ok) {
+        console.error('Failed to load search index.');
+        return;
+    }
+    articles = await response.json();
+  } catch (e) {
+    console.error('Error fetching or parsing search index:', e);
+    return;
+  }
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+    
+    // 一旦結果をクリア
+    searchResults.innerHTML = '';
+    searchResults.style.display = 'none';
+
+    if (query.length < 2) {
+      return;
+    }
+
+    const matchedArticles = articles.filter(article => 
+        article.title.toLowerCase().includes(query) || 
+        article.content.toLowerCase().includes(query)
+    ).slice(0, 10); // 表示件数を最大10件に制限
+
+    if (matchedArticles.length > 0) {
+      const ul = document.createElement('ul');
+      matchedArticles.forEach(article => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = article.url;
+        a.textContent = article.title;
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      searchResults.appendChild(ul);
+      searchResults.style.display = 'block'; // 結果があれば表示
+    }
+  });
+
+  // 検索ボックス外をクリックしたら結果を非表示にする
+  document.addEventListener('click', (e) => {
+    if (!searchResults.contains(e.target) && e.target !== searchInput) {
+      searchResults.style.display = 'none';
+    }
+  });
+}
+
+// DOMの準備ができたら検索機能を初期化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSearch);
+} else {
+    initSearch();
+}
+"#
+    .to_string()
+}
+
 pub async fn run() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let dist_dir = Path::new("dist");
@@ -411,6 +489,30 @@ pub async fn run() -> Result<()> {
                 .cmp(&b.metadata.as_ref().map(|m| &m.title)),
         }
     });
+
+    #[derive(serde::Serialize)]
+    struct SearchIndexEntry<'a> {
+        url: String,
+        title: &'a str,
+        content: &'a str,
+    }
+
+    let search_index: Vec<SearchIndexEntry> = articles
+        .iter()
+        .filter_map(|article| {
+            article.metadata.as_ref().map(|meta| SearchIndexEntry {
+                url: article.relative_url.to_string_lossy().into_owned(),
+                title: &meta.title,
+                content: &article.plain_content,
+            })
+        })
+        .collect();
+
+    let search_index_json = serde_json::to_string(&search_index)?;
+    fs::write(dist_dir.join("search-index.json"), search_index_json)?;
+
+    let search_js_code = generate_search_js();
+    fs::write(dist_dir.join("search.js"), search_js_code)?;
 
     let tag_map = collect_tags(&articles);
     let mut sorted_tags: Vec<_> = tag_map.values().collect();

@@ -154,6 +154,49 @@ pub fn layout(
         blockquote p:last-child { margin-bottom: 0; }
         .hamburger-btn, .overlay { display: none; }
 
+        .search-container {
+            position: relative;
+            flex: 1; /* 空きスペースを埋める */
+            max-width: 450px; /* PCでの最大幅 */
+        }
+        #search-input {
+            width: 100%;
+            padding: 0.5em 0.8em;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+        }
+        #search-results {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none; /* JSで表示を切り替える */
+        }
+        #search-results ul {
+            padding: 0.5em 0;
+        }
+        #search-results li a {
+            display: block;
+            padding: 0.6em 1em;
+            color: #333;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #search-results li a:hover {
+            background: #f0f0f0;
+            text-decoration: none;
+        }
+
         /* --- Tablet & Mobile Styles --- */
         @media screen and (max-width: 992px) {
             body { padding: 0; }
@@ -291,7 +334,10 @@ pub fn layout(
                         h1 {
                             a href="/" { "dnfolio" }
                         }
-                        div style="width: 30px;" {}
+                        div class="search-container" {
+                            input type="search" id="search-input" placeholder="記事を検索..." autocomplete="off";
+                            div id="search-results" {}
+                        }
                     }
                 }
 
@@ -311,6 +357,7 @@ pub fn layout(
                 }
 
                 script { (PreEscaped(js)) }
+                script src="/search.js" defer {}
 
                 script async src="https://www.googletagmanager.com/gtag/js?id=G-S0DTM6WBVT" {}
                 script {

@@ -9,6 +9,7 @@ use gray_matter::{Matter, ParsedEntity};
 use maud::{Markup, html};
 use pulldown_cmark::{CowStr, Event, Parser, Tag, TagEnd};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+use resvg::usvg::{self, fontdb};
 use slug::slugify;
 use walkdir::WalkDir;
 
@@ -572,6 +573,15 @@ pub async fn run() -> Result<()> {
 
     generate_tag_pages(&tag_map, dist_dir, &articles_list_markup)?;
 
+    let mut font_db = fontdb::Database::new();
+    font_db.load_font_file("assets/NotoSansJP-Regular.ttf")?;
+    font_db.load_font_file("assets/NotoSansJP-Bold.ttf")?;
+
+    let usvg_options = usvg::Options {
+        fontdb: std::sync::Arc::new(font_db),
+        ..Default::default()
+    };
+
     articles_arc
         .par_iter()
         .map(|article| {
@@ -593,8 +603,22 @@ pub async fn run() -> Result<()> {
                 .map(|m| m.title.as_str())
                 .unwrap_or("記事");
 
-            let ogp_image_path = ogp::generate_ogp_svg(page_title, &ogp_dir)
-                .map_err(|e| anyhow::Error::msg(format!("OGP image generation failed: {e}")))?;
+            let ogp_svg_url_path = ogp::generate_ogp_svg(page_title, &ogp_dir).map_err(|e| anyhow::Error::msg(format!("OGP SVG generation failed: {e}")))?;
+            let ogp_svg_fs_path = dist_dir.join(ogp_svg_url_path.strip_prefix("/").unwrap_or(&ogp_svg_url_path));
+
+            let svg_data = fs::read(&ogp_svg_fs_path)?;
+            let tree = usvg::Tree::from_data(&svg_data, &usvg_options)?;
+            let pixmap_size = tree.size().to_int_size();
+            let mut pixmap = tiny_skia::Pixmap::new(pixmap_size.width(), pixmap_size.height()).ok_or_else(|| anyhow::Error::msg("Failed to create pixmap"))?;
+
+            resvg::render(&tree, tiny_skia::Transform::identity(), &mut pixmap.as_mut());
+
+            let ogp_png_url_path = ogp_svg_url_path.replace(".svg", ".png");
+            let ogp_png_fs_path = dist_dir.join(ogp_png_url_path.strip_prefix('/').unwrap_or(&ogp_png_url_path));
+
+            pixmap.save_png(&ogp_png_fs_path)?;
+
+            let ogp_image_path = ogp_png_url_path;
 
             let main_content_markup = html! {
                 @if let Some(meta) = &article.metadata {

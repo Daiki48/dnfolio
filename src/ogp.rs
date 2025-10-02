@@ -35,8 +35,8 @@ pub fn generate_ogp_svg(page_title: &str, output_dir: &Path) -> anyhow::Result<S
         .map(|(i, line)| {
             format!(
                 r#"<text x="600" y="{}" text-anchor="middle" 
-        font-family="'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif" 
-        font-size="{}px" font-weight="bold" fill="rgba(0,0,0,0.8)" filter="url(#shadow)">
+        font-family="Noto Sans JP" 
+        font-size="{}px" font-weight="bold" fill="rgba(0,0,0,0.8)">
     {}
   </text>"#,
                 start_y + (i as i32 * line_height),

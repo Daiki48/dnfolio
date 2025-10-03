@@ -38,7 +38,7 @@
           fill="rgba(26, 26, 26, 0.05)"
           rx="4" ry="4"/>
     <text x="1070" y="585" text-anchor="middle"
-        font-family="sans-serif"
+        font-family="Noto Sans JP"
         font-size="18px" font-weight="600" fill="#495057"
         letter-spacing="1px">
         dnfolio

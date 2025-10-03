@@ -156,8 +156,8 @@ pub fn layout(
 
         .search-container {
             position: relative;
-            flex: 1; /* 空きスペースを埋める */
-            max-width: 450px; /* PCでの最大幅 */
+            flex: 1;
+            max-width: 450px;
         }
         #search-input {
             width: 100%;
@@ -167,21 +167,20 @@ pub fn layout(
             border-radius: 20px;
         }
         #search-results {
-            position: absolute;
-            top: calc(100% + 5px);
-            left: 0;
-            right: 0;
+            position: fixed;
+            top: var(--header-height);
+            left: 50%;
             background: #fff;
             border: 1px solid #dee2e6;
             border-radius: 8px;
+            transform: translateX(-50%);
+            width: 90vw;
+            right: auto;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             z-index: 1000;
             max-height: 400px;
             overflow-y: auto;
-            display: none; /* JSで表示を切り替える */
-        }
-        #search-results ul {
-            padding: 0.5em 0;
+            display: none;
         }
         #search-results li a {
             display: block;
@@ -191,17 +190,30 @@ pub fn layout(
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-size: 0.85rem;
         }
         #search-results li a:hover {
             background: #f0f0f0;
             text-decoration: none;
+            font-weight: bold;
         }
 
-        /* --- Tablet & Mobile Styles --- */
         @media screen and (max-width: 992px) {
             body { padding: 0; }
             .header-content { justify-content: space-between; }
             .container { flex-direction: column; }
+            
+            header h1 {
+                flex-grow: 1;
+                text-align: center;
+                font-size: 1.3rem;
+                margin: 0 8px;
+            }
+            .search-container {
+                flex: 0 0 auto;
+                max-width: 40%;
+            }
+            
             .main-content {
                 order: 2;
                 width: 100%;

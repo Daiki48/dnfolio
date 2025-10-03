@@ -338,8 +338,11 @@ fn generate_tag_pages(
             }
         };
 
+        let tag_canonical_url = format!("https://dnfolio.me/tags/{tag_slug}.html");
+
         let tag_html_output = base::layout(
             &format!("タグ: {tag_name}"),
+            &tag_canonical_url,
             None,
             None,
             articles_list_markup.clone(),
@@ -620,6 +623,8 @@ pub async fn run() -> Result<()> {
 
             let ogp_image_path = ogp_png_url_path;
 
+            let canonical_url = format!("https://dnfolio.me{}", article.relative_url.to_string_lossy());
+
             let main_content_markup = html! {
                 @if let Some(meta) = &article.metadata {
                     img src=(ogp_image_path) alt=(meta.title);
@@ -654,6 +659,7 @@ pub async fn run() -> Result<()> {
 
             let full_article_html = base::layout(
                 page_title,
+                &canonical_url,
                 article.metadata.as_ref(),
                 Some(&ogp_image_path),
                 articles_list_markup.clone(),
@@ -701,8 +707,11 @@ pub async fn run() -> Result<()> {
 
     let index_ogp_path = ogp::generate_ogp_svg("dnfolio", &ogp_dir)?;
 
+    let index_canonical_url: &str = "https://dnfolio.me/";
+
     let index_html_output = base::layout(
         "dnfolio",
+        index_canonical_url,
         None,
         Some(&index_ogp_path),
         articles_list_markup.clone(),
@@ -730,8 +739,14 @@ pub async fn run() -> Result<()> {
             }
         };
 
+        let privacy_canonical_url = format!(
+            "https://dnfolio.me{}",
+            privacy_page.relative_url.to_string_lossy()
+        );
+
         let privacy_html_output = base::layout(
             "プライバシーポリシー",
+            &privacy_canonical_url,
             None,
             None,
             articles_list_markup.clone(),

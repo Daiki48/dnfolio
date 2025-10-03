@@ -3,6 +3,7 @@ use maud::{DOCTYPE, Markup, PreEscaped, html};
 
 pub fn layout(
     page_title: &str,
+    canonical_url: &str,
     metadata: Option<&MetaData>,
     ogp_image_path: Option<&str>,
     sidebar_left_markup: Markup,
@@ -301,6 +302,7 @@ pub fn layout(
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1";
                 title { (page_title) }
+                link rel="canonical" href=(canonical_url);
                 meta name="description" content=(description);
                 meta name="keywords" content=(keywords);
                 meta name="author" content="Daiki Nakashima";

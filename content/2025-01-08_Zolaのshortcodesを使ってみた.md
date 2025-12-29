@@ -33,7 +33,7 @@ languages = ["ja"]
 
 すると...
 
-{{ youtube(class="yt", id="gdIuTqrFPx4") }}
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gdIuTqrFPx4" frameborder="0" allowfullscreen></iframe>
 
 表示出来ました！
 
@@ -59,7 +59,7 @@ Youtubeのコードを参考に、`iframe` タグで実装を試みました。
 そして、Markdownも書いてみます。
 
 ```md
-{{ card(title="Deno公式サイト", url="https://deno.com") }}
+[Deno公式サイト](https://deno.com)
 ```
 
 コンソールでエラーが発生していた。
@@ -74,4 +74,4 @@ Refused to display 'https://deno.com/' in a frame because it set 'X-Frame-Option
 
 セキュリティ知識無しでiframeを使うのなんか怖くなってきたので別の方法を探してみよう。一旦リンクカードは保留で。
 
-{{ card(title="Deno公式サイト", url="https://deno.com") }}
+[Deno公式サイト](https://deno.com)

@@ -14,13 +14,13 @@ languages = ["ja"]
 
 > Work-in-progress ergonomic Rust bindings to Cloudflare Workers environment. Write your entire worker in Rust!
 
-{{ card(title="workers-rs | GitHub", url="https://github.com/cloudflare/workers-rs") }}
+[workers-rs | GitHub](https://github.com/cloudflare/workers-rs)
 
 ## プロジェクトを作成
 
 `README` を流し見して早速触ってみる。まずはプロジェクトを作成する。
 
-{{ card(title="Getting started | workers-rs GitHub", url="https://github.com/cloudflare/workers-rs?tab=readme-ov-file#getting-started") }}
+[Getting started | workers-rs GitHub](https://github.com/cloudflare/workers-rs?tab=readme-ov-file#getting-started)
 
 `Axum` のテンプレートがあったので選択した。
 
@@ -125,7 +125,7 @@ pub async fn root() -> &'static str {
 
 `wrangler` をインストールしていない場合は公式の手順でインストールしておく。
 
-{{ card(title="Install/Update Wrangler | Cloudflare Docs", url="https://developers.cloudflare.com/workers/wrangler/install-and-update/") }}
+[Install/Update Wrangler | Cloudflare Docs](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
 
 ローカルサーバーの起動。
 

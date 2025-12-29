@@ -12,7 +12,7 @@ languages = ["ja"]
 
 Zolaの公式ドキュメントによると、検索機能に関する記載がある。
 
-{{ card(title="Search | Zola", url="https://www.getzola.org/documentation/content/search/") }}
+[Search | Zola](https://www.getzola.org/documentation/content/search/)
 
 このサイトでは、日本語と英語で記事を書くことが多い。現状、どっちかというと日本語の方が多い。
 
@@ -21,7 +21,7 @@ Zolaは、ビルド時に日本語用辞書も作ることが出来るみたい�
 
 > Note: By default, Chinese and Japanese search indexing is not included. You can include the support by building zola using cargo build --features indexing-ja --features indexing-zh. Please also note that, enabling Chinese indexing will increase the binary size by approximately 5 MB while enabling Japanese indexing will increase the binary size by approximately 70 MB due to the incredibly large dictionaries.
 
-{{ card(title="Configuration | Multilingual sites", url="https://www.getzola.org/documentation/content/multilingual/#configuration") }}
+[Configuration | Multilingual sites](https://www.getzola.org/documentation/content/multilingual/#configuration)
 
 他に全文検索エンジンで良いのが無いか探してみたら [Pagefind](https://pagefind.app/) を見つけた。
 
@@ -29,7 +29,7 @@ Zolaは、ビルド時に日本語用辞書も作ることが出来るみたい�
 
 詳しくは公式ドキュメントを確認。
 
-{{ card(title="Pagefind", url="https://pagefind.app") }}
+[Pagefind](https://pagefind.app)
 
 この部分を見てから、Zolaでも使えるんじゃないかと思った。
 
@@ -158,7 +158,7 @@ Zolaは、ビルド時に日本語用辞書も作ることが出来るみたい�
 
 `data-pagefind-body` を使って `section` タグ以下のみインデックスするようにした。
 
-{{ card(title="Limiting what sections of a page are indexed | Pagefind", url="https://pagefind.app/docs/indexing/#limiting-what-sections-of-a-page-are-indexed") }}
+[Limiting what sections of a page are indexed | Pagefind](https://pagefind.app/docs/indexing/#limiting-what-sections-of-a-page-are-indexed)
 
 ## モーダルとして表示するUI
 

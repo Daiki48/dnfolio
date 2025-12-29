@@ -271,7 +271,7 @@ nvim v0.10.4 from neovim-snap (neovim-snap) installed
 
 どうもsnapのパスが通っていないっぽい。先駆者がいたので参考にして解決してみる。
 
-{{ card(title="snapでインストールしたコマンドがzshでPATH通ってない", url="https://qiita.com/sameyasu/items/072882ee92bca54906d8") }}
+[snapでインストールしたコマンドがzshでPATH通ってない](https://qiita.com/sameyasu/items/072882ee92bca54906d8)
 
 ## `/etc/zsh/zprofile` を編集
 

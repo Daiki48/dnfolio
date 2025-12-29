@@ -67,7 +67,7 @@ deno task dprint
 
 `cargo-make` というタスクランナーを見つけた。
 
-{{ card(title="cargo-make | GitHub", url="https://github.com/sagiegurari/cargo-make") }}
+[cargo-make | GitHub](https://github.com/sagiegurari/cargo-make)
 
 個人的なメリット
 
@@ -85,7 +85,7 @@ deno task dprint
 cargo install --force cargo-make
 ```
 
-{{ card(title="Installation | cargo-make GitHub", url="https://github.com/sagiegurari/cargo-make?tab=readme-ov-file#installation") }}
+[Installation | cargo-make GitHub](https://github.com/sagiegurari/cargo-make?tab=readme-ov-file#installation)
 
 プロジェクトのルートに `Makefile.toml` を作成する。
 

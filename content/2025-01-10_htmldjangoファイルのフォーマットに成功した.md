@@ -87,7 +87,7 @@ block content %}
 
 私は `Neovim` の [coc.nvim](https://github.com/neoclide/coc.nvim) を利用している。この `extensions` として公開されていた。
 
-{{ card(title="coc-htmldjango | yaegassy GitHub", url="https://github.com/yaegassy/coc-htmldjango") }}
+[coc-htmldjango | yaegassy GitHub](https://github.com/yaegassy/coc-htmldjango)
 
 これを導入すればフォーマット出来るのでは？と思い早速導入してみた。
 
@@ -95,7 +95,7 @@ block content %}
 
 私は、`Python` を使ったことが無かったのでインストールからしていく。
 
-{{ card(title="Python Releases for Windows | python", url="https://www.python.org/downloads/windows/") }}
+[Python Releases for Windows | python](https://www.python.org/downloads/windows/)
 
 環境によってインストールするファイルは異なるが、私の場合は `Download Windows installer (64-bit)` をインストールした。
 インストーラーに従って進める。
@@ -123,7 +123,7 @@ pip 24.3.1 from D:\python\Lib\site-packages\pip (python 3.13)
 
 `README` の `Install` 項目を確認する。
 
-{{ card(title="Install | coc-htmldjango", url="https://github.com/yaegassy/coc-htmldjango?tab=readme-ov-file#install") }}
+[Install | coc-htmldjango](https://github.com/yaegassy/coc-htmldjango?tab=readme-ov-file#install)
 
 私は、すでに `coc.nvim` ユーザーなので `CocInstall` コマンドでインストールした。
 
@@ -171,7 +171,7 @@ block content %}
 
 フォーマットしてみる。
 
-{{ card(title="Commands | coc-htmldjango", url="https://github.com/yaegassy/coc-htmldjango?tab=readme-ov-file#commands") }}
+[Commands | coc-htmldjango](https://github.com/yaegassy/coc-htmldjango?tab=readme-ov-file#commands)
 
 ```sh
 :CocCommand htmldjango.djlint.format
@@ -227,7 +227,7 @@ end, {})
 
 詳しい設定内容は `dotfiles` を確認してほしい。
 
-{{ card(title="dotfiles | Daiki48 GitHub", url="https://github.com/Daiki48/dotfiles/commit/aefa9135db177098dc5fc62be38dff27da197608#diff-0537d20ea404c397a15fe03c267943e61d452bdbebc680082ffbc7fce1642f38R208") }}
+[dotfiles | Daiki48 GitHub](https://github.com/Daiki48/dotfiles/commit/aefa9135db177098dc5fc62be38dff27da197608#diff-0537d20ea404c397a15fe03c267943e61d452bdbebc680082ffbc7fce1642f38R208)
 
 今回の `htmldjango` フォーマットには [djLint](https://www.djlint.com/) を利用している。
 

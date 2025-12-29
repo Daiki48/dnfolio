@@ -12,7 +12,7 @@ languages = ["ja"]
 
 `wget` コマンドからダウンロードするでも良いが今回はZig公式のダウンロードページからダウンロードしてみる。
 
-{{ card(title="Releases | Zig", url="https://ziglang.org/download/") }}
+[Releases | Zig](https://ziglang.org/download/)
 
 最新バージョン `0.14.0` から `x86_64` を選択した。これは自分が利用しているマシンによって選択する。
 

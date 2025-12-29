@@ -12,7 +12,7 @@ languages = ["en"]
 
 CLI tool to generate images for thumbnails.
 
-{{ card(title="thumbgen | GitHub", url="https://github.com/Daiki48/thumbgen") }}
+[thumbgen | GitHub](https://github.com/Daiki48/thumbgen)
 
 ## Why
 
@@ -20,7 +20,7 @@ Because I want to generate thumbnail images for my personal website.
 I would like to generate images to be set in the OGP on my personal website.
 Right now, version `0.6.0` is the latest version.
 
-{{ card(title="thumbgen | crates.io", url="https://crates.io/crates/thumbgen") }}
+[thumbgen | crates.io](https://crates.io/crates/thumbgen)
 
 ## Currently available features
 

@@ -18,7 +18,7 @@ I checked official documentation.
 
 It is written.
 
-{{ card(title="Action Intent Links | Bluesky Developer APIs", url="https://docs.bsky.app/docs/advanced-guides/intent-links") }}
+[Action Intent Links | Bluesky Developer APIs](https://docs.bsky.app/docs/advanced-guides/intent-links)
 
 ## Create `templates/macros/share.html`
 

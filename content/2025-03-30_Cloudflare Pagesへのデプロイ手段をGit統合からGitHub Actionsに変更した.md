@@ -12,7 +12,7 @@ languages = ["ja"]
 
 Zola公式ドキュメントにあるCloudflare Pagesへのデプロイ手順を実行していた。
 
-{{ card(title="Cloudflare Pages | Deployment", url="https://www.getzola.org/documentation/deployment/cloudflare-pages/") }}
+[Cloudflare Pages | Deployment](https://www.getzola.org/documentation/deployment/cloudflare-pages/)
 
 GitHubのリポジトリをCloudflare Pagesに統合する方法だ。
 ただ、これだと `zola build` しか出来ない。
@@ -21,17 +21,17 @@ GitHubのリポジトリをCloudflare Pagesに統合する方法だ。
 
 私の場合は、GitHub側でアクセスするリポジトリから除外した。
 
-{{ card(title="Remove access | GitHub integration", url="https://developers.cloudflare.com/workers/ci-cd/builds/git-integration/github-integration/#remove-access") }}
+[Remove access | GitHub integration](https://developers.cloudflare.com/workers/ci-cd/builds/git-integration/github-integration/#remove-access)
 
 ## GitHub Actionsで `cloudflare/wrangler-action` を使ってデプロイする
 
 `cloudflare/pages-action` が `v1.5.0` と廃止となり、 `cloudflare/wrangler-action` へ移行を推奨していた。
 
-{{ card(title="[DEPRECATED] Cloudflare Pages GitHub Action | GitHub", url="https://github.com/cloudflare/pages-action?tab=readme-ov-file#deprecated-cloudflare-pages-github-action") }}
+[[DEPRECATED] Cloudflare Pages GitHub Action | GitHub](https://github.com/cloudflare/pages-action?tab=readme-ov-file#deprecated-cloudflare-pages-github-action)
 
 `cloudflare/wrangler-action` のREADMEに例が書かれていたので参考にした。
 
-{{ card(title="Deploy your Pages site (production & preview) | GitHub", url="https://github.com/cloudflare/wrangler-action?tab=readme-ov-file#deploy-your-pages-site-production--preview") }}
+[Deploy your Pages site (production & preview) | GitHub](https://github.com/cloudflare/wrangler-action?tab=readme-ov-file#deploy-your-pages-site-production--preview)
 
 設定した `.github/workflows/deploy.yaml` はこのようになった。
 
@@ -85,7 +85,7 @@ jobs:
 
 Zola公式ドキュメントに書いてあるのをそのままコピペした。
 
-{{ card(title="Via Github Actions | Installation", url="https://www.getzola.org/documentation/getting-started/installation/#via-github-actions") }}
+[Via Github Actions | Installation](https://www.getzola.org/documentation/getting-started/installation/#via-github-actions)
 
 ```yaml
 - name: Setup Zola
@@ -100,7 +100,7 @@ Zola公式ドキュメントに書いてあるのをそのままコピペした�
 
 `cargo-make` のREADMEを参考にした。
 
-{{ card(title="Github Actions | cargo-make GitHub", url="https://github.com/sagiegurari/cargo-make?tab=readme-ov-file#usage-ci-github-actions") }}
+[Github Actions | cargo-make GitHub](https://github.com/sagiegurari/cargo-make?tab=readme-ov-file#usage-ci-github-actions)
 
 ```yaml
 - name: Setup cargo-make
@@ -136,7 +136,7 @@ args = ["build"]
 
 `wrangler-action` のREADMEを参考にした。
 
-{{ card(title="Deploy your Pages site (production & preview) | GitHub", url="https://github.com/cloudflare/wrangler-action?tab=readme-ov-file#deploy-your-pages-site-production--preview") }}
+[Deploy your Pages site (production & preview) | GitHub](https://github.com/cloudflare/wrangler-action?tab=readme-ov-file#deploy-your-pages-site-production--preview)
 
 ```yaml
 - name: Deploy
@@ -158,7 +158,7 @@ output_dir = "public"
 output_dir = "dist"
 ```
 
-{{ card(title="Configuration | Zola", url="https://www.getzola.org/documentation/getting-started/configuration/") }}
+[Configuration | Zola](https://www.getzola.org/documentation/getting-started/configuration/)
 
 `secrets.CLOUDFLARE_ACCOUNT_ID` と `secrets.CLOUDFLARE_API_TOKEN` はGitHub Actionsを構築するリポジトリの設定から事前に準備する必要がある。
 
@@ -170,7 +170,7 @@ output_dir = "dist"
 
 詳細はCloudflare Pagesのドキュメントに書かれている。
 
-{{ card(title="Add Cloudflare credentials to GitHub secrets | Cloudflare Docs", url="https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/#add-cloudflare-credentials-to-github-secrets") }}
+[Add Cloudflare credentials to GitHub secrets | Cloudflare Docs](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/#add-cloudflare-credentials-to-github-secrets)
 
 `GITHUB_TOKEN` はGitHubが自動で取得する。
 

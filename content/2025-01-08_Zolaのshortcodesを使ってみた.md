@@ -1,5 +1,6 @@
 +++
 title = "Zolaのshortcodesを使ってみた"
+slug = "zola-shortcodes"
 description = "Zolaにshortcodesという機能があるらしい。使ってみよう。"
 [taxonomies]
 tags = ["Zola"]

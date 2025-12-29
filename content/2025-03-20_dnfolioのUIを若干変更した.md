@@ -1,5 +1,6 @@
 +++
 title = "dnfolioのUIを若干変更した"
+slug = "dnfolio-ui-update"
 description = "個人サイトdnfolioのUIを若干変更した。ちょっと見やすくなった。"
 draft = false
 [taxonomies]

@@ -1,5 +1,6 @@
 +++
 title = "GitHub OrganizationでPush出来なかったため、GitHub CLIを導入した"
+slug = "github-org-push-github-cli"
 description = "GitHubでOrganizationで作成したリポジトリにアクセス出来ない問題が発生しました。TOKEN内の権限やOrganization内での権限に問題が無いのに発生して途方に暮れていたところGitHub CLIで認証すると解決したという声があったため試しに導入したら成功した。"
 created = "2025-08-24"
 draft = false

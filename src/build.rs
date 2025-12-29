@@ -32,11 +32,7 @@ fn extract_date_from_filename(path: &Path) -> Option<NaiveDate> {
     }
 }
 
-fn parse_markdown_file(
-    input_path: &Path,
-    content_dir: &Path,
-    output_content_dir: &Path,
-) -> anyhow::Result<Article> {
+fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Article> {
     let markdown_with_metadata = fs::read_to_string(input_path)?;
 
     let mut matter = Matter::<gray_matter::engine::TOML>::new();
@@ -217,9 +213,26 @@ fn parse_markdown_file(
     println!("\n--- HTML Output with IDs for {input_path:?} ---\n{html_output}");
     println!("\n=============================================================\n");
 
-    let relative_path = input_path.strip_prefix(content_dir)?.with_extension("html");
-    let output_path = output_content_dir.join(&relative_path);
-    let relative_url = PathBuf::from("/").join("content").join(&relative_path);
+    let file_stem = input_path.file_stem().unwrap().to_string_lossy();
+    let article_slug = metadata
+        .as_ref()
+        .and_then(|m| m.slug.as_ref())
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| {
+            let name_part = file_stem.split('_').skip(1).collect::<Vec<_>>().join("-");
+            if name_part.is_empty() {
+                slugify(&file_stem)
+            } else {
+                slugify(&name_part)
+            }
+        });
+
+    // dist/posts/{slug}/index.html と出力される
+    let output_path = dist_dir
+        .join("posts")
+        .join(&article_slug)
+        .join("index.html");
+    let relative_url = PathBuf::from("/posts").join(&article_slug).join("");
 
     Ok(Article {
         metadata,
@@ -426,7 +439,6 @@ if (document.readyState === 'loading') {
 pub async fn run() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let dist_dir = Path::new("dist");
-    let output_content_dir = dist_dir.join("content");
     let ogp_dir = dist_dir.join("ogp");
     let pages_dir = PathBuf::from("pages");
 
@@ -434,7 +446,6 @@ pub async fn run() -> Result<()> {
         fs::remove_dir_all(dist_dir)?;
     }
     fs::create_dir_all(dist_dir)?;
-    fs::create_dir_all(&output_content_dir)?;
     fs::create_dir_all(&ogp_dir)?;
 
     for entry in WalkDir::new("static").into_iter().filter_map(|e| e.ok()) {
@@ -464,7 +475,7 @@ pub async fn run() -> Result<()> {
         .filter_map(|input_path| {
             println!("Parsing {input_path:?}");
 
-            match parse_markdown_file(input_path, &content_dir, &output_content_dir) {
+            match parse_markdown_file(input_path, dist_dir) {
                 Ok(article) => Some(article),
                 Err(e) => {
                     if e.to_string().contains("Draft article skipped") {

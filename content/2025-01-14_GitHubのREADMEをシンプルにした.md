@@ -1,5 +1,6 @@
 +++
 title = "GitHubのREADMEをシンプルにした"
+slug = "github-readme-simplify"
 description = "自己紹介としてちょっとかっこよく頑張ってたGitHubのREADMEをシンプルにして、個人サイトで詳細に書くようにした。"
 draft = false
 [taxonomies]

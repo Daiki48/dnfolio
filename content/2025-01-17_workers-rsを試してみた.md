@@ -1,5 +1,6 @@
 +++
 title = "workers-rsを試してみた"
+slug = "workers-rs-trial"
 description = "Cloudflare workersにRustアプリをデプロイしてみたいのでworkers-rsクレートを試してみる。"
 draft = false
 [taxonomies]

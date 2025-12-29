@@ -1,5 +1,6 @@
 +++
 title = "Changed Bluesky's handle to my domain"
+slug = "bluesky-handle-custom-domain"
 description = "I changed the handle of my Bluesky account to the domain I hold."
 draft = false
 [taxonomies]

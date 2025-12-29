@@ -1,5 +1,6 @@
 +++
 title = "Cloudflare Pagesへのデプロイ手段をGit統合からGitHub Actionsに変更した"
+slug = "cloudflare-pages-github-actions"
 description = "個人サイトのデプロイ手順を大きく変更した。GitHub ActionsでCloudflare Pagesにデプロイ出来ることを知ったので実装した。"
 draft = false
 [taxonomies]

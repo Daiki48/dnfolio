@@ -1,5 +1,6 @@
 +++
 title = "htmldjangoファイルのフォーマットに成功した"
+slug = "htmldjango-format-success"
 description = "dnfolioでは、TeraというHTMLテンプレートファイルを使用している。このTeraの文法で書くとファイルタイプがhtmldjangoとなりHTMLのフォーマットが変になる。その問題を解決した。"
 draft = false
 [taxonomies]

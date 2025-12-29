@@ -1,5 +1,6 @@
 +++
 title = "個人サイト開発にcargo-makeを導入した"
+slug = "cargo-make-introduction"
 description = "ここ数日、個人サイト開発に熱中している。複数のファイル形式で構築しているからコードの整形をする際に簡単に実行出来るタスクランナーを実行したくなる。deno tasksでなんとかやっていたが、複雑なタスクランナーとなると大変だったので初めてcargo-makeを試してみた。"
 draft = false
 [taxonomies]

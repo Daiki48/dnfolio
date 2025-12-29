@@ -1,5 +1,6 @@
 +++
 title = "Updated templates for axum and Tera"
+slug = "axum-tera-templates-update"
 description = "I responded to an issue that was created in my past template projects for axum and Tera."
 [taxonomies]
 tags = ["Rust", "axum", "Tera"]

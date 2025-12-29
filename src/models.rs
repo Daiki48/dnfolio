@@ -13,6 +13,8 @@ pub struct Taxonomies {
 pub struct MetaData {
     pub title: String,
     #[serde(default)]
+    pub slug: Option<String>,
+    #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
     pub created: Option<String>,

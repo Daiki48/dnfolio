@@ -1,5 +1,6 @@
 +++
 title = "Created share button for Bluesky"
+slug = "bluesky-share-button"
 description = "I created share button for Bluesky. Because I use Bluesky frequently."
 draft = false
 [taxonomies]

@@ -1,5 +1,6 @@
 +++
 title = "Zolaで構築した個人サイトに検索機能(Pagefind)を実装した"
+slug = "zola-pagefind-search"
 description = "このサイトはZolaというRust製SSGで構築している。公式ドキュメントでは書かれていないPagefindによる検索機能の実装が出来た。"
 draft = false
 [taxonomies]

@@ -1,5 +1,6 @@
 +++
 title = "Created sample project powerd by Hono + Cloudflare Workers + Bun"
+slug = "hono-cloudflare-workers-bun"
 description = "First time using Cloudflare Workers and Hono. I am very easy to use."
 draft = false
 [taxonomies]

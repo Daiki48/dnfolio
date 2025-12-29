@@ -1,5 +1,6 @@
 +++
 title = "Changed Top Level Domain"
+slug = "changed-tld"
 description = "I changed TLD for personal website."
 draft = false
 [taxonomies]

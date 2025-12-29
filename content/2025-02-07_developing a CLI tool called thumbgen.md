@@ -1,5 +1,6 @@
 +++
 title = "I am developing a CLI tool called thumbgen"
+slug = "thumbgen-cli-development"
 description = "I would like to introduce a CLI tool I am developing called thumbgen."
 draft = false
 [taxonomies]

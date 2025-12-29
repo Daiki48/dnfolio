@@ -1,5 +1,6 @@
 +++
 title = "WSL2のUbuntuにZigをインストールする"
+slug = "wsl2-ubuntu-zig-install"
 description = "ZigをUbuntuにインストールしてみる。"
 draft = false
 [taxonomies]

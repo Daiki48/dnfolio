@@ -1,5 +1,6 @@
 +++
 title = "WSL2環境構築(Zsh, Neovim)"
+slug = "wsl2-setup-zsh-neovim"
 description = "WSL2にZshとNeovim環境を構築した。WSL2はデフォルトでBashとViが導入されているが、私自身他のLinux環境ではZshとNeovimを利用しているため。"
 draft = false
 [taxonomies]

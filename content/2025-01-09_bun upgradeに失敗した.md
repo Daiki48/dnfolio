@@ -1,5 +1,6 @@
 +++
 title = "bun upgradeに失敗した"
+slug = "bun-upgrade-failed"
 description = "bun v1.1.42からv1.1.43にアップグレードしようとした時に失敗した。"
 draft = false
 [taxonomies]

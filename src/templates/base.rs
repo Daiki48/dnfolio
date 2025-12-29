@@ -6,6 +6,7 @@ pub fn layout(
     canonical_url: &str,
     metadata: Option<&MetaData>,
     ogp_image_path: Option<&str>,
+    structured_data_html: Option<&str>,
     sidebar_left_markup: Markup,
     main_content_markup: Markup,
     sidebar_right_markup: Markup,
@@ -334,6 +335,10 @@ pub fn layout(
                 }
 
                 link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon";
+
+                @if let Some(json_ld) = structured_data_html {
+                    (PreEscaped(json_ld))
+                }
 
                 style { (PreEscaped(css)) }
             }

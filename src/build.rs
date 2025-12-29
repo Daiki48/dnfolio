@@ -15,7 +15,7 @@ use walkdir::WalkDir;
 
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::{base, privacy};
-use crate::{ogp, sitemap};
+use crate::{ogp, sitemap, structured_data};
 
 fn extract_date_from_filename(path: &Path) -> Option<NaiveDate> {
     let file_name = path.file_stem()?.to_str()?;
@@ -210,8 +210,8 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
 
     let table_of_contents_html = toc_markup.into_string();
 
-    println!("\n--- HTML Output with IDs for {input_path:?} ---\n{html_output}");
-    println!("\n=============================================================\n");
+    // println!("\n--- HTML Output with IDs for {input_path:?} ---\n{html_output}");
+    // println!("\n=============================================================\n");
 
     let file_stem = input_path.file_stem().unwrap().to_string_lossy();
     let article_slug = metadata
@@ -353,11 +353,21 @@ fn generate_tag_pages(
 
         let tag_canonical_url = format!("https://dnfolio.me/tags/{tag_slug}.html");
 
+        let tag_url = format!("/tags/{}.html", tag_slug);
+        let structured_data = structured_data::generate_structured_data_html(
+            structured_data::PageType::TagPage {
+                tag_name,
+                url: &tag_url,
+            },
+            None,
+        );
+
         let tag_html_output = base::layout(
             &format!("タグ: {tag_name}"),
             &tag_canonical_url,
             None,
             None,
+            Some(&structured_data),
             articles_list_markup.clone(),
             tag_main_content_markup,
             tag_sidebar_right_markup,
@@ -668,11 +678,15 @@ pub async fn run() -> Result<()> {
                 (maud::PreEscaped(&article.content_html))
             };
 
+            let article_url = article.relative_url.to_string_lossy();
+            let structured_data = structured_data::generate_structured_data_html(structured_data::PageType::Article { url: &article_url, ogp_image_url: &ogp_image_path }, article.metadata.as_ref());
+
             let full_article_html = base::layout(
                 page_title,
                 &canonical_url,
                 article.metadata.as_ref(),
                 Some(&ogp_image_path),
+                Some(&structured_data),
                 articles_list_markup.clone(),
                 main_content_markup,
                 sidebar_right_markup,
@@ -720,11 +734,15 @@ pub async fn run() -> Result<()> {
 
     let index_canonical_url: &str = "https://dnfolio.me/";
 
+    let home_structured_data =
+        structured_data::generate_structured_data_html(structured_data::PageType::Home, None);
+
     let index_html_output = base::layout(
         "dnfolio",
         index_canonical_url,
         None,
         Some(&index_ogp_path),
+        Some(&home_structured_data),
         articles_list_markup.clone(),
         index_main_content_markup,
         index_sidebar_right_markup,
@@ -758,6 +776,7 @@ pub async fn run() -> Result<()> {
         let privacy_html_output = base::layout(
             "プライバシーポリシー",
             &privacy_canonical_url,
+            None,
             None,
             None,
             articles_list_markup.clone(),

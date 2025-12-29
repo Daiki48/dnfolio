@@ -14,6 +14,7 @@ use slug::slugify;
 use walkdir::WalkDir;
 
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
+use crate::templates::base::PageConfig;
 use crate::templates::{base, privacy};
 use crate::{ogp, sitemap, structured_data};
 
@@ -363,11 +364,13 @@ fn generate_tag_pages(
         );
 
         let tag_html_output = base::layout(
-            &format!("タグ: {tag_name}"),
-            &tag_canonical_url,
-            None,
-            None,
-            Some(&structured_data),
+            PageConfig {
+                page_title: &format!("タグ: {tag_name}"),
+                canonical_url: &tag_canonical_url,
+                metadata: None,
+                ogp_image_path: None,
+                structured_data_html: Some(&structured_data),
+            },
             articles_list_markup.clone(),
             tag_main_content_markup,
             tag_sidebar_right_markup,
@@ -682,11 +685,13 @@ pub async fn run() -> Result<()> {
             let structured_data = structured_data::generate_structured_data_html(structured_data::PageType::Article { url: &article_url, ogp_image_url: &ogp_image_path }, article.metadata.as_ref());
 
             let full_article_html = base::layout(
-                page_title,
-                &canonical_url,
-                article.metadata.as_ref(),
-                Some(&ogp_image_path),
-                Some(&structured_data),
+                PageConfig {
+                    page_title,
+                    canonical_url: &canonical_url,
+                    metadata: article.metadata.as_ref(),
+                    ogp_image_path: Some(&ogp_image_path),
+                    structured_data_html: Some(&structured_data),
+                },
                 articles_list_markup.clone(),
                 main_content_markup,
                 sidebar_right_markup,
@@ -738,11 +743,13 @@ pub async fn run() -> Result<()> {
         structured_data::generate_structured_data_html(structured_data::PageType::Home, None);
 
     let index_html_output = base::layout(
-        "dnfolio",
-        index_canonical_url,
-        None,
-        Some(&index_ogp_path),
-        Some(&home_structured_data),
+        PageConfig {
+            page_title: "dnfolio",
+            canonical_url: index_canonical_url,
+            metadata: None,
+            ogp_image_path: Some(&index_ogp_path),
+            structured_data_html: Some(&home_structured_data),
+        },
         articles_list_markup.clone(),
         index_main_content_markup,
         index_sidebar_right_markup,
@@ -774,11 +781,13 @@ pub async fn run() -> Result<()> {
         );
 
         let privacy_html_output = base::layout(
-            "プライバシーポリシー",
-            &privacy_canonical_url,
-            None,
-            None,
-            None,
+            PageConfig {
+                page_title: "プライバシーポリシー",
+                canonical_url: &privacy_canonical_url,
+                metadata: None,
+                ogp_image_path: None,
+                structured_data_html: None,
+            },
             articles_list_markup.clone(),
             privacy_main_content_markup,
             privacy_sidebar_right_markup,

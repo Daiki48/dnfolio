@@ -1,22 +1,28 @@
 use crate::models::MetaData;
 use maud::{DOCTYPE, Markup, PreEscaped, html};
 
+pub struct PageConfig<'a> {
+    pub page_title: &'a str,
+    pub canonical_url: &'a str,
+    pub metadata: Option<&'a MetaData>,
+    pub ogp_image_path: Option<&'a str>,
+    pub structured_data_html: Option<&'a str>,
+}
+
 pub fn layout(
-    page_title: &str,
-    canonical_url: &str,
-    metadata: Option<&MetaData>,
-    ogp_image_path: Option<&str>,
-    structured_data_html: Option<&str>,
+    config: PageConfig,
     sidebar_left_markup: Markup,
     main_content_markup: Markup,
     sidebar_right_markup: Markup,
 ) -> Markup {
-    let description = metadata
+    let description = config
+        .metadata
         .and_then(|m| m.description.as_ref())
         .map(|d| d.as_str())
         .unwrap_or("プログラムを良く書く人の個人サイトです。");
 
-    let keywords = metadata
+    let keywords = config
+        .metadata
         .and_then(|m| m.taxonomies.as_ref())
         .and_then(|t| t.tags.as_ref())
         .map(|tags| tags.join(", "))
@@ -302,17 +308,17 @@ pub fn layout(
             head {
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1";
-                title { (page_title) }
-                link rel="canonical" href=(canonical_url);
+                title { (config.page_title) }
+                link rel="canonical" href=(config.canonical_url);
                 meta name="description" content=(description);
                 meta name="keywords" content=(keywords);
                 meta name="author" content="Daiki Nakashima";
 
-                meta property="og:title" content=(page_title);
+                meta property="og:title" content=(config.page_title);
                 meta property="og:description" content=(description);
                 meta property="og:type" content="website";
                 meta property="og:site_name" content="dnfolio";
-                @if let Some(image_path) = ogp_image_path {
+                @if let Some(image_path) = config.ogp_image_path {
                     meta property="og:image" content=(format!("https://dnfolio.me{image_path}"));
                     meta property="og:image:width" content="1200";
                     meta property="og:image:height" content="630";
@@ -325,10 +331,10 @@ pub fn layout(
                 }
 
                 meta name="twitter:card" content="summary_large_image";
-                meta name="twitter:title" content=(page_title);
+                meta name="twitter:title" content=(config.page_title);
                 meta name="twitter:description" content=(description);
                 meta name="twitter:site" content="@dnfolio_me";
-                @if let Some(image_path) = ogp_image_path {
+                @if let Some(image_path) = config.ogp_image_path {
                     meta name="twitter:image" content=(format!("https://dnfolio.me{image_path}"));
                 } @else {
                     meta name="twitter:image" content=(format!("https://dnfolio.me/icons/icon.png"));
@@ -336,7 +342,7 @@ pub fn layout(
 
                 link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon";
 
-                @if let Some(json_ld) = structured_data_html {
+                @if let Some(json_ld) = config.structured_data_html {
                     (PreEscaped(json_ld))
                 }
 

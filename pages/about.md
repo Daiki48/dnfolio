@@ -28,26 +28,16 @@ dnfolioは、現在バージョン5になりました。
 
 [![Ashutosh's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=Daiki48&bg_color=373f4a&color=caccca&line=22272e&point=caccca&radius=8)](https://github.com/Daiki48)
 
-### スタッツ
-
-[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=Daiki48&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48)
-
 ### リリースしたカラーテーマ
 
 [Neovim](https://neovim.io/) 用
 
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=sakurajima.nvim&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/sakurajima.nvim)
-
 [Obsidian](https://obsidian.md) 用
-
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=sakurajima.obsidian&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/sakurajima.obsidian)
 
 [Inkdrop](https://inkdrop.app) 用
 
 > 2025年1月にInkdropからObsidianへ移行したため、こちらのテーマはアーカイブしています。
 > 気に入ってくれた方がいらっしゃったらフォークして利用してください。
-
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=Daiki48&repo=inkdrop-terracecat-dark-ui-theme&show_owner=true&title_color=caccca&text_color=caccca&bg_color=373f4a&icon_color=22272e&border_color=caccca)](https://github.com/Daiki48/inkdrop-terracecat-dark-ui-theme)
 
 ## SNS
 

@@ -160,6 +160,41 @@ pub fn layout(
             overflow-wrap: break-word;
         }
         blockquote p:last-child { margin-bottom: 0; }
+
+        /* 記事コンテンツ内のテーブル */
+        .main-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1.5em 0;
+        }
+        .main-content th,
+        .main-content td {
+            border: 1px solid #dee2e6;
+            padding: 0.75em;
+            text-align: left;
+        }
+        .main-content th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        /* 記事コンテンツ内のリスト */
+        .main-content ul {
+            list-style: disc;
+            padding-left: 1.5em;
+            margin: 1em 0;
+        }
+        .main-content ol {
+            list-style: decimal;
+            padding-left: 1.5em;
+            margin: 1em 0;
+        }
+        .main-content li {
+            margin-bottom: 0.5em;
+        }
+        .main-content ul ul { list-style: circle; }
+        .main-content ul ul ul { list-style: square; }
+
         .hamburger-btn, .overlay { display: none; }
 
         .search-container {

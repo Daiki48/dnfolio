@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 
 use anyhow::Result;
 use chrono::NaiveDate;
@@ -11,12 +11,50 @@ use pulldown_cmark::{CowStr, Event, Parser, Tag, TagEnd};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use resvg::usvg::{self, fontdb};
 use slug::slugify;
+use syntect::highlighting::ThemeSet;
+use syntect::html::highlighted_html_for_string;
+use syntect::parsing::SyntaxSet;
 use walkdir::WalkDir;
 
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::base::PageConfig;
 use crate::templates::{base, privacy};
 use crate::{ogp, sitemap, structured_data};
+
+static SYNTAX_SET: OnceLock<SyntaxSet> = OnceLock::new();
+static THEME_SET: OnceLock<ThemeSet> = OnceLock::new();
+
+fn get_syntax_set() -> &'static SyntaxSet {
+    SYNTAX_SET.get_or_init(SyntaxSet::load_defaults_newlines)
+}
+
+fn get_theme_set() -> &'static ThemeSet {
+    THEME_SET.get_or_init(ThemeSet::load_defaults)
+}
+
+fn highlight_code(lang: &str, code: &str) -> String {
+    let ss = get_syntax_set();
+    let ts = get_theme_set();
+    let theme = &ts.themes["base16-ocean.dark"];
+
+    // 言語を検索、見つからなければPlainTextにフォールバック
+    let syntax = ss
+        .find_syntax_by_token(lang)
+        .unwrap_or_else(|| ss.find_syntax_plain_text());
+
+    match highlighted_html_for_string(code, ss, syntax, theme) {
+        Ok(html) => html,
+        Err(_) => {
+            // エラー時はエスケープしてそのまま表示
+            format!(
+                "<pre><code>{}</code></pre>",
+                code.replace('&', "&amp;")
+                    .replace('<', "&lt;")
+                    .replace('>', "&gt;")
+            )
+        }
+    }
+}
 
 fn extract_date_from_filename(path: &Path) -> Option<NaiveDate> {
     let file_name = path.file_stem()?.to_str()?;
@@ -78,6 +116,10 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
     let mut current_heading_text_buffer = String::new();
     let mut is_in_heading = false;
     let mut processed_events: Vec<Event> = Vec::new();
+
+    let mut in_code_block = false;
+    let mut code_block_lang = String::new();
+    let mut code_block_content = String::new();
 
     for event in parser {
         match &event {
@@ -177,16 +219,33 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
                 ));
             }
             Event::Text(text) => {
-                if is_in_heading {
-                    current_heading_text_buffer.push_str(&text);
+                if in_code_block {
+                    code_block_content.push_str(&text);
+                } else {
+                    if is_in_heading {
+                        current_heading_text_buffer.push_str(&text);
+                    }
+                    processed_events.push(Event::Text(text));
                 }
-                processed_events.push(Event::Text(text));
             }
             Event::Code(text) => {
                 if is_in_heading {
                     current_heading_text_buffer.push_str(&text);
                 }
                 processed_events.push(Event::Code(text));
+            }
+            Event::Start(Tag::CodeBlock(kind)) => {
+                in_code_block = true;
+                code_block_lang = match kind {
+                    pulldown_cmark::CodeBlockKind::Fenced(lang) => lang.to_string(),
+                    pulldown_cmark::CodeBlockKind::Indented => String::new(),
+                };
+                code_block_content.clear();
+            }
+            Event::End(TagEnd::CodeBlock) => {
+                in_code_block = false;
+                let highlighted = highlight_code(&code_block_lang, &code_block_content);
+                processed_events.push(Event::Html(CowStr::from(highlighted)));
             }
             other => {
                 processed_events.push(other);

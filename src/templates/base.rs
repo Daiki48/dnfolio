@@ -57,7 +57,7 @@ pub fn layout(
             display: flex;
             justify-content: center;
             align-items: center;
-            max-width: 1400px;
+            max-width: 1700px;
             margin: 0 auto;
             height: 100%;
         }
@@ -74,12 +74,12 @@ pub fn layout(
             display: flex;
             flex: 1;
             align-items: flex-start;
-            max-width: 1400px;
+            max-width: 1700px;
             width: 100%;
             margin: 0 auto;
         }
         .sidebar-left {
-            flex: 0 0 250px;
+            flex: 0 0 320px;
             padding: 1.5em;
             position: sticky;
             top: var(--header-height);
@@ -99,7 +99,7 @@ pub fn layout(
             height: auto;
         }
         .sidebar-right {
-            flex: 0 0 220px;
+            flex: 0 0 300px;
             padding: 1.5em;
             position: sticky;
             top: var(--header-height);

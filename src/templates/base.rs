@@ -353,6 +353,7 @@ pub fn layout(
                 meta property="og:description" content=(description);
                 meta property="og:type" content="website";
                 meta property="og:site_name" content="dnfolio";
+                meta property="og:url" content=(config.canonical_url);
                 @if let Some(image_path) = config.ogp_image_path {
                     meta property="og:image" content=(format!("https://dnfolio.me{image_path}"));
                     meta property="og:image:width" content="1200";

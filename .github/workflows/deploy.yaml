@@ -25,7 +25,41 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=dnfolio --commit-dirty=true --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate Release Notes
+        id: changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..HEAD"
+          else
+            RANGE="HEAD"
+          fi
+
+          # カテゴリ別にコミットを取得
+          CONTENT=$(git log --pretty=format:"%s" $RANGE | grep "^:+1:" | sed 's/:+1: /- /' || true)
+          FEATURES=$(git log --pretty=format:"%s" $RANGE | grep "^:zap:" | sed 's/:zap: /- /' || true)
+          BUGFIXES=$(git log --pretty=format:"%s" $RANGE | grep "^:bug:" | sed 's/:bug: /- /' || true)
+          STYLES=$(git log --pretty=format:"%s" $RANGE | grep "^:art:" | sed 's/:art: /- /' || true)
+          REFACTOR=$(git log --pretty=format:"%s" $RANGE | grep "^:recycle:" | sed 's/:recycle: /- /' || true)
+          REMOVED=$(git log --pretty=format:"%s" $RANGE | grep "^:fire:" | sed 's/:fire: /- /' || true)
+          CONFIG=$(git log --pretty=format:"%s" $RANGE | grep "^:hammer:" | sed 's/:hammer: /- /' || true)
+          MOVED=$(git log --pretty=format:"%s" $RANGE | grep "^:truck:" | sed 's/:truck: /- /' || true)
+
+          # リリースノート生成
+          {
+            echo "body<<EOF"
+            [ -n "$FEATURES" ] && echo -e "## ✨ 新機能\n$FEATURES\n"
+            [ -n "$CONTENT" ] && echo -e "## 📝 コンテンツ\n$CONTENT\n"
+            [ -n "$BUGFIXES" ] && echo -e "## 🐛 バグ修正\n$BUGFIXES\n"
+            [ -n "$STYLES" ] && echo -e "## 🎨 UI改善\n$STYLES\n"
+            [ -n "$REFACTOR" ] && echo -e "## ♻️ リファクタ\n$REFACTOR\n"
+            [ -n "$CONFIG" ] && echo -e "## 🔧 設定\n$CONFIG\n"
+            [ -n "$MOVED" ] && echo -e "## 🚚 移動\n$MOVED\n"
+            [ -n "$REMOVED" ] && echo -e "## 🔥 削除\n$REMOVED\n"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body: ${{ steps.changelog.outputs.body }}

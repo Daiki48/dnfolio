@@ -1,6 +1,7 @@
 mod build;
 mod models;
 mod ogp;
+mod rss;
 mod serve;
 mod sitemap;
 mod structured_data;

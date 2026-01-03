@@ -377,6 +377,7 @@ pub fn layout(
                 }
 
                 link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon";
+                link rel="alternate" type="application/rss+xml" title="dnfolio" href="/feed.xml";
 
                 @if let Some(json_ld) = config.structured_data_html {
                     (PreEscaped(json_ld))

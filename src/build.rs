@@ -19,7 +19,7 @@ use walkdir::WalkDir;
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::base::PageConfig;
 use crate::templates::{base, privacy};
-use crate::{ogp, sitemap, structured_data};
+use crate::{ogp, rss, sitemap, structured_data};
 
 static SYNTAX_SET: OnceLock<SyntaxSet> = OnceLock::new();
 static THEME_SET: OnceLock<ThemeSet> = OnceLock::new();
@@ -862,6 +862,8 @@ pub async fn run() -> Result<()> {
 
     let base_url = "https://dnfolio.me";
     sitemap::generate_and_write_sitemap(base_url, &articles, &pages, &tag_map, dist_dir)?;
+
+    rss::generate_rss(&articles, dist_dir)?;
 
     Ok(())
 }

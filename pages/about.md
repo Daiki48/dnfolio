@@ -20,6 +20,14 @@ Rustが好きです。
 
 まだまだ「Rustを書ける」と胸を張れるレベルではありませんが、書けば書くほど好きになる言語です。
 
+### dotfiles
+
+[dotfiles](https://github.com/Daiki48/dotfiles) って良いですよね。
+
+どんな環境でも動作するようなオレオレ環境の育成っていう面もあれば、猫に引っかかれて沈んだ心も「俺には *dotfiles* がある」って心の支えにもなってくれる。素晴しい文化だと思うんだよね。
+
+気が向いた時、暇な時、そんな時は *オレオレdotfilesをRust化計画* っていう遊びをしています。え、自分の好きな環境を好きな言語で書くっていう自己満足のためにです。
+
 ### Web開発
 
 フロントエンドからバックエンドまで、一通り触ってきました。
@@ -59,3 +67,6 @@ Webの世界も楽しいですが、最近は低レイヤーにも惹かれて�
 [Bluesky](https://bsky.app/profile/dnfolio.me) で発信しています。
 
 <script async src="https://bst.heion.net/timeline.js" data-handle="dnfolio.me" data-theme="gray" data-width="420" data-height="500" data-lang="ja" data-pin="0"></script>
+
+> 投稿している記事の内容は、その日の気分やテンションで書いているので全然雰囲気が違うことを許してくださいね...
+> 変な冗談とか言わないとムズムズしちゃうタイミングがあるんです...

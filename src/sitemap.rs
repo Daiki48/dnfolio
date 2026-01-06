@@ -44,7 +44,7 @@ fn build_sitemap_markup(
 
             @for tag_name in tag_map.keys() {
                 url {
-                    loc { (format!("{}/tags/{}.html", base_url, slugify(tag_name))) }
+                    loc { (format!("{}/tags/{}/", base_url, slugify(tag_name))) }
                     lastmod { (build_time.to_rfc3339()) }
                     priority { "0.7" }
                 }

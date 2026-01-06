@@ -411,9 +411,9 @@ fn generate_tag_pages(
             }
         };
 
-        let tag_canonical_url = format!("https://dnfolio.me/tags/{tag_slug}.html");
+        let tag_canonical_url = format!("https://dnfolio.me/tags/{tag_slug}/");
 
-        let tag_url = format!("/tags/{}.html", tag_slug);
+        let tag_url = format!("/tags/{}/", tag_slug);
         let structured_data = structured_data::generate_structured_data_html(
             structured_data::PageType::TagPage {
                 tag_name,

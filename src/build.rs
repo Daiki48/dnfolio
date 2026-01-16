@@ -325,8 +325,8 @@ fn parse_page_file(input_path: &Path, _pages_dir: &Path, dist_dir: &Path) -> any
         .unwrap()
         .to_string_lossy()
         .to_string();
-    let output_path = dist_dir.join(format!("{file_stem}.html"));
-    let relative_url = PathBuf::from(format!("/{file_stem}.html"));
+    let output_path = dist_dir.join(&file_stem).join("index.html");
+    let relative_url = PathBuf::from(format!("/{file_stem}/"));
 
     Ok(Page {
         content_html: html_content,
@@ -376,14 +376,16 @@ fn generate_tag_pages(
 
     for (tag_name, tag_info) in tag_map {
         let tag_slug = slugify(tag_name);
-        let tag_page_path = tags_dir.join(format!("{tag_slug}.html"));
+        let tag_page_dir = tags_dir.join(&tag_slug);
+        fs::create_dir_all(&tag_page_dir)?;
+        let tag_page_path = tag_page_dir.join("index.html");
 
         let tag_main_content_markup = html! {
             h1 { "タグ: " (tag_name) "(" (tag_info.count) "件)" }
             ul {
                 @for article in &tag_info.articles {
                     li {
-                        a href=(format!("../{}", article.relative_url.to_string_lossy())) {
+                        a href=(article.relative_url.to_string_lossy().to_string()) {
                             @if let Some(meta) = &article.metadata {
                                 (meta.title)
                             } @else {
@@ -406,7 +408,7 @@ fn generate_tag_pages(
             h2 { "サイト情報" }
             ul {
                 li {
-                    a href="../index.html" { "ホームに戻る" }
+                    a href="/" { "ホームに戻る" }
                 }
             }
         };
@@ -772,21 +774,15 @@ pub async fn run() -> Result<()> {
             li {
                 a href="index.html" { "ホーム" }
             }
-            @if let Some(privacy_page) = pages.iter().find(|page| page.filename == "privacy") {
-                li {
-                    a href=(privacy_page.relative_url.to_string_lossy()) target="_blank" { "プライバシーポリシー" }
-                }
-            } @else {
-                li {
-                    a href="privacy.html" target="_blank" { "プライバシーポリシー" }
-                }
+            li {
+                a href="/privacy/" target="_blank" { "プライバシーポリシー" }
             }
         }
         h2 { "タグ一覧" }
         ul {
             @for tag_info in &sorted_tags {
                 li {
-                    a href=(format!("tags/{}.html", slugify(&tag_info.name))) {
+                    a href=(format!("/tags/{}/", slugify(&tag_info.name))) {
                         (tag_info.name) " " span style="color: #666;" { "(" (tag_info.count) ")" }
                     }
                 }
@@ -852,6 +848,9 @@ pub async fn run() -> Result<()> {
             privacy_sidebar_right_markup,
         )
         .into_string();
+        if let Some(parent) = privacy_page.output_path.parent() {
+            fs::create_dir_all(parent)?;
+        }
         fs::write(&privacy_page.output_path, privacy_html_output)?;
     } else {
         fs::write(

@@ -415,7 +415,7 @@ pub fn layout(
                     span { "© 2024 - 2025 " }
                     a href="/" { "dnfolio" }
                     span { " | " }
-                    a href="/privacy.html" target="_blank" { "Privacy Policy" }
+                    a href="/privacy/" target="_blank" { "プライバシーポリシー" }
                 }
 
                 script { (PreEscaped(js)) }

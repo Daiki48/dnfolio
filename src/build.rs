@@ -859,6 +859,43 @@ pub async fn run() -> Result<()> {
         )?;
     }
 
+    // 404ページを生成
+    let not_found_main_content = html! {
+        div style="text-align: center; padding: 4rem 1rem;" {
+            h1 style="font-size: 4rem; margin-bottom: 1rem; color: #6c757d;" { "404" }
+            p style="font-size: 1.25rem; color: #6c757d; margin-bottom: 2rem;" {
+                "お探しのページは見つかりませんでした。"
+            }
+            a href="/" style="color: #007bff; text-decoration: none;" { "ホームに戻る" }
+        }
+    };
+
+    let not_found_sidebar_right = html! {
+        h2 { "サイト情報" }
+        ul {
+            li {
+                a href="/" { "ホームに戻る" }
+            }
+        }
+    };
+
+    let not_found_html = base::layout(
+        PageConfig {
+            page_title: "ページが見つかりません - dnfolio",
+            canonical_url: "https://dnfolio.me/404",
+            metadata: None,
+            ogp_image_path: Some("/ogp/dnfolio.png"),
+            structured_data_html: None,
+        },
+        articles_list_markup.clone(),
+        not_found_main_content,
+        not_found_sidebar_right,
+    )
+    .into_string();
+
+    fs::write(dist_dir.join("404.html"), not_found_html)?;
+    println!("Generated 404.html");
+
     let base_url = "https://dnfolio.me";
     sitemap::generate_and_write_sitemap(base_url, &articles, &pages, &tag_map, dist_dir)?;
 

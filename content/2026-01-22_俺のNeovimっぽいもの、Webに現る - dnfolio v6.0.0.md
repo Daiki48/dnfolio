@@ -1,6 +1,6 @@
 +++
 title = "俺のNeovimっぽいもの、Webに現る - dnfolio v6.0.0"
-slug = "dnfolio-v6-my-neovim-style-ui"
+slug = "dnfolio-v6-my-neovim-on-web"
 description = "個人サイトを「私のNeovim環境っぽいUI」に全面改修した。sakurajima.nvimカラーテーマ、行番号、:qコマンド、snacks.nvim風検索まで実装した狂気の記録。"
 created = "2026-01-22"
 draft = false

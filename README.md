@@ -11,7 +11,20 @@
 
 ## Architecture change log
 
-### Version 5 (Latest)
+### Version 6 (Latest)
+
+> [!NOTE]
+> Since January 2026.
+
+- [Rust](https://www.rust-lang.org/)
+- Neovim-style UI with [sakurajima.nvim](https://github.com/Daiki48/sakurajima.nvim) color scheme
+- Line numbers, statusline, commandline
+- Vim keybindings (`:q`, `:help`, `:version`, `gg`, `G`, `/` search)
+- snacks.nvim-style search modal
+
+My Neovim-like environment on the Web.
+
+### Version 5
 
 > [!NOTE]
 > Since 31 July 2025.

@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 
 use anyhow::Result;
-use chrono::NaiveDate;
+use chrono::{Datelike, NaiveDate};
 use gray_matter::{Matter, ParsedEntity};
 use maud::{Markup, html};
 use pulldown_cmark::{CowStr, Event, Parser, Tag, TagEnd};
@@ -17,9 +17,109 @@ use syntect::parsing::SyntaxSet;
 use walkdir::WalkDir;
 
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
-use crate::templates::base::PageConfig;
+use crate::templates::base::{ArticlePageConfig, PageConfig};
 use crate::templates::{base, privacy};
 use crate::{ogp, rss, sitemap, structured_data};
+
+// 年月別グループ化のためのヘルパー構造
+struct YearGroup {
+    year: i32,
+    months: Vec<MonthGroup>,
+}
+
+struct MonthGroup {
+    month: u32,
+    articles: Vec<Article>,
+}
+
+// 記事を年月別にグループ化
+fn group_articles_by_year_month(articles: &[Article]) -> Vec<YearGroup> {
+    let mut year_map: HashMap<i32, HashMap<u32, Vec<Article>>> = HashMap::new();
+
+    for article in articles {
+        if let Some(date) = extract_date_from_filename(&article.source_path) {
+            let year = date.year();
+            let month = date.month();
+            year_map
+                .entry(year)
+                .or_default()
+                .entry(month)
+                .or_default()
+                .push(article.clone());
+        }
+    }
+
+    let mut years: Vec<YearGroup> = year_map
+        .into_iter()
+        .map(|(year, month_map)| {
+            let mut months: Vec<MonthGroup> = month_map
+                .into_iter()
+                .map(|(month, articles)| MonthGroup { month, articles })
+                .collect();
+            months.sort_by(|a, b| b.month.cmp(&a.month));
+            YearGroup { year, months }
+        })
+        .collect();
+
+    years.sort_by(|a, b| b.year.cmp(&a.year));
+    years
+}
+
+// Neovim風ファイルツリー形式の記事一覧を生成
+fn generate_file_tree_markup(
+    year_groups: &[YearGroup],
+    current_article_url: Option<&str>,
+    toc_html: Option<&str>,
+) -> Markup {
+    html! {
+        ul {
+            @for year_group in year_groups {
+                li class="folder-item" {
+                    span class="file-tree-item folder-toggle folder-year" {
+                        span class="tree-icon" { "v" }
+                        (format!("{}", year_group.year))
+                    }
+                    ul {
+                        @for month_group in &year_group.months {
+                            li class="folder-item" {
+                                span class="file-tree-item folder-toggle folder-month" {
+                                    span class="tree-icon" { "v" }
+                                    (format!("{:02}", month_group.month))
+                                }
+                                ul {
+                                    @for article in &month_group.articles {
+                                        @let article_url = article.relative_url.to_string_lossy().to_string();
+                                        @let is_current = current_article_url.map(|u| u == article_url.as_str()).unwrap_or(false);
+                                        @let class_name = if is_current { "file-tree-item current" } else { "file-tree-item" };
+                                        @let tree_icon = if is_current { "v" } else { "-" };
+                                        li {
+                                            a href=(article_url) class=(class_name) {
+                                                span class="tree-icon" { (tree_icon) }
+                                                @if let Some(meta) = &article.metadata {
+                                                    @let title_display: String = meta.title.chars().take(25).collect();
+                                                    (title_display)
+                                                    @if meta.title.chars().count() > 25 { "..." }
+                                                } @else {
+                                                    (article.output_path.file_name().unwrap_or_default().to_string_lossy())
+                                                }
+                                            }
+                                            // 現在の記事の場合は目次を展開
+                                            @if is_current && toc_html.is_some() {
+                                                div class="toc-expanded" {
+                                                    (maud::PreEscaped(toc_html.unwrap()))
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 static SYNTAX_SET: OnceLock<SyntaxSet> = OnceLock::new();
 static THEME_SET: OnceLock<ThemeSet> = OnceLock::new();
@@ -42,7 +142,17 @@ fn highlight_code(lang: &str, code: &str) -> String {
         .find_syntax_by_token(lang)
         .unwrap_or_else(|| ss.find_syntax_plain_text());
 
-    match highlighted_html_for_string(code, ss, syntax, theme) {
+    // 言語表示名（空の場合は"text"）
+    let display_lang = if lang.is_empty() { "text" } else { lang };
+
+    // コードをdata属性用にエスケープ
+    let escaped_code = code
+        .replace('&', "&amp;")
+        .replace('"', "&quot;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;");
+
+    let highlighted_html = match highlighted_html_for_string(code, ss, syntax, theme) {
         Ok(html) => html,
         Err(_) => {
             // エラー時はエスケープしてそのまま表示
@@ -53,7 +163,24 @@ fn highlight_code(lang: &str, code: &str) -> String {
                     .replace('>', "&gt;")
             )
         }
-    }
+    };
+
+    // ヘッダーバー付きのコードブロックを生成
+    format!(
+        r#"<div class="code-block-wrapper">
+<div class="code-block-header">
+<span class="code-lang">{}</span>
+<button class="code-copy-btn" data-code="{}" title="コピー">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+</svg>
+<span class="copy-text">Copy</span>
+</button>
+</div>
+{}</div>"#,
+        display_lang, escaped_code, highlighted_html
+    )
 }
 
 fn extract_date_from_filename(path: &Path) -> Option<NaiveDate> {
@@ -256,13 +383,16 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
     pulldown_cmark::html::push_html(&mut html_output, processed_events.into_iter());
 
     let toc_markup = html! {
-        h2 { "目次" }
-        ul {
+        div class="toc-header" {
+            span class="toc-icon" { "≡" }
+            span { "OUTLINE" }
+        }
+        ul class="toc-list" {
             @for heading in &headings {
                 @if heading.level == 2 {
-                    li { a href=(format!("#{}", heading.id)) { (heading.text) } }
+                    li class="toc-item toc-h2" { a href=(format!("#{}", heading.id)) { (heading.text) } }
                 } @else if heading.level == 3 {
-                    li style="margin-left: 20px;" { a href=(format!("#{}", heading.id)) { (heading.text) } }
+                    li class="toc-item toc-h3" { a href=(format!("#{}", heading.id)) { (heading.text) } }
                 }
             }
         }
@@ -444,67 +574,394 @@ fn generate_tag_pages(
 
 fn generate_search_js() -> String {
     r#"
-async function initSearch() {
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
-  let articles = [];
+// snacks.nvim grep風検索
+let searchIndex = [];
+let searchModal = null;
+let searchInput = null;
+let resultsList = null;
+let previewPane = null;
+let resultsCount = null;
+let modeIndicator = null;
+let selectedIndex = 0;
+let searchResults = [];
+let currentMode = 'insert'; // 'insert' or 'normal'
 
-  try {
-    const response = await fetch('/search-index.json');
-    if (!response.ok) {
-        console.error('Failed to load search index.');
-        return;
+async function loadSearchIndex() {
+    try {
+        const response = await fetch('/search-index.json');
+        if (response.ok) {
+            searchIndex = await response.json();
+        }
+    } catch (e) {
+        console.error('Failed to load search index:', e);
     }
-    articles = await response.json();
-  } catch (e) {
-    console.error('Error fetching or parsing search index:', e);
-    return;
-  }
-
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.toLowerCase().trim();
-    
-    // 一旦結果をクリア
-    searchResults.innerHTML = '';
-    searchResults.style.display = 'none';
-
-    if (query.length < 2) {
-      return;
-    }
-
-    const matchedArticles = articles.filter(article => 
-        article.title.toLowerCase().includes(query) || 
-        article.content.toLowerCase().includes(query)
-    ).slice(0, 10); // 表示件数を最大10件に制限
-
-    if (matchedArticles.length > 0) {
-      const ul = document.createElement('ul');
-      matchedArticles.forEach(article => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = article.url;
-        a.textContent = article.title;
-        li.appendChild(a);
-        ul.appendChild(li);
-      });
-      searchResults.appendChild(ul);
-      searchResults.style.display = 'block'; // 結果があれば表示
-    }
-  });
-
-  // 検索ボックス外をクリックしたら結果を非表示にする
-  document.addEventListener('click', (e) => {
-    if (!searchResults.contains(e.target) && e.target !== searchInput) {
-      searchResults.style.display = 'none';
-    }
-  });
 }
 
-// DOMの準備ができたら検索機能を初期化
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function highlightMatch(text, query) {
+    if (!query) return escapeHtml(text);
+    const escaped = escapeHtml(text);
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return escaped.replace(regex, '<mark>$1</mark>');
+}
+
+function performSearch(query) {
+    if (!query || query.length < 2) {
+        searchResults = [];
+        return;
+    }
+
+    const lowerQuery = query.toLowerCase();
+    const results = [];
+
+    for (const article of searchIndex) {
+        // タイトルマッチ
+        if (article.title.toLowerCase().includes(lowerQuery)) {
+            results.push({
+                slug: article.slug,
+                title: article.title,
+                url: article.url,
+                lineNum: 0,
+                lineText: article.title,
+                isTitle: true,
+                context: article.lines.slice(0, 10)
+            });
+        }
+
+        // 行マッチ
+        for (const line of article.lines) {
+            if (line.text.toLowerCase().includes(lowerQuery)) {
+                const lineIdx = article.lines.indexOf(line);
+                const contextStart = Math.max(0, lineIdx - 3);
+                const contextEnd = Math.min(article.lines.length, lineIdx + 7);
+
+                results.push({
+                    slug: article.slug,
+                    title: article.title,
+                    url: article.url,
+                    lineNum: line.num,
+                    lineText: line.text,
+                    isTitle: false,
+                    context: article.lines.slice(contextStart, contextEnd),
+                    matchLineIdx: lineIdx - contextStart
+                });
+            }
+        }
+    }
+
+    searchResults = results.slice(0, 50);
+}
+
+function renderResults(query) {
+    if (!resultsList) return;
+
+    resultsList.innerHTML = '';
+
+    if (searchResults.length === 0) {
+        if (query && query.length >= 2) {
+            resultsList.innerHTML = '<div class="search-no-results">マッチする結果がありません</div>';
+        }
+        resultsCount.textContent = '0 results';
+        previewPane.innerHTML = '';
+        return;
+    }
+
+    resultsCount.textContent = `${searchResults.length} results`;
+
+    searchResults.forEach((result, index) => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item' + (index === selectedIndex ? ' selected' : '');
+        item.dataset.index = index;
+
+        const location = result.isTitle
+            ? `${result.slug}`
+            : `${result.slug}:${result.lineNum}`;
+
+        item.innerHTML = `
+            <div class="result-location">${escapeHtml(location)}</div>
+            <div class="result-text">${highlightMatch(result.lineText.substring(0, 60), query)}${result.lineText.length > 60 ? '...' : ''}</div>
+        `;
+
+        item.addEventListener('click', () => {
+            // モバイル（プレビュー非表示）の場合はシングルタップで遷移
+            const previewPaneContainer = document.querySelector('.search-preview-pane');
+            const isMobile = previewPaneContainer && getComputedStyle(previewPaneContainer).display === 'none';
+            if (isMobile) {
+                navigateToResult(result);
+            } else {
+                selectedIndex = index;
+                renderResults(query);
+                renderPreview(query);
+            }
+        });
+
+        item.addEventListener('dblclick', () => {
+            navigateToResult(result);
+        });
+
+        resultsList.appendChild(item);
+    });
+
+    // スクロールして選択項目を表示
+    const selectedItem = resultsList.querySelector('.selected');
+    if (selectedItem) {
+        selectedItem.scrollIntoView({ block: 'nearest' });
+    }
+
+    renderPreview(query);
+}
+
+function renderPreview(query) {
+    if (!previewPane || searchResults.length === 0) {
+        if (previewPane) previewPane.innerHTML = '';
+        return;
+    }
+
+    const result = searchResults[selectedIndex];
+    if (!result) return;
+
+    let previewHtml = `<div class="preview-title">${escapeHtml(result.title)}</div>`;
+    previewHtml += '<div class="preview-content">';
+
+    result.context.forEach((line, idx) => {
+        const isMatchLine = !result.isTitle && idx === result.matchLineIdx;
+        const lineClass = isMatchLine ? 'preview-line match' : 'preview-line';
+        const lineText = highlightMatch(line.text, query);
+        previewHtml += `<div class="${lineClass}"><span class="line-num">${line.num}</span><span class="line-text">${lineText}</span></div>`;
+    });
+
+    previewHtml += '</div>';
+    previewPane.innerHTML = previewHtml;
+}
+
+function navigateToResult(result) {
+    closeSearchModal();
+    // キーワードと選択した行のテキストをURLパラメータで渡す
+    const query = searchInput.value;
+    const lineText = result.lineText.substring(0, 80); // 長すぎないように制限
+    const url = `${result.url}?highlight=${encodeURIComponent(query)}&lineText=${encodeURIComponent(lineText)}`;
+    window.location.href = url;
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    if (modeIndicator) {
+        modeIndicator.textContent = mode === 'insert' ? 'INSERT' : 'NORMAL';
+        modeIndicator.className = 'search-mode-indicator mode-' + mode;
+    }
+    if (mode === 'insert') {
+        searchInput.focus();
+        resultsList.classList.remove('focused');
+    } else {
+        searchInput.blur();
+        resultsList.classList.add('focused');
+    }
+}
+
+function openSearchModal() {
+    if (!searchModal) return;
+    searchModal.classList.add('open');
+
+    // コマンドラインに値があれば引き継ぐ
+    const cmdInput = document.getElementById('commandline-input');
+    const existingQuery = cmdInput ? cmdInput.value.trim() : '';
+
+    if (existingQuery) {
+        searchInput.value = existingQuery;
+        selectedIndex = 0;
+        performSearch(existingQuery);
+        renderResults(existingQuery);
+    } else {
+        searchInput.value = '';
+        searchResults = [];
+        selectedIndex = 0;
+        renderResults('');
+    }
+
+    setMode('insert');
+}
+
+function closeSearchModal() {
+    if (!searchModal) return;
+    searchModal.classList.remove('open');
+    currentMode = 'insert';
+
+    // 検索モーダルの入力が空ならコマンドラインもクリア＆ハイライト削除
+    const cmdInput = document.getElementById('commandline-input');
+    if (cmdInput && searchInput.value.trim() === '') {
+        cmdInput.value = '';
+        cmdInput.setAttribute('readonly', '');
+        // ハイライトを削除
+        const highlights = document.querySelectorAll('.search-highlight');
+        highlights.forEach(mark => {
+            const parent = mark.parentNode;
+            const text = document.createTextNode(mark.textContent);
+            parent.replaceChild(text, mark);
+            parent.normalize();
+        });
+    }
+}
+
+function handleInsertModeKeydown(e) {
+    switch (e.key) {
+        case 'Escape':
+            // INSERT -> NORMAL モードへ
+            setMode('normal');
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        case 'ArrowDown':
+            selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
+            renderResults(searchInput.value);
+            e.preventDefault();
+            break;
+        case 'ArrowUp':
+            selectedIndex = Math.max(selectedIndex - 1, 0);
+            renderResults(searchInput.value);
+            e.preventDefault();
+            break;
+        case 'Enter':
+            if (searchResults[selectedIndex]) {
+                navigateToResult(searchResults[selectedIndex]);
+            }
+            e.preventDefault();
+            break;
+    }
+}
+
+function handleNormalModeKeydown(e) {
+    switch (e.key) {
+        case 'Escape':
+            // NORMALモードでEsc -> モーダルを閉じる
+            closeSearchModal();
+            e.preventDefault();
+            break;
+        case 'j':
+        case 'ArrowDown':
+            selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
+            renderResults(searchInput.value);
+            e.preventDefault();
+            break;
+        case 'k':
+        case 'ArrowUp':
+            selectedIndex = Math.max(selectedIndex - 1, 0);
+            renderResults(searchInput.value);
+            e.preventDefault();
+            break;
+        case 'Enter':
+        case 'l':
+            if (searchResults[selectedIndex]) {
+                navigateToResult(searchResults[selectedIndex]);
+            }
+            e.preventDefault();
+            break;
+        case 'i':
+        case 'a':
+            // NORMALからINSERTモードへ
+            setMode('insert');
+            e.preventDefault();
+            break;
+        case 'g':
+            // gg で先頭へ
+            selectedIndex = 0;
+            renderResults(searchInput.value);
+            e.preventDefault();
+            break;
+        case 'G':
+            // G で末尾へ
+            selectedIndex = Math.max(0, searchResults.length - 1);
+            renderResults(searchInput.value);
+            e.preventDefault();
+            break;
+    }
+}
+
+function handleGlobalKeydown(e) {
+    if (!searchModal.classList.contains('open')) return;
+
+    if (currentMode === 'normal') {
+        handleNormalModeKeydown(e);
+    }
+}
+
+function initGrepSearch() {
+    searchModal = document.getElementById('search-modal');
+    searchInput = document.getElementById('grep-search-input');
+    resultsList = document.getElementById('grep-results-list');
+    previewPane = document.getElementById('grep-preview');
+    resultsCount = document.getElementById('grep-results-count');
+    modeIndicator = document.getElementById('search-mode-indicator');
+
+    if (!searchModal || !searchInput) return;
+
+    loadSearchIndex();
+
+    // 検索入力イベント
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        selectedIndex = 0;
+        performSearch(query);
+        renderResults(query);
+    });
+
+    // INSERTモード時のキーボードイベント
+    searchInput.addEventListener('keydown', handleInsertModeKeydown);
+
+    // NORMALモード時のキーボードイベント（グローバル）
+    document.addEventListener('keydown', handleGlobalKeydown);
+
+    // モーダル外クリックで閉じる
+    searchModal.addEventListener('click', (e) => {
+        if (e.target === searchModal) {
+            closeSearchModal();
+        }
+    });
+
+    // 閉じるボタン
+    const closeBtn = document.getElementById('search-modal-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSearchModal);
+    }
+
+    // グローバルキーバインド（モーダルを開く）
+    document.addEventListener('keydown', (e) => {
+        if (searchModal.classList.contains('open')) return;
+
+        // "/" キーで検索モーダルを開く（入力欄以外で）
+        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+            openSearchModal();
+            e.preventDefault();
+        }
+        // Ctrl+K / Cmd+K で検索モーダルを開く
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            openSearchModal();
+            e.preventDefault();
+        }
+    });
+
+    // コマンドラインのクリックでも開く
+    const commandline = document.querySelector('.commandline');
+    if (commandline) {
+        commandline.addEventListener('click', () => {
+            openSearchModal();
+        });
+    }
+}
+
+// openSearchModalをグローバルに公開
+window.openSearchModal = openSearchModal;
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSearch);
+    document.addEventListener('DOMContentLoaded', initGrepSearch);
 } else {
-    initSearch();
+    initGrepSearch();
 }
 "#
     .to_string()
@@ -579,20 +1036,50 @@ pub async fn run() -> Result<()> {
         }
     });
 
+    // grep風検索用のインデックス生成（行単位）
     #[derive(serde::Serialize)]
-    struct SearchIndexEntry<'a> {
+    struct SearchLine {
+        num: usize,
+        text: String,
+    }
+
+    #[derive(serde::Serialize)]
+    struct SearchIndexEntry {
+        slug: String,
+        title: String,
         url: String,
-        title: &'a str,
-        content: &'a str,
+        lines: Vec<SearchLine>,
     }
 
     let search_index: Vec<SearchIndexEntry> = articles
         .iter()
         .filter_map(|article| {
-            article.metadata.as_ref().map(|meta| SearchIndexEntry {
-                url: article.relative_url.to_string_lossy().into_owned(),
-                title: &meta.title,
-                content: &article.plain_content,
+            let meta = article.metadata.as_ref()?;
+            let url = article.relative_url.to_string_lossy().into_owned();
+            let slug = url
+                .trim_matches('/')
+                .split('/')
+                .last()
+                .unwrap_or("")
+                .to_string();
+
+            // plain_contentを行に分割
+            let lines: Vec<SearchLine> = article
+                .plain_content
+                .lines()
+                .enumerate()
+                .filter(|(_, line)| !line.trim().is_empty())
+                .map(|(i, line)| SearchLine {
+                    num: i + 1,
+                    text: line.trim().to_string(),
+                })
+                .collect();
+
+            Some(SearchIndexEntry {
+                slug,
+                title: meta.title.clone(),
+                url,
+                lines,
             })
         })
         .collect();
@@ -642,22 +1129,11 @@ pub async fn run() -> Result<()> {
 
     let articles_arc = Arc::new(articles.clone());
 
-    let articles_list_markup: Markup = html! {
-        h2 { "記事一覧" }
-        ul {
-            @for article in &articles {
-                li {
-                    a href=(article.relative_url.to_string_lossy()) {
-                        @if let Some(meta) = &article.metadata {
-                            (meta.title)
-                        } @else {
-                            (article.output_path.file_name().unwrap_or_default().to_string_lossy())
-                        }
-                    }
-                }
-            }
-        }
-    };
+    // 記事を年月別にグループ化
+    let year_groups = group_articles_by_year_month(&articles);
+
+    // デフォルトの記事一覧（ホームページ用、目次なし）
+    let articles_list_markup: Markup = generate_file_tree_markup(&year_groups, None, None);
 
     generate_tag_pages(&tag_map, dist_dir, &articles_list_markup)?;
 
@@ -681,9 +1157,8 @@ pub async fn run() -> Result<()> {
                 })?;
             }
 
-            let sidebar_right_markup = html! {
-                (maud::PreEscaped(&article.table_of_contents_html))
-            };
+            // 目次なしの右サイドバー（Neovim UIでは使わない）
+            let _sidebar_right_markup = html! {};
 
             let page_title = article
                 .metadata
@@ -710,6 +1185,7 @@ pub async fn run() -> Result<()> {
 
             let canonical_url = format!("https://dnfolio.me{}", article.relative_url.to_string_lossy());
 
+            // 新しいNeovim風のスタイルでメインコンテンツを生成
             let main_content_markup = html! {
                 @if let Some(meta) = &article.metadata {
                     img src=(ogp_image_path) alt=(meta.title);
@@ -721,41 +1197,51 @@ pub async fn run() -> Result<()> {
                         (article.output_path.file_name().unwrap_or_default().to_string_lossy())
                     }
                 }
-                ul style="display: flex;" {
+                // 言語バッジ
+                ul class="badge-list" {
                     @if let Some(meta) = &article.metadata
                     && let Some(ref taxonomies) = meta.taxonomies
                     && let Some(ref languages) = taxonomies.languages {
                         @for language in languages {
-                            li style="padding: 2px 4px; margin: 2px; border: 1px solid gray; border-radius: 4px; list-style: none; background-color: #252525; color: #fff;" { (language_display_name(language)) }
+                            li { span class="badge badge-lang" { (language_display_name(language)) } }
                         }
                     }
                 }
-                ul style="display: flex;" {
+                // タグバッジ
+                ul class="badge-list" {
                     @if let Some(meta) = &article.metadata
                     && let Some(ref taxonomies) = meta.taxonomies
                     && let Some(ref tags) = taxonomies.tags {
                         @for tag in tags {
-                            li style="padding: 2px 6px; margin: 2px; border: 1px solid gray; border-radius: 10px; list-style: none; background-color: #9e9e9e; color: #000;" { (tag) }
+                            li { span class="badge badge-tag" { (tag) } }
                         }
                     }
                 }
                 (maud::PreEscaped(&article.content_html))
             };
 
+            // 現在の記事URL
+            let article_url_str = article.relative_url.to_string_lossy().to_string();
+
+            // 目次なしのサイドバーを生成（目次はconfig経由でトップに配置）
+            let article_sidebar_markup = generate_file_tree_markup(&year_groups, Some(&article_url_str), None);
+
             let article_url = article.relative_url.to_string_lossy();
             let structured_data = structured_data::generate_structured_data_html(structured_data::PageType::Article { url: &article_url, ogp_image_url: &ogp_image_path }, article.metadata.as_ref());
 
-            let full_article_html = base::layout(
-                PageConfig {
-                    page_title,
-                    canonical_url: &canonical_url,
-                    metadata: article.metadata.as_ref(),
-                    ogp_image_path: Some(&ogp_image_path),
-                    structured_data_html: Some(&structured_data),
+            let full_article_html = base::layout_with_toc(
+                ArticlePageConfig {
+                    base: PageConfig {
+                        page_title,
+                        canonical_url: &canonical_url,
+                        metadata: article.metadata.as_ref(),
+                        ogp_image_path: Some(&ogp_image_path),
+                        structured_data_html: Some(&structured_data),
+                    },
+                    toc_html: Some(&article.table_of_contents_html),
                 },
-                articles_list_markup.clone(),
+                article_sidebar_markup,
                 main_content_markup,
-                sidebar_right_markup,
             )
             .into_string();
 

@@ -29,23 +29,23 @@ pub fn generate_ogp_svg(page_title: &str, output_dir: &Path) -> anyhow::Result<S
 
     let line_height = title_font_size + 15;
 
+    // sakurajima.nvimのtext-bright色を使用
+    let text_color = "#ebdbb2";
     let title_svg = title_lines
         .iter()
         .enumerate()
         .map(|(i, line)| {
+            let y_pos = start_y + (i as i32 * line_height);
             format!(
-                r#"<text x="600" y="{}" text-anchor="middle" 
-        font-family="Noto Sans JP" 
-        font-size="{}px" font-weight="bold" fill="rgba(0,0,0,0.8)">
-    {}
-  </text>"#,
-                start_y + (i as i32 * line_height),
+                "<text x=\"600\" y=\"{}\" text-anchor=\"middle\" font-family=\"Noto Sans JP\" font-size=\"{}px\" font-weight=\"bold\" fill=\"{}\">{}</text>",
+                y_pos,
                 title_font_size,
+                text_color,
                 escape_xml(line)
             )
         })
         .collect::<Vec<String>>()
-        .join("\n ");
+        .join("\n    ");
 
     let icon_path = static_icons_dir.join("icon-bg.png");
 

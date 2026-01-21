@@ -1,7 +1,8 @@
 [package]
 name = "dnfolio"
-version = "5.2.0"
+version = "0.0.0"
 edition = "2024"
+build = "build_script.rs"
 
 [dependencies]
 anyhow = "1.0.98"

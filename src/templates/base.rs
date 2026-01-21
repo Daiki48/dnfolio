@@ -58,6 +58,9 @@ pub fn layout_with_toc(
         "home"
     };
 
+    // git tagからバージョンを取得（ビルド時に埋め込み）
+    const GIT_VERSION: &str = env!("GIT_VERSION");
+
     let css = r#"
         /* ========================================
            sakurajima.nvim カラーパレット
@@ -2299,7 +2302,7 @@ pub fn layout_with_toc(
                             '❓', 'info');
                     },
                     ':h': () => commands[':help'](),
-                    ':version': () => showToast('dnfolio v5.2.0', 'Built with Rust + maud\\nTheme: sakurajima.nvim\\nby Daiki Nakashima', '🦀', 'info'),
+                    ':version': () => showToast('dnfolio ' + document.body.dataset.version, 'Built with Rust + maud\\nTheme: sakurajima.nvim\\nby Daiki Nakashima', '🦀', 'info'),
                     ':ver': () => commands[':version'](),
                     ':smile': () => showToast(':)', 'Have a nice day!', '😊', 'info'),
                     ':qa': () => showToast('E37: No write since last change', '全部閉じようとしても無駄です', '!', 'warn'),
@@ -2467,7 +2470,7 @@ pub fn layout_with_toc(
 
                 style { (PreEscaped(css)) }
             }
-            body {
+            body data-version=(GIT_VERSION) {
                 // タイトルバー（Neovim風）
                 header class="titlebar" {
                     div class="titlebar-left" {

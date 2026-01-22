@@ -34,11 +34,18 @@ pub struct Page {
     pub filename: String,
 }
 
+/// 検索用のブロック要素（DOMの行番号と対応）
+#[derive(Debug, Clone)]
+pub struct ContentBlock {
+    pub line_num: usize,
+    pub text: String,
+}
+
 #[derive(Debug, Clone)]
 pub struct Article {
     pub metadata: Option<MetaData>,
     pub content_html: String,
-    pub plain_content: String,
+    pub content_blocks: Vec<ContentBlock>,
     pub output_path: PathBuf,
     pub relative_url: PathBuf,
     pub table_of_contents_html: String,

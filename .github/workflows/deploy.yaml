@@ -18,6 +18,8 @@ jobs:
           node-version: 23.8.0
       - name: Build
         run: cargo run -- build
+        env:
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
       - name: Deploy                                                                                                  
         uses: cloudflare/wrangler-action@v3                                                                           
         with:                                                                                                         

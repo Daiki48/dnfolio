@@ -435,7 +435,8 @@ pub fn layout_with_toc(
         .main-content > blockquote,
         .main-content > pre,
         .main-content > table,
-        .main-content > hr {
+        .main-content > hr,
+        .main-content > .code-block-wrapper {
             position: relative;
             counter-increment: line-number;
         }
@@ -450,7 +451,8 @@ pub fn layout_with_toc(
         .main-content > blockquote::before,
         .main-content > pre::before,
         .main-content > table::before,
-        .main-content > hr::before {
+        .main-content > hr::before,
+        .main-content > .code-block-wrapper::before {
             content: counter(line-number);
             position: absolute;
             left: -3.5em;
@@ -488,7 +490,8 @@ pub fn layout_with_toc(
         .main-content > blockquote:hover::before,
         .main-content > pre:hover::before,
         .main-content > table:hover::before,
-        .main-content > hr:hover::before {
+        .main-content > hr:hover::before,
+        .main-content > .code-block-wrapper:hover::before {
             color: var(--accent-cyan);
         }
 
@@ -509,7 +512,8 @@ pub fn layout_with_toc(
         .main-content > ol.current-line::before,
         .main-content > blockquote.current-line::before,
         .main-content > pre.current-line::before,
-        .main-content > table.current-line::before {
+        .main-content > table.current-line::before,
+        .main-content > .code-block-wrapper.current-line::before {
             color: #2BB6BA !important;
             font-weight: 700 !important;
             text-shadow: 0 0 8px rgba(43, 182, 186, 0.5) !important;
@@ -1510,10 +1514,10 @@ pub fn layout_with_toc(
                 display: none;
             }
 
-            /* モバイルでは見出しのパディングも調整 */
-            .main-content > h2,
-            .main-content > h3,
-            .main-content > h4 {
+            /* モバイルでは見出しのパディングも調整（記事ページのみ） */
+            .main-content.page-article > h2,
+            .main-content.page-article > h3,
+            .main-content.page-article > h4 {
                 padding-left: 1.5em;
             }
 
@@ -1724,6 +1728,7 @@ pub fn layout_with_toc(
             const urlParams = new URLSearchParams(window.location.search);
             const highlightQuery = urlParams.get('highlight');
             const lineText = urlParams.get('lineText');
+            const lineNum = parseInt(urlParams.get('lineNum') || '0', 10);
             const commandlineInput = document.getElementById('commandline-input');
             const searchCountDisplay = document.getElementById('search-count');
             const highlightNav = document.getElementById('highlight-nav');
@@ -1772,13 +1777,23 @@ pub fn layout_with_toc(
             };
 
             // ハイライトを適用する関数
-            const applyHighlight = (query, targetLineText) => {
+            const applyHighlight = (query, targetLineText, targetLineNum) => {
                 const mainContent = document.querySelector('.main-content');
                 if (!mainContent || !query) return;
 
                 // 配列をリセット
                 allHighlights = [];
                 currentHighlightIndex = 0;
+
+                // CSSカウンター対象のブロック要素を取得（行番号と対応）
+                const blockElements = Array.from(mainContent.querySelectorAll(
+                    ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > p, :scope > ul, :scope > ol, :scope > blockquote, :scope > pre, :scope > table, :scope > hr, :scope > div.code-block-wrapper'
+                ));
+
+                // ターゲット行の要素を特定（lineNumは1始まり）
+                const targetElement = targetLineNum > 0 && targetLineNum <= blockElements.length
+                    ? blockElements[targetLineNum - 1]
+                    : null;
 
                 const walker = document.createTreeWalker(
                     mainContent,
@@ -1790,17 +1805,20 @@ pub fn layout_with_toc(
                 const nodesToHighlight = [];
                 let node;
                 const lowerQuery = query.toLowerCase();
-                let targetNodeIndex = -1;
 
                 while (node = walker.nextNode()) {
                     if (node.textContent.toLowerCase().includes(lowerQuery)) {
-                        const isTarget = targetLineText && node.textContent.includes(targetLineText.substring(0, 30));
+                        // このノードがターゲット要素内にあるかチェック
+                        const isInTargetElement = targetElement && targetElement.contains(node);
                         nodesToHighlight.push({
                             node: node,
-                            isTarget: isTarget
+                            isInTargetElement: isInTargetElement
                         });
                     }
                 }
+
+                let targetHighlightIndex = -1;
+                let highlightCount = 0;
 
                 nodesToHighlight.forEach(item => {
                     const textNode = item.node;
@@ -1816,11 +1834,12 @@ pub fn layout_with_toc(
                                 mark.className = 'search-highlight';
                                 mark.textContent = part;
                                 fragment.appendChild(mark);
-                                // ターゲット行のハイライトを記録
-                                if (item.isTarget && targetNodeIndex === -1) {
-                                    targetNodeIndex = allHighlights.length;
+                                // ターゲット要素内の最初のハイライトを記録
+                                if (item.isInTargetElement && targetHighlightIndex === -1) {
+                                    targetHighlightIndex = highlightCount;
                                 }
                                 allHighlights.push(mark);
+                                highlightCount++;
                             } else {
                                 fragment.appendChild(document.createTextNode(part));
                             }
@@ -1830,7 +1849,7 @@ pub fn layout_with_toc(
                 });
 
                 // 初期インデックスを設定（ターゲットがあればそこ、なければ0）
-                const initialIndex = targetNodeIndex >= 0 ? targetNodeIndex : 0;
+                const initialIndex = targetHighlightIndex >= 0 ? targetHighlightIndex : 0;
                 if (allHighlights.length > 0) {
                     setCurrentHighlight(initialIndex);
                 }
@@ -1893,7 +1912,7 @@ pub fn layout_with_toc(
                     commandlineInput.removeAttribute('readonly');
                 }
 
-                applyHighlight(highlightQuery, lineText);
+                applyHighlight(highlightQuery, lineText, lineNum);
 
                 // URLからパラメータを削除（履歴は残さない）
                 const cleanUrl = window.location.pathname;
@@ -2054,15 +2073,35 @@ pub fn layout_with_toc(
                 if (!toastContainer) return;
                 const toast = document.createElement('div');
                 toast.className = 'toast toast-' + type;
-                toast.innerHTML = '<span class="toast-icon">' + icon + '</span>' +
-                    '<div class="toast-content">' +
-                    '<div class="toast-title">' + title + '</div>' +
-                    '<div class="toast-message">' + message + '</div>' +
-                    '</div>' +
-                    '<button class="toast-close">&times;</button>';
+
+                // XSS対策: textContentを使用してDOM構築
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'toast-icon';
+                iconSpan.textContent = icon;
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'toast-content';
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'toast-title';
+                titleDiv.textContent = title;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'toast-message';
+                messageDiv.textContent = message;
+
+                contentDiv.appendChild(titleDiv);
+                contentDiv.appendChild(messageDiv);
+
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'toast-close';
+                closeBtn.textContent = '×';
+
+                toast.appendChild(iconSpan);
+                toast.appendChild(contentDiv);
+                toast.appendChild(closeBtn);
                 toastContainer.appendChild(toast);
 
-                const closeBtn = toast.querySelector('.toast-close');
                 const hideToast = () => {
                     toast.classList.add('hiding');
                     setTimeout(() => toast.remove(), 300);
@@ -2617,7 +2656,10 @@ pub fn layout_with_toc(
                     "#))
                 }
 
-                script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=r#"{"token": "1a65600118b6484abc3e7fdf12932538"}"# {}
+                // Cloudflare Analytics（環境変数CF_ANALYTICS_TOKENが設定されている場合のみ有効）
+                @if let Some(cf_token) = option_env!("CF_ANALYTICS_TOKEN") {
+                    script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=(format!(r#"{{"token": "{}"}}"#, cf_token)) {}
+                }
             }
         }
     }

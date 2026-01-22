@@ -238,7 +238,13 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
     let mut headings: Vec<Heading> = Vec::new();
     let mut id_counts: HashMap<String, usize> = HashMap::new();
     let mut html_output = String::new();
-    let mut plain_content = String::new();
+
+    // 検索用ブロック要素のトラッキング（DOMの行番号と対応）
+    let mut content_blocks: Vec<crate::models::ContentBlock> = Vec::new();
+    let mut current_block_text = String::new();
+    let mut block_line_num: usize = 0;
+    let mut in_block = false;
+    let mut block_depth = 0; // ネストしたブロック要素（ul内のliなど）のトラッキング
 
     let mut current_heading_text_buffer = String::new();
     let mut is_in_heading = false;
@@ -249,10 +255,54 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
     let mut code_block_content = String::new();
 
     for event in parser {
+        // ブロック要素のテキスト収集
         match &event {
             Event::Text(text) | Event::Code(text) => {
-                plain_content.push_str(text);
-                plain_content.push(' ');
+                if in_block {
+                    current_block_text.push_str(text);
+                    current_block_text.push(' ');
+                }
+            }
+            _ => {}
+        }
+
+        // ブロック要素の開始・終了をトラッキング
+        // CSSカウンター対象: h1-h4, p, ul, ol, blockquote, pre, table, hr
+        match &event {
+            Event::Start(Tag::Heading { .. })
+            | Event::Start(Tag::Paragraph)
+            | Event::Start(Tag::List(_))
+            | Event::Start(Tag::BlockQuote(_))
+            | Event::Start(Tag::CodeBlock(_))
+            | Event::Start(Tag::Table(_)) => {
+                if block_depth == 0 {
+                    block_line_num += 1;
+                    current_block_text.clear();
+                    in_block = true;
+                }
+                block_depth += 1;
+            }
+            Event::End(TagEnd::Heading(_))
+            | Event::End(TagEnd::Paragraph)
+            | Event::End(TagEnd::List(_))
+            | Event::End(TagEnd::BlockQuote(_))
+            | Event::End(TagEnd::CodeBlock)
+            | Event::End(TagEnd::Table) => {
+                block_depth -= 1;
+                if block_depth == 0 && in_block {
+                    let text = current_block_text.trim().to_string();
+                    if !text.is_empty() {
+                        content_blocks.push(crate::models::ContentBlock {
+                            line_num: block_line_num,
+                            text,
+                        });
+                    }
+                    in_block = false;
+                }
+            }
+            Event::Rule => {
+                // hr要素もカウント（テキストなし）
+                block_line_num += 1;
             }
             _ => {}
         }
@@ -427,7 +477,7 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
     Ok(Article {
         metadata,
         content_html: html_output,
-        plain_content,
+        content_blocks,
         output_path,
         relative_url,
         table_of_contents_html,
@@ -743,10 +793,11 @@ function renderPreview(query) {
 
 function navigateToResult(result) {
     closeSearchModal();
-    // キーワードと選択した行のテキストをURLパラメータで渡す
+    // キーワードと選択した行のテキスト、行番号をURLパラメータで渡す
     const query = searchInput.value;
     const lineText = result.lineText.substring(0, 80); // 長すぎないように制限
-    const url = `${result.url}?highlight=${encodeURIComponent(query)}&lineText=${encodeURIComponent(lineText)}`;
+    const lineNum = result.lineNum || 0;
+    const url = `${result.url}?highlight=${encodeURIComponent(query)}&lineText=${encodeURIComponent(lineText)}&lineNum=${lineNum}`;
     window.location.href = url;
 }
 
@@ -1063,15 +1114,19 @@ pub async fn run() -> Result<()> {
                 .unwrap_or("")
                 .to_string();
 
-            // plain_contentを行に分割
+            // content_blocksから検索用の行データを生成（DOMの行番号と対応）
+            // オフセット: main-content内でMarkdown本文の前にある要素
+            // - h1タイトル: 1
+            // - ul.badge-list（言語バッジ）: 1
+            // - ul.badge-list（タグバッジ）: 1
+            // 合計: 3
+            const LINE_NUM_OFFSET: usize = 3;
             let lines: Vec<SearchLine> = article
-                .plain_content
-                .lines()
-                .enumerate()
-                .filter(|(_, line)| !line.trim().is_empty())
-                .map(|(i, line)| SearchLine {
-                    num: i + 1,
-                    text: line.trim().to_string(),
+                .content_blocks
+                .iter()
+                .map(|block| SearchLine {
+                    num: block.line_num + LINE_NUM_OFFSET,
+                    text: block.text.clone(),
                 })
                 .collect();
 

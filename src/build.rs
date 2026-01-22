@@ -18,7 +18,7 @@ use walkdir::WalkDir;
 
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::base::{ArticlePageConfig, PageConfig};
-use crate::templates::{base, privacy};
+use crate::templates::{base, icons, privacy};
 use crate::{ogp, rss, sitemap, structured_data};
 
 // 年月別グループ化のためのヘルパー構造
@@ -76,14 +76,14 @@ fn generate_file_tree_markup(
             @for year_group in year_groups {
                 li class="folder-item" {
                     span class="file-tree-item folder-toggle folder-year" {
-                        span class="tree-icon" { "v" }
+                        span class="tree-icon tree-icon-folder" { (maud::PreEscaped(icons::folder_open(12))) }
                         (format!("{}", year_group.year))
                     }
                     ul {
                         @for month_group in &year_group.months {
                             li class="folder-item" {
                                 span class="file-tree-item folder-toggle folder-month" {
-                                    span class="tree-icon" { "v" }
+                                    span class="tree-icon tree-icon-folder" { (maud::PreEscaped(icons::folder_open(12))) }
                                     (format!("{:02}", month_group.month))
                                 }
                                 ul {
@@ -91,10 +91,9 @@ fn generate_file_tree_markup(
                                         @let article_url = article.relative_url.to_string_lossy().to_string();
                                         @let is_current = current_article_url.map(|u| u == article_url.as_str()).unwrap_or(false);
                                         @let class_name = if is_current { "file-tree-item current" } else { "file-tree-item" };
-                                        @let tree_icon = if is_current { "v" } else { "-" };
                                         li {
                                             a href=(article_url) class=(class_name) {
-                                                span class="tree-icon" { (tree_icon) }
+                                                span class="tree-icon tree-icon-file" { (maud::PreEscaped(icons::file_document(12))) }
                                                 @if let Some(meta) = &article.metadata {
                                                     @let title_display: String = meta.title.chars().take(25).collect();
                                                     (title_display)

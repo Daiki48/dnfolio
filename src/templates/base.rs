@@ -1,4 +1,5 @@
 use crate::models::MetaData;
+use crate::templates::icons;
 use maud::{DOCTYPE, Markup, PreEscaped, html};
 
 pub struct PageConfig<'a> {
@@ -309,9 +310,29 @@ pub fn layout_with_toc(
         .tree-icon {
             color: var(--text-muted);
             margin-right: 6px;
-            font-size: 0.8rem;
             width: 12px;
-            text-align: center;
+            height: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tree-icon svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .tree-icon-folder {
+            color: var(--accent-yellow);
+        }
+
+        .tree-icon-file {
+            color: var(--accent-cyan-light);
+        }
+
+        .current .tree-icon-file {
+            color: var(--accent-green-bright);
         }
 
         /* 年/月のフォルダ */
@@ -879,6 +900,18 @@ pub fn layout_with_toc(
         .statusline-branch::before {
             content: " ";
             margin-right: 4px;
+        }
+
+        .statusline-privacy {
+            text-decoration: none;
+            font-size: 0.85em;
+            opacity: 0.6;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .statusline-privacy:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         .statusline-encoding {
@@ -2118,6 +2151,10 @@ pub fn layout_with_toc(
             });
 
             // 折りたたみ機能
+            // SVGアイコン定義（フォルダ開閉）
+            const svgFolderOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="2" y1="10" x2="22" y2="10"></line></svg>';
+            const svgFolderClosed = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>';
+
             const toggleBtns = document.querySelectorAll('.folder-toggle');
             toggleBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -2125,9 +2162,9 @@ pub fn layout_with_toc(
                     const target = btn.closest('.folder-item');
                     if (target) {
                         target.classList.toggle('collapsed');
-                        const icon = btn.querySelector('.tree-icon');
+                        const icon = btn.querySelector('.tree-icon-folder');
                         if (icon) {
-                            icon.textContent = target.classList.contains('collapsed') ? '>' : 'v';
+                            icon.innerHTML = target.classList.contains('collapsed') ? svgFolderClosed : svgFolderOpen;
                         }
                     }
                 });
@@ -2468,7 +2505,7 @@ pub fn layout_with_toc(
                     ':x': () => showToast(':x', ':wqと同じですが、ここはWebです', '📝', 'info'),
                     ':help': () => {
                         showToast('Help - Keybindings',
-                            '/ or Ctrl+K: 検索\\ngg: ページトップ\\nG: ページボトム\\nn/N: 次/前のハイライト\\n:noh: ハイライト解除\\n:行番号 で行ジャンプ',
+                            '/ or Ctrl+K: 検索\\ngg/G: トップ/ボトム\\nn/N: 次/前ハイライト\\n:noh :privacy :sitemap\\n:行番号 で行ジャンプ',
                             '❓', 'info');
                     },
                     ':h': () => commands[':help'](),
@@ -2489,6 +2526,13 @@ pub fn layout_with_toc(
                         }
                     },
                     ':nohlsearch': () => commands[':noh'](),
+                    ':privacy': () => {
+                        window.location.href = '/privacy/';
+                    },
+                    ':sitemap': () => {
+                        window.open('/sitemap.xml', '_blank');
+                        showToast(':sitemap', 'sitemap.xmlを新しいタブで開きました', '🗺️', 'info');
+                    },
                     ':$': () => {
                         const elements = getLineElements();
                         if (elements.length > 0) jumpToLine(elements.length);
@@ -3312,7 +3356,7 @@ pub fn layout_with_toc(
                         // タブバー
                         div class="tab-bar" {
                             div class="tab active" {
-                                span class="tab-icon" { "📄" }
+                                span class="tab-icon" { (PreEscaped(icons::file_markdown(14))) }
                                 span { (tab_filename) }
                                 span class="tab-close" { "×" }
                             }
@@ -3347,6 +3391,9 @@ pub fn layout_with_toc(
                         div class="statusline-left" {
                             span class="statusline-mode" { "NORMAL" }
                             span class="statusline-section statusline-branch" { "main" }
+                            a href="/privacy/" class="statusline-section statusline-privacy" title="Privacy Policy" {
+                                (PreEscaped(icons::shield(14)))
+                            }
                         }
                         div class="statusline-right" {
                             span class="statusline-section search-count" id="search-count" {}

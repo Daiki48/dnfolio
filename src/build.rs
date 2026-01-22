@@ -621,6 +621,287 @@ fn generate_tag_pages(
     Ok(())
 }
 
+/// VimModal - Neovim風モーダルコンポーネント
+fn generate_vim_modal_js() -> String {
+    r#"
+// VimModal - Neovim風モーダルコンポーネント
+// INSERT/NORMALモード切り替え、j/k移動などを共通化
+
+class VimModal {
+    constructor(config) {
+        this.modalId = config.modalId;
+        this.inputId = config.inputId;
+        this.listId = config.listId;
+        this.previewId = config.previewId;
+        this.modeIndicatorId = config.modeIndicatorId;
+        this.countId = config.countId;
+        this.closeButtonId = config.closeButtonId;
+
+        this.loadData = config.loadData;
+        this.filterData = config.filterData;
+        this.renderListItem = config.renderListItem;
+        this.renderPreview = config.renderPreview;
+        this.onNavigate = config.onNavigate;
+        this.countLabel = config.countLabel || 'items';
+
+        this.data = null;
+        this.filteredData = [];
+        this.selectedIndex = 0;
+        this.currentMode = 'insert';
+
+        this.modal = null;
+        this.input = null;
+        this.list = null;
+        this.preview = null;
+        this.modeIndicator = null;
+        this.countElement = null;
+        this.closeButton = null;
+
+        this.init();
+    }
+
+    init() {
+        this.modal = document.getElementById(this.modalId);
+        this.input = document.getElementById(this.inputId);
+        this.list = document.getElementById(this.listId);
+        this.preview = document.getElementById(this.previewId);
+        this.modeIndicator = document.getElementById(this.modeIndicatorId);
+        this.countElement = document.getElementById(this.countId);
+        this.closeButton = document.getElementById(this.closeButtonId);
+
+        if (!this.modal || !this.input || !this.list) {
+            console.warn('VimModal: Required elements not found');
+            return;
+        }
+
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        this.input.addEventListener('input', (e) => {
+            this.filter(e.target.value);
+        });
+
+        this.input.addEventListener('keydown', (e) => this.handleInsertModeKeydown(e));
+        document.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
+
+        if (this.closeButton) {
+            this.closeButton.addEventListener('click', () => this.close());
+        }
+
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.close();
+            }
+        });
+    }
+
+    setMode(mode) {
+        this.currentMode = mode;
+        if (this.modeIndicator) {
+            this.modeIndicator.textContent = mode === 'insert' ? 'INSERT' : 'NORMAL';
+            this.modeIndicator.className = this.modeIndicator.className.replace(/mode-\w+/, 'mode-' + mode);
+        }
+        if (mode === 'insert') {
+            this.input.focus();
+            this.list.classList.remove('focused');
+        } else {
+            this.input.blur();
+            this.list.classList.add('focused');
+        }
+    }
+
+    handleInsertModeKeydown(e) {
+        switch (e.key) {
+            case 'Escape':
+                this.setMode('normal');
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            case 'ArrowDown':
+                this.moveSelection(1);
+                e.preventDefault();
+                break;
+            case 'ArrowUp':
+                this.moveSelection(-1);
+                e.preventDefault();
+                break;
+            case 'Enter':
+                this.navigateToSelected();
+                e.preventDefault();
+                break;
+        }
+    }
+
+    handleGlobalKeydown(e) {
+        if (!this.modal.classList.contains('open')) return;
+        if (this.currentMode !== 'normal') return;
+
+        switch (e.key) {
+            case 'Escape':
+                this.close();
+                e.preventDefault();
+                break;
+            case 'j':
+            case 'ArrowDown':
+                this.moveSelection(1);
+                e.preventDefault();
+                break;
+            case 'k':
+            case 'ArrowUp':
+                this.moveSelection(-1);
+                e.preventDefault();
+                break;
+            case 'Enter':
+            case 'l':
+                this.navigateToSelected();
+                e.preventDefault();
+                break;
+            case 'i':
+            case 'a':
+                this.setMode('insert');
+                e.preventDefault();
+                break;
+            case 'g':
+                this.selectedIndex = 0;
+                this.render();
+                e.preventDefault();
+                break;
+            case 'G':
+                this.selectedIndex = Math.max(0, this.filteredData.length - 1);
+                this.render();
+                e.preventDefault();
+                break;
+        }
+    }
+
+    moveSelection(delta) {
+        const newIndex = this.selectedIndex + delta;
+        if (newIndex >= 0 && newIndex < this.filteredData.length) {
+            this.selectedIndex = newIndex;
+            this.render();
+        }
+    }
+
+    navigateToSelected() {
+        const item = this.filteredData[this.selectedIndex];
+        if (item && this.onNavigate) {
+            this.close();
+            this.onNavigate(item);
+        }
+    }
+
+    async open() {
+        if (!this.modal) return;
+
+        if (!this.data && this.loadData) {
+            this.data = await this.loadData();
+        }
+
+        this.filteredData = this.data ? [...this.data] : [];
+        this.selectedIndex = 0;
+        this.input.value = '';
+
+        this.render();
+        this.modal.classList.add('open');
+        this.setMode('insert');
+    }
+
+    close() {
+        if (this.modal) {
+            this.modal.classList.remove('open');
+        }
+        this.currentMode = 'insert';
+    }
+
+    filter(query) {
+        if (!this.data) return;
+
+        if (this.filterData) {
+            this.filteredData = this.filterData(this.data, query);
+        } else {
+            this.filteredData = [...this.data];
+        }
+        this.selectedIndex = 0;
+        this.render();
+    }
+
+    render() {
+        this.renderList();
+        this.renderPreviewPane();
+    }
+
+    renderList() {
+        if (!this.list) return;
+
+        if (this.filteredData.length === 0) {
+            this.list.innerHTML = '<div class="vim-modal-no-results">マッチする結果がありません</div>';
+            if (this.countElement) {
+                this.countElement.textContent = '0 ' + this.countLabel;
+            }
+            return;
+        }
+
+        if (this.countElement) {
+            this.countElement.textContent = this.filteredData.length + ' ' + this.countLabel;
+        }
+
+        this.list.innerHTML = this.filteredData.map((item, index) => {
+            const isSelected = index === this.selectedIndex;
+            return this.renderListItem(item, index, isSelected);
+        }).join('');
+
+        this.list.querySelectorAll('[data-index]').forEach(el => {
+            el.addEventListener('click', () => {
+                this.selectedIndex = parseInt(el.dataset.index);
+                this.render();
+            });
+            el.addEventListener('dblclick', () => {
+                this.selectedIndex = parseInt(el.dataset.index);
+                this.navigateToSelected();
+            });
+        });
+
+        const selectedEl = this.list.querySelector('.selected');
+        if (selectedEl) {
+            selectedEl.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    renderPreviewPane() {
+        if (!this.preview) return;
+
+        if (this.filteredData.length === 0 || !this.renderPreview) {
+            this.preview.innerHTML = '';
+            return;
+        }
+
+        const item = this.filteredData[this.selectedIndex];
+        if (item) {
+            this.preview.innerHTML = this.renderPreview(item);
+        }
+    }
+}
+
+VimModal.escapeHtml = function(text) {
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+};
+
+VimModal.highlightMatch = function(text, query) {
+    if (!query) return VimModal.escapeHtml(text);
+    const escaped = VimModal.escapeHtml(text);
+    const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return escaped.replace(regex, '<mark>$1</mark>');
+};
+
+window.VimModal = VimModal;
+"#.to_string()
+}
+
 fn generate_search_js() -> String {
     r#"
 // snacks.nvim grep風検索
@@ -1141,12 +1422,42 @@ pub async fn run() -> Result<()> {
     let search_index_json = serde_json::to_string(&search_index)?;
     fs::write(dist_dir.join("search-index.json"), search_index_json)?;
 
+    // VimModalコンポーネントを生成
+    let vim_modal_js_code = generate_vim_modal_js();
+    fs::write(dist_dir.join("vim-modal.js"), vim_modal_js_code)?;
+
     let search_js_code = generate_search_js();
     fs::write(dist_dir.join("search.js"), search_js_code)?;
 
     let tag_map = collect_tags(&articles);
     let mut sorted_tags: Vec<_> = tag_map.values().collect();
     sorted_tags.sort_by(|a, b| b.count.cmp(&a.count).then_with(|| a.name.cmp(&b.name)));
+
+    // タグ一覧JSONを生成（記事情報付き）
+    let tags_index: Vec<serde_json::Value> = sorted_tags
+        .iter()
+        .map(|tag| {
+            let articles_info: Vec<serde_json::Value> = tag.articles
+                .iter()
+                .filter_map(|article| {
+                    let meta = article.metadata.as_ref()?;
+                    Some(serde_json::json!({
+                        "title": meta.title,
+                        "url": article.relative_url.to_string_lossy(),
+                        "date": meta.created.clone()
+                    }))
+                })
+                .collect();
+            serde_json::json!({
+                "name": tag.name,
+                "count": tag.count,
+                "url": format!("/tags/{}/", slugify(&tag.name)),
+                "articles": articles_info
+            })
+        })
+        .collect();
+    let tags_index_json = serde_json::to_string(&tags_index)?;
+    fs::write(dist_dir.join("tags-index.json"), tags_index_json)?;
 
     let pages_files: Vec<PathBuf> = WalkDir::new(&pages_dir)
         .into_iter()

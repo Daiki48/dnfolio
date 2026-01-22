@@ -1418,6 +1418,288 @@ pub fn layout_with_toc(
         }
 
         /* ========================================
+           タグ一覧モーダル（検索モーダルと同じ構造）
+           ======================================== */
+        .tags-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .tags-modal.open {
+            display: flex;
+        }
+
+        .tags-modal-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 1100px;
+            max-width: 95vw;
+            height: 85vh;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .tags-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tags-modal-title {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tags-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .tags-modal-close:hover {
+            background: var(--accent-red-bright);
+            color: white;
+        }
+
+        .tags-input-wrapper {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .tags-input-wrapper input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px 12px;
+            color: var(--text-bright);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .tags-input-wrapper input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .tags-input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .tags-modal-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        /* 左ペイン: タグリスト */
+        .tags-list-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            min-width: 0;
+        }
+
+        .tags-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .tag-result-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+            border-left: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tag-result-item:hover {
+            background: var(--bg-primary);
+        }
+
+        .tag-result-item.selected {
+            background: var(--bg-primary);
+            border-left-color: var(--accent-cyan);
+        }
+
+        .tag-name {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-bright);
+        }
+
+        .tag-count {
+            background: var(--accent-blue-light);
+            color: var(--bg-primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tags-no-results {
+            padding: 16px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            text-align: center;
+        }
+
+        /* 右ペイン: プレビュー */
+        .tags-preview-pane {
+            flex: 1.5;
+            overflow-y: auto;
+            padding: 16px;
+            background: var(--bg-primary);
+        }
+
+        .tags-preview-pane .preview-title {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tags-preview-pane .preview-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tags-preview-pane .preview-line {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: background 0.15s ease;
+        }
+
+        .tags-preview-pane .preview-line:hover {
+            background: var(--bg-secondary);
+        }
+
+        .tags-preview-pane .line-num {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+
+        .tags-preview-pane .line-text {
+            color: var(--text-bright);
+            font-size: 0.9rem;
+        }
+
+        .tags-preview-pane .article-link {
+            text-decoration: none;
+        }
+
+        .tags-preview-pane .article-link:hover {
+            color: var(--accent-cyan);
+        }
+
+        .tags-modal-footer {
+            padding: 8px 16px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .tags-modal-footer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tags-modal-footer kbd {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            padding: 2px 6px;
+            margin: 0 2px;
+        }
+
+        .tags-mode-indicator {
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .tags-mode-indicator.mode-insert {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+        }
+
+        .tags-mode-indicator.mode-normal {
+            background: var(--accent-blue);
+            color: var(--bg-primary);
+        }
+
+        .tags-list.focused .tag-result-item.selected {
+            background: var(--bg-primary);
+            border-left-color: var(--accent-green);
+        }
+
+        /* モバイル対応: プレビュー非表示 */
+        @media screen and (max-width: 768px) {
+            .tags-modal-container {
+                max-height: 90vh;
+            }
+
+            .tags-preview-pane {
+                display: none;
+            }
+
+            .tags-list-pane {
+                border-right: none;
+            }
+
+            .tags-modal-footer span:last-child {
+                display: none;
+            }
+        }
+
+        /* ========================================
            サイドバー内リスト（デフォルト）
            ======================================== */
         .sidebar-left ul { list-style: none; padding: 0; margin: 0; }
@@ -2122,6 +2404,99 @@ pub fn layout_with_toc(
                 overlay.addEventListener('click', toggleSidebar);
             }
 
+            // ========================================
+            // タグ一覧モーダル（VimModalを使用）
+            // ========================================
+            let tagsModalInstance = null;
+            let tagsData = null;
+            let tagsModalReady = false;
+
+            // 先にグローバル関数を定義（VimModal読み込み前でも呼び出し可能）
+            window.openTagsModal = () => {
+                if (tagsModalInstance) {
+                    tagsModalInstance.open();
+                } else {
+                    // VimModalがまだ読み込まれていない場合は少し待ってリトライ
+                    setTimeout(() => window.openTagsModal(), 100);
+                }
+            };
+
+            const initTagsModal = () => {
+                if (typeof VimModal === 'undefined') {
+                    setTimeout(initTagsModal, 50);
+                    return;
+                }
+
+                const escapeHtml = VimModal.escapeHtml;
+
+                tagsModalInstance = new VimModal({
+                    modalId: 'tags-modal',
+                    inputId: 'tags-filter-input',
+                    listId: 'tags-list',
+                    previewId: 'tags-preview',
+                    modeIndicatorId: 'tags-mode-indicator',
+                    countId: 'tags-count',
+                    closeButtonId: 'tags-modal-close',
+                    countLabel: 'tags',
+
+                    loadData: async () => {
+                        if (tagsData) return tagsData;
+                        try {
+                            const response = await fetch('/tags-index.json');
+                            if (response.ok) {
+                                tagsData = await response.json();
+                            }
+                        } catch (e) {
+                            console.error('Failed to load tags index:', e);
+                        }
+                        return tagsData || [];
+                    },
+
+                    filterData: (data, query) => {
+                        const lowerQuery = query.toLowerCase().trim();
+                        if (!lowerQuery) return [...data];
+                        return data.filter(tag => tag.name.toLowerCase().includes(lowerQuery));
+                    },
+
+                    renderListItem: (tag, index, isSelected) => {
+                        return '<div class=\"tag-result-item' + (isSelected ? ' selected' : '') + '\" data-index=\"' + index + '\">' +
+                            '<span class=\"tag-name\">' + escapeHtml(tag.name) + '</span>' +
+                            '<span class=\"tag-count\">' + tag.count + '</span>' +
+                            '</div>';
+                    },
+
+                    renderPreview: (tag) => {
+                        let html = '<div class=\"preview-title\">' + escapeHtml(tag.name) + ' (' + tag.count + ')</div>';
+                        html += '<div class=\"preview-content\">';
+
+                        if (tag.articles && tag.articles.length > 0) {
+                            tag.articles.forEach(article => {
+                                const dateStr = article.date || '';
+                                html += '<div class=\"preview-line\">';
+                                html += '<span class=\"line-num\">' + escapeHtml(dateStr) + '</span>';
+                                html += '<a href=\"' + escapeHtml(article.url) + '\" class=\"line-text article-link\">' + escapeHtml(article.title) + '</a>';
+                                html += '</div>';
+                            });
+                        } else {
+                            html += '<div class=\"preview-line\"><span class=\"line-text\">記事がありません</span></div>';
+                        }
+
+                        html += '</div>';
+                        return html;
+                    },
+
+                    onNavigate: (tag) => {
+                        if (tag && tag.url) {
+                            window.location.href = tag.url;
+                        }
+                    }
+                });
+
+                tagsModalReady = true;
+            };
+
+            initTagsModal();
+
             // '/' キーでコマンドラインにフォーカス
             document.addEventListener('keydown', (e) => {
                 if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
@@ -2505,7 +2880,7 @@ pub fn layout_with_toc(
                     ':x': () => showToast(':x', ':wqと同じですが、ここはWebです', '📝', 'info'),
                     ':help': () => {
                         showToast('Help - Keybindings',
-                            '/ or Ctrl+K: 検索\\ngg/G: トップ/ボトム\\nn/N: 次/前ハイライト\\n:noh :privacy :sitemap\\n:行番号 で行ジャンプ',
+                            '/ or Ctrl+K: 検索\\ngg/G: トップ/ボトム\\nn/N: 次/前ハイライト\\n:noh :tags :privacy :sitemap\\n:行番号 で行ジャンプ',
                             '❓', 'info');
                     },
                     ':h': () => commands[':help'](),
@@ -2532,6 +2907,9 @@ pub fn layout_with_toc(
                     ':sitemap': () => {
                         window.open('/sitemap.xml', '_blank');
                         showToast(':sitemap', 'sitemap.xmlを新しいタブで開きました', '🗺️', 'info');
+                    },
+                    ':tags': () => {
+                        openTagsModal();
                     },
                     ':$': () => {
                         const elements = getLineElements();
@@ -3449,7 +3827,43 @@ pub fn layout_with_toc(
                     }
                 }
 
+                // タグ一覧モーダル（検索モーダルと同じ構造）
+                div id="tags-modal" class="tags-modal" {
+                    div class="tags-modal-container" {
+                        div class="tags-modal-header" {
+                            span class="tags-modal-title" {
+                                (PreEscaped(icons::hash(14)))
+                                " Tags"
+                            }
+                            button id="tags-modal-close" class="tags-modal-close" { "×" }
+                        }
+                        div class="tags-input-wrapper" {
+                            input type="text" id="tags-filter-input" placeholder="Filter tags..." autocomplete="off";
+                        }
+                        div class="tags-modal-body" {
+                            div class="tags-list-pane" {
+                                div id="tags-list" class="tags-list" {}
+                            }
+                            div class="tags-preview-pane" {
+                                div id="tags-preview" {}
+                            }
+                        }
+                        div class="tags-modal-footer" {
+                            div class="tags-modal-footer-left" {
+                                span id="tags-mode-indicator" class="tags-mode-indicator mode-insert" { "INSERT" }
+                                span id="tags-count" { "0 tags" }
+                            }
+                            span {
+                                kbd { "j/k" } "移動  "
+                                kbd { "Enter" } "選択  "
+                                kbd { "Esc" } "モード切替/閉じる"
+                            }
+                        }
+                    }
+                }
+
                 script { (PreEscaped(js)) }
+                script src="/vim-modal.js" {}
                 script src="/search.js" defer {}
 
                 script async src="https://www.googletagmanager.com/gtag/js?id=G-S0DTM6WBVT" {}

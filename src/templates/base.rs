@@ -424,6 +424,63 @@ pub fn layout_with_toc(
             counter-reset: line-number;
         }
 
+        /* contentEditable カーソル設定 */
+        .main-content[contenteditable="true"] {
+            caret-color: transparent; /* ネイティブキャレットを隠す */
+            outline: none;
+            cursor: text;
+        }
+
+        /* Vimブロックカーソル */
+        .vim-cursor {
+            background: var(--accent-cyan-bright);
+            color: var(--bg-primary);
+            animation: cursor-blink 1s step-end infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ビジュアルモード時のカーソル */
+        .visual-mode .vim-cursor {
+            background: var(--accent-yellow);
+        }
+
+        /* ノーマルモード時の選択色 */
+        .main-content[contenteditable="true"]::selection {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        /* ビジュアルモード選択色 */
+        .main-content.visual-mode::selection {
+            background: var(--accent-yellow);
+            color: var(--bg-primary);
+        }
+
+        /* ステータスラインのモード表示色 */
+        .statusline-mode.mode-normal {
+            background: var(--accent-blue-light);
+            color: var(--bg-primary);
+        }
+
+        .statusline-mode.mode-visual {
+            background: var(--accent-yellow);
+            color: var(--bg-primary);
+        }
+
+        .statusline-mode.mode-visual-line {
+            background: var(--accent-orange-bright);
+            color: var(--bg-primary);
+        }
+
+        .statusline-mode.mode-insert {
+            background: var(--accent-green-bright);
+            color: var(--bg-primary);
+        }
+
         /* 行番号付きブロック要素 */
         .main-content > h1,
         .main-content > h2,
@@ -1733,6 +1790,64 @@ pub fn layout_with_toc(
 
     let js = r#"
         document.addEventListener('DOMContentLoaded', () => {
+            // ========================================
+            // Vim風エディタ機能
+            // ========================================
+
+            // グローバルモード管理
+            let editorMode = 'normal'; // 'normal', 'visual', 'visual-line', 'insert'
+            const statuslineMode = document.querySelector('.statusline-mode');
+            const mainContent = document.querySelector('.main-content');
+
+            // モード切り替え関数
+            const setEditorMode = (mode) => {
+                editorMode = mode;
+
+                // ステータスライン更新
+                if (statuslineMode) {
+                    const modeText = mode === 'visual-line' ? 'V-LINE' : mode.toUpperCase();
+                    statuslineMode.textContent = modeText;
+                    statuslineMode.className = 'statusline-mode mode-' + mode;
+                }
+
+                // ビジュアルモードクラスの切り替え
+                if (mainContent) {
+                    mainContent.classList.remove('visual-mode');
+                    if (mode === 'visual' || mode === 'visual-line') {
+                        mainContent.classList.add('visual-mode');
+                    }
+                }
+            };
+
+            // 入力ブロック（セキュリティ + ユーモア）
+            const setupContentEditable = () => {
+                if (!mainContent) return;
+
+                // すべての入力をブロック
+                mainContent.addEventListener('beforeinput', (e) => {
+                    e.preventDefault();
+                    // 挿入モードへの切り替え時にトーストを表示（後のステップで実装）
+                });
+
+                // ペーストをブロック
+                mainContent.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    showToast('E353: paste not allowed', '静的サイトなのでペーストできません', '📋', 'warn');
+                });
+
+                // ドロップをブロック
+                mainContent.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    showToast('E21: drop not allowed', 'ファイルのドロップはサポートされていません', '📁', 'warn');
+                });
+
+                // 右クリックメニューは許可（コピーのため）
+            };
+
+            // ========================================
+            // 既存機能（検索・ハイライト等）
+            // ========================================
+
             // 検索結果からの遷移時：キーワードハイライトとスクロール
             const urlParams = new URLSearchParams(window.location.search);
             const highlightQuery = urlParams.get('highlight');
@@ -2147,6 +2262,12 @@ pub fn layout_with_toc(
                 });
             }
 
+            // Vim風エディタ機能の初期化
+            setupContentEditable();
+            setEditorMode('normal');
+            // 少し遅延して初期カーソルを設定（DOMの準備を待つ）
+            setTimeout(() => initCursor(), 100);
+
             // 行番号付き要素を取得
             const getLineElements = () => {
                 const mainContent = document.querySelector('.main-content');
@@ -2407,9 +2528,453 @@ pub fn layout_with_toc(
             let lastKeyTime = 0;
             let lastKey = '';
 
-            // グローバルキーイベント: gg/G モーション
+            // テキストノードかどうか判定（空白のみは除外）
+            const isValidTextNode = (node) => {
+                if (!node || node.nodeType !== Node.TEXT_NODE) return false;
+                if (node.textContent.trim() === '') return false;
+                if (node.parentElement && node.parentElement.classList.contains('vim-cursor')) return false;
+                return true;
+            };
+
+            // 次のテキストノードを取得（TreeWalkerで現在位置から探索）
+            const findNextTextNode = (startNode) => {
+                if (!mainContent) return null;
+                const walker = document.createTreeWalker(
+                    mainContent,
+                    NodeFilter.SHOW_TEXT,
+                    { acceptNode: (n) => isValidTextNode(n) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT }
+                );
+                walker.currentNode = startNode;
+                return walker.nextNode();
+            };
+
+            // 前のテキストノードを取得（TreeWalkerで現在位置から探索）
+            const findPrevTextNode = (startNode) => {
+                if (!mainContent) return null;
+                const walker = document.createTreeWalker(
+                    mainContent,
+                    NodeFilter.SHOW_TEXT,
+                    { acceptNode: (n) => isValidTextNode(n) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT }
+                );
+                walker.currentNode = startNode;
+                return walker.previousNode();
+            };
+
+            // 本文の最初のテキストノードにカーソルを設定
+            const initCursor = () => {
+                if (!mainContent) return;
+
+                // h1を探して、その中のテキストにカーソルを設定
+                const h1 = mainContent.querySelector('h1');
+                if (h1) {
+                    const walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT, null);
+                    const firstText = walker.nextNode();
+                    if (firstText && firstText.textContent.length > 0) {
+                        mainContent.focus();
+                        const sel = window.getSelection();
+                        const range = document.createRange();
+                        range.setStart(firstText, 0);
+                        range.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                        updateBlockCursor();
+                        return;
+                    }
+                }
+
+                // h1がない場合、main-content内の最初のテキストノードを探す
+                const walker = document.createTreeWalker(
+                    mainContent,
+                    NodeFilter.SHOW_TEXT,
+                    { acceptNode: (n) => isValidTextNode(n) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT }
+                );
+                const firstText = walker.nextNode();
+                if (firstText) {
+                    mainContent.focus();
+                    const sel = window.getSelection();
+                    const range = document.createRange();
+                    range.setStart(firstText, 0);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    updateBlockCursor();
+                }
+            };
+
+            // カーソルをドキュメント末尾に移動（G用）
+            const moveCursorToEnd = () => {
+                if (!mainContent) return;
+
+                // 既存のカーソル要素を削除
+                if (currentCursorElement) {
+                    const parent = currentCursorElement.parentNode;
+                    if (parent) {
+                        const text = currentCursorElement.textContent;
+                        const textNode = document.createTextNode(text);
+                        parent.replaceChild(textNode, currentCursorElement);
+                        parent.normalize();
+                    }
+                    currentCursorElement = null;
+                }
+
+                // main-content内の全テキストノードを走査して最後を見つける
+                const walker = document.createTreeWalker(
+                    mainContent,
+                    NodeFilter.SHOW_TEXT,
+                    { acceptNode: (n) => isValidTextNode(n) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT }
+                );
+
+                let lastText = null;
+                let node;
+                while (node = walker.nextNode()) {
+                    lastText = node;
+                }
+
+                if (lastText && lastText.textContent.length > 0) {
+                    mainContent.focus();
+                    const sel = window.getSelection();
+                    const range = document.createRange();
+                    // 最後のテキストノードの最後の文字にカーソル
+                    const lastOffset = Math.max(0, lastText.textContent.length - 1);
+                    range.setStart(lastText, lastOffset);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    updateBlockCursor();
+                }
+            };
+
+            // ブロックカーソル管理
+            let currentCursorElement = null;
+            let cursorUpdatePending = false;
+
+            // ブロックカーソルを更新（requestAnimationFrame使用）
+            const updateBlockCursor = () => {
+                if (cursorUpdatePending) return;
+                cursorUpdatePending = true;
+                requestAnimationFrame(() => {
+                    cursorUpdatePending = false;
+                    updateBlockCursorImpl();
+                });
+            };
+
+            // ブロックカーソル更新の実装
+            const updateBlockCursorImpl = () => {
+                // 既存のカーソルを削除
+                if (currentCursorElement) {
+                    const parent = currentCursorElement.parentNode;
+                    if (parent) {
+                        const text = currentCursorElement.textContent;
+                        const textNode = document.createTextNode(text);
+                        parent.replaceChild(textNode, currentCursorElement);
+                        parent.normalize();
+                    }
+                    currentCursorElement = null;
+                }
+
+                // ビジュアルモード時はブロックカーソルを表示しない（選択範囲があるため）
+                if (editorMode === 'visual' || editorMode === 'visual-line') {
+                    return;
+                }
+
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return;
+
+                const range = sel.getRangeAt(0);
+                if (!range.collapsed) return; // 選択範囲がある場合はスキップ
+
+                // カーソル位置のノードを取得
+                let node = range.startContainer;
+                let offset = range.startOffset;
+
+                // テキストノードでない場合はスキップ
+                if (node.nodeType !== Node.TEXT_NODE) {
+                    // 子ノードがある場合、該当位置のテキストノードを探す
+                    if (node.childNodes.length > 0 && offset < node.childNodes.length) {
+                        const child = node.childNodes[offset];
+                        if (child.nodeType === Node.TEXT_NODE && child.textContent.length > 0) {
+                            node = child;
+                            offset = 0;
+                        } else {
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                }
+
+                const text = node.textContent;
+                if (offset >= text.length) {
+                    // 行末の場合、最後の文字をハイライト
+                    if (text.length > 0) {
+                        offset = text.length - 1;
+                    } else {
+                        return;
+                    }
+                }
+
+                // カーソル位置の文字を取得
+                const charAtCursor = text[offset];
+                if (!charAtCursor || charAtCursor === '\n') return;
+
+                // テキストノードを3つに分割してカーソル文字をspanでラップ
+                const before = text.substring(0, offset);
+                const after = text.substring(offset + 1);
+
+                const cursorSpan = document.createElement('span');
+                cursorSpan.className = 'vim-cursor';
+                cursorSpan.textContent = charAtCursor;
+
+                const parent = node.parentNode;
+                const fragment = document.createDocumentFragment();
+
+                if (before) {
+                    fragment.appendChild(document.createTextNode(before));
+                }
+                fragment.appendChild(cursorSpan);
+                if (after) {
+                    fragment.appendChild(document.createTextNode(after));
+                }
+
+                parent.replaceChild(fragment, node);
+                currentCursorElement = cursorSpan;
+
+                // カーソル位置にSelectionを再設定
+                const newRange = document.createRange();
+                newRange.setStartAfter(cursorSpan);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+
+                // カーソル更新後にスクロール
+                scrollToCursor();
+            };
+
+            // カーソル位置が画面中央付近に来るようスクロール（Vim scrolloff風）
+            const scrollToCursor = () => {
+                const cursorEl = currentCursorElement;
+                if (!cursorEl) return;
+
+                const rect = cursorEl.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+
+                // スクロールオフセット: 画面の30%をマージンとして確保
+                const scrollOffset = viewportHeight * 0.3;
+                const topThreshold = scrollOffset;
+                const bottomThreshold = viewportHeight - scrollOffset;
+
+                // カーソルが上部マージンより上、または下部マージンより下にある場合
+                if (rect.top < topThreshold || rect.bottom > bottomThreshold) {
+                    // ドキュメントの上端・下端チェック
+                    const docHeight = document.documentElement.scrollHeight;
+                    const currentScroll = window.scrollY;
+                    const maxScroll = docHeight - viewportHeight;
+
+                    // カーソルの絶対位置
+                    const cursorAbsoluteTop = rect.top + currentScroll;
+
+                    // 目標スクロール位置（カーソルを画面中央に）
+                    let targetScroll = cursorAbsoluteTop - (viewportHeight / 2);
+
+                    // 上端・下端の制限
+                    targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+
+                    // 現在位置と目標位置が十分に離れている場合のみスクロール
+                    if (Math.abs(targetScroll - currentScroll) > 10) {
+                        window.scrollTo({
+                            top: targetScroll,
+                            behavior: 'instant'
+                        });
+                    }
+                }
+            };
+
+            // 現在のカーソル位置を取得（テキストノード、オフセット）
+            const getCursorPosition = () => {
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return null;
+                const range = sel.getRangeAt(0);
+                return {
+                    node: range.startContainer,
+                    offset: range.startOffset
+                };
+            };
+
+            // カーソル位置を設定
+            const setCursorPosition = (node, offset) => {
+                const sel = window.getSelection();
+                const range = document.createRange();
+                range.setStart(node, Math.min(offset, node.textContent.length));
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            };
+
+            // hjkl カーソル移動
+            const moveCursor = (direction) => {
+                // 移動前にカーソル要素を削除してテキストを復元
+                if (currentCursorElement) {
+                    const parent = currentCursorElement.parentNode;
+                    if (parent) {
+                        const cursorText = currentCursorElement.textContent;
+                        const textNode = document.createTextNode(cursorText);
+
+                        // カーソル位置を記録（カーソル文字の先頭）
+                        const range = document.createRange();
+                        range.setStartBefore(currentCursorElement);
+                        range.collapse(true);
+
+                        parent.replaceChild(textNode, currentCursorElement);
+                        parent.normalize();
+
+                        // カーソル位置をSelectionに設定
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                    currentCursorElement = null;
+                }
+
+                const sel = window.getSelection();
+                if (!sel.rangeCount) {
+                    initCursor();
+                    return;
+                }
+
+                // main-content内でのみ動作
+                if (mainContent && !mainContent.contains(sel.anchorNode)) {
+                    initCursor();
+                    return;
+                }
+
+                // Selection APIのmodifyメソッドで移動
+                const beforeNode = sel.anchorNode;
+                const beforeOffset = sel.anchorOffset;
+
+                if (direction === 'h') {
+                    sel.modify('move', 'backward', 'character');
+                } else if (direction === 'l') {
+                    sel.modify('move', 'forward', 'character');
+                } else if (direction === 'j') {
+                    sel.modify('move', 'forward', 'line');
+                } else if (direction === 'k') {
+                    sel.modify('move', 'backward', 'line');
+                }
+
+                // 移動後の確認
+                const afterNode = sel.anchorNode;
+                const afterOffset = sel.anchorOffset;
+
+                // 移動していない場合（ブロック境界で止まった）、次/前のテキストノードへ強制移動
+                if (afterNode === beforeNode && afterOffset === beforeOffset) {
+                    if (direction === 'l' || direction === 'j') {
+                        const nextNode = findNextTextNode(afterNode);
+                        if (nextNode) {
+                            setCursorPosition(nextNode, 0);
+                        }
+                    } else if (direction === 'h' || direction === 'k') {
+                        const prevNode = findPrevTextNode(afterNode);
+                        if (prevNode) {
+                            setCursorPosition(prevNode, Math.max(0, prevNode.textContent.length - 1));
+                        }
+                    }
+                }
+
+                // ブロックカーソルを更新（スクロール追従も内部で実行）
+                updateBlockCursor();
+            };
+
+            // カーソル位置のリンクを取得
+            const getLinkAtCursor = () => {
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return null;
+
+                let node = sel.anchorNode;
+                while (node && node !== mainContent) {
+                    if (node.nodeName === 'A' && node.href) {
+                        return node;
+                    }
+                    node = node.parentNode;
+                }
+                return null;
+            };
+
+            // main-content内のリンククリック処理
+            if (mainContent) {
+                mainContent.addEventListener('click', (e) => {
+                    // リンク要素を探す
+                    let target = e.target;
+                    while (target && target !== mainContent) {
+                        if (target.nodeName === 'A' && target.href) {
+                            // ヘッダーアンカーリンク（#で始まる）は通常処理
+                            if (target.getAttribute('href').startsWith('#')) {
+                                // 少し遅延してカーソル更新
+                                setTimeout(() => updateBlockCursor(), 50);
+                                return; // デフォルト動作に任せる
+                            }
+                            // 外部リンクは新しいタブで開く
+                            e.preventDefault();
+                            window.open(target.href, '_blank');
+                            return;
+                        }
+                        target = target.parentNode;
+                    }
+                    // 通常のクリック時はカーソルを更新
+                    setTimeout(() => updateBlockCursor(), 10);
+                });
+
+                // マウスでテキスト選択した時にビジュアルモードに入る
+                mainContent.addEventListener('mouseup', (e) => {
+                    // 少し遅延して選択状態を確認（ブラウザの選択処理完了を待つ）
+                    setTimeout(() => {
+                        const sel = window.getSelection();
+                        if (sel && !sel.isCollapsed && sel.toString().length > 0) {
+                            // テキストが選択されている → ビジュアルモード
+                            if (editorMode !== 'visual' && editorMode !== 'visual-line') {
+                                setEditorMode('visual');
+                            }
+                        } else {
+                            // 選択なし → ノーマルモードに戻る + カーソル更新
+                            if (editorMode === 'visual' || editorMode === 'visual-line') {
+                                setEditorMode('normal');
+                            }
+                            updateBlockCursor();
+                        }
+                    }, 10);
+                });
+            }
+
+            // ビジュアルモードでの選択範囲拡張
+            const extendSelection = (direction) => {
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return;
+
+                // main-content内でのみ動作
+                if (mainContent && !mainContent.contains(sel.anchorNode)) {
+                    mainContent.focus();
+                    return;
+                }
+
+                switch (direction) {
+                    case 'h': // 左に拡張
+                        sel.modify('extend', 'backward', 'character');
+                        break;
+                    case 'l': // 右に拡張
+                        sel.modify('extend', 'forward', 'character');
+                        break;
+                    case 'j': // 下に拡張
+                        sel.modify('extend', 'forward', 'line');
+                        break;
+                    case 'k': // 上に拡張
+                        sel.modify('extend', 'backward', 'line');
+                        break;
+                }
+            };
+
+            // グローバルキーイベント: Vimモーション
             document.addEventListener('keydown', (e) => {
-                // 入力欄では無効
+                // 入力欄では無効（ただしmain-contentは除く）
+                const isMainContent = mainContent && mainContent.contains(document.activeElement);
                 if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
                 // 検索モーダルが開いている時は無効
                 const searchModal = document.getElementById('search-modal');
@@ -2417,17 +2982,192 @@ pub fn layout_with_toc(
 
                 const now = Date.now();
 
-                // G (Shift+g) でページボトムへ
-                if (e.key === 'G') {
-                    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+                // Escapeでノーマルモードに戻る
+                if (e.key === 'Escape' && editorMode !== 'normal') {
+                    setEditorMode('normal');
+                    // 選択を解除してカーソル位置を末尾に
+                    const sel = window.getSelection();
+                    if (sel.rangeCount > 0) {
+                        sel.collapseToEnd();
+                    }
+                    // ブロックカーソルを更新
+                    setTimeout(() => updateBlockCursor(), 10);
                     e.preventDefault();
                     return;
                 }
 
-                // gg でページトップへ（500ms以内に2回g）
+                // v でビジュアルモード開始
+                if (e.key === 'v' && editorMode === 'normal') {
+                    // ブロックカーソルを削除（ビジュアルモードでは選択範囲を表示するため）
+                    if (currentCursorElement) {
+                        const parent = currentCursorElement.parentNode;
+                        if (parent) {
+                            const text = currentCursorElement.textContent;
+                            const textNode = document.createTextNode(text);
+                            parent.replaceChild(textNode, currentCursorElement);
+                            parent.normalize();
+                        }
+                        currentCursorElement = null;
+                    }
+                    setEditorMode('visual');
+                    showToast('-- VISUAL --', 'hjklで選択範囲を拡張、yでヤンク', '👁', 'info');
+                    e.preventDefault();
+                    return;
+                }
+
+                // V でビジュアルラインモード開始
+                if (e.key === 'V' && editorMode === 'normal') {
+                    // ブロックカーソルを削除
+                    if (currentCursorElement) {
+                        const parent = currentCursorElement.parentNode;
+                        if (parent) {
+                            const text = currentCursorElement.textContent;
+                            const textNode = document.createTextNode(text);
+                            parent.replaceChild(textNode, currentCursorElement);
+                            parent.normalize();
+                        }
+                        currentCursorElement = null;
+                    }
+                    setEditorMode('visual-line');
+                    // 現在の行全体を選択
+                    const sel = window.getSelection();
+                    if (sel.rangeCount > 0) {
+                        sel.modify('move', 'backward', 'lineboundary');
+                        sel.modify('extend', 'forward', 'lineboundary');
+                    }
+                    showToast('-- VISUAL LINE --', 'j/kで行選択を拡張、yでヤンク', '👁', 'info');
+                    e.preventDefault();
+                    return;
+                }
+
+                // 挿入モードへの切り替え試行（ユーモア）
+                const insertModeMessages = [
+                    { title: 'E21: Cannot modify', message: '静的サイトなので編集できません 😏', icon: '🚫' },
+                    { title: 'E45: readonly option is set', message: 'このバッファは読み取り専用です', icon: '🔒' },
+                    { title: 'E142: Permission denied', message: 'sudo nvim でも無理です', icon: '🔐' },
+                    { title: 'E212: Can\'t open file', message: 'ファイルはCloudflare上にあります', icon: '☁️' },
+                    { title: 'BufWritePre blocked', message: 'autocmd がすべての書き込みをブロックしました', icon: '🛡️' },
+                    { title: 'E382: Cannot write', message: 'Rustで生成されたHTMLは不変です', icon: '🦀' },
+                    { title: ':set nomodifiable', message: 'ビルド時に modifiable=false が設定されました', icon: '⚙️' },
+                    { title: 'E21: 編集不可', message: '...でも読むのは自由です！', icon: '📖' },
+                ];
+
+                if (['i', 'a', 'o', 'I', 'A', 'O'].includes(e.key) && editorMode === 'normal') {
+                    // 一瞬だけINSERTモードを見せる演出
+                    setEditorMode('insert');
+                    setTimeout(() => {
+                        setEditorMode('normal');
+                        const msg = insertModeMessages[Math.floor(Math.random() * insertModeMessages.length)];
+                        showToast(msg.title, msg.message, msg.icon, 'warn');
+                    }, 150);
+                    e.preventDefault();
+                    return;
+                }
+
+                // ノーマルモードでのhjkl移動
+                if (editorMode === 'normal' && ['h', 'j', 'k', 'l'].includes(e.key)) {
+                    moveCursor(e.key);
+                    e.preventDefault();
+                    return;
+                }
+
+                // ビジュアルモードでのhjkl選択範囲拡張
+                if ((editorMode === 'visual' || editorMode === 'visual-line') && ['h', 'j', 'k', 'l'].includes(e.key)) {
+                    if (editorMode === 'visual-line') {
+                        // ビジュアルラインモードはj/kのみ
+                        if (e.key === 'j') {
+                            extendSelection('j');
+                        } else if (e.key === 'k') {
+                            extendSelection('k');
+                        }
+                    } else {
+                        extendSelection(e.key);
+                    }
+                    e.preventDefault();
+                    return;
+                }
+
+                // y でヤンク（コピー）- ビジュアルモード時
+                if (e.key === 'y' && (editorMode === 'visual' || editorMode === 'visual-line')) {
+                    const sel = window.getSelection();
+                    const selectedText = sel.toString();
+                    if (selectedText) {
+                        navigator.clipboard.writeText(selectedText).then(() => {
+                            const lines = selectedText.split('\n').length;
+                            const chars = selectedText.length;
+                            showToast('Yanked!', `${lines}行 ${chars}文字をコピーしました`, '📋', 'info');
+                        }).catch(() => {
+                            showToast('Yank failed', 'クリップボードへのアクセスが拒否されました', '❌', 'warn');
+                        });
+                    }
+                    // ノーマルモードに戻る
+                    setEditorMode('normal');
+                    sel.collapseToEnd();
+                    e.preventDefault();
+                    return;
+                }
+
+                // u でundo試行（ジョーク）
+                if (e.key === 'u' && editorMode === 'normal') {
+                    showToast('Already at oldest change', '変更履歴がありません（そもそも変更できない）', '⏪', 'info');
+                    e.preventDefault();
+                    return;
+                }
+
+                // dd で行削除試行（ジョーク）
+                if (e.key === 'd' && editorMode === 'normal') {
+                    if (lastKey === 'd' && now - lastKeyTime < 500) {
+                        showToast('E21: Cannot delete line', '静的HTMLの行は削除できません', '🗑️', 'warn');
+                        lastKey = '';
+                        e.preventDefault();
+                        return;
+                    } else {
+                        lastKey = 'd';
+                        lastKeyTime = now;
+                        e.preventDefault();
+                        return;
+                    }
+                }
+
+                // p/P でペースト試行（ジョーク）
+                if ((e.key === 'p' || e.key === 'P') && editorMode === 'normal') {
+                    showToast('E353: Nothing in register "', 'ペーストできません（読み取り専用バッファ）', '📋', 'warn');
+                    e.preventDefault();
+                    return;
+                }
+
+                // x で文字削除試行（ジョーク）
+                if (e.key === 'x' && editorMode === 'normal' && lastKey !== 'g') {
+                    showToast('E21: Cannot modify', '文字を削除できません', '✂️', 'warn');
+                    e.preventDefault();
+                    return;
+                }
+
+                // G (Shift+g) でカーソルをドキュメント末尾へ
+                if (e.key === 'G') {
+                    moveCursorToEnd();
+                    e.preventDefault();
+                    return;
+                }
+
+                // gx でカーソル位置のリンクを開く（500ms以内にg→x）
+                if (e.key === 'x' && lastKey === 'g' && now - lastKeyTime < 500) {
+                    const link = getLinkAtCursor();
+                    if (link) {
+                        window.open(link.href, '_blank');
+                        showToast('gx', link.href, '🔗', 'info');
+                    } else {
+                        showToast('gx', 'カーソル位置にリンクがありません', '🔗', 'warn');
+                    }
+                    lastKey = '';
+                    e.preventDefault();
+                    return;
+                }
+
+                // gg でカーソルをドキュメント先頭へ（500ms以内に2回g）
                 if (e.key === 'g') {
                     if (lastKey === 'g' && now - lastKeyTime < 500) {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        initCursor();
                         lastKey = '';
                         e.preventDefault();
                     } else {
@@ -2572,7 +3312,7 @@ pub fn layout_with_toc(
                         // エディターコンテンツ
                         div class="editor-wrapper" {
                             // 行番号は非表示（必要に応じてJSで動的に追加可能）
-                            main class=(format!("main-content {}", if file_type == "markdown" { "page-article" } else { "page-home" })) {
+                            main class=(format!("main-content {}", if file_type == "markdown" { "page-article" } else { "page-home" })) contenteditable="true" spellcheck="false" {
                                 (main_content_markup)
                             }
                         }

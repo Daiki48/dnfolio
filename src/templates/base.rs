@@ -2468,7 +2468,7 @@ pub fn layout_with_toc(
                     ':x': () => showToast(':x', ':wqと同じですが、ここはWebです', '📝', 'info'),
                     ':help': () => {
                         showToast('Help - Keybindings',
-                            '/ or Ctrl+K: 検索\\ngg: ページトップ\\nG: ページボトム\\nn/N: 次/前のハイライト\\n:行番号 で行ジャンプ\\n:q :wq :help :version',
+                            '/ or Ctrl+K: 検索\\ngg: ページトップ\\nG: ページボトム\\nn/N: 次/前のハイライト\\n:noh: ハイライト解除\\n:行番号 で行ジャンプ',
                             '❓', 'info');
                     },
                     ':h': () => commands[':help'](),
@@ -2480,6 +2480,15 @@ pub fn layout_with_toc(
                     ':set number': () => showToast(':set number', '行番号は既に表示されています！', '🔢', 'info'),
                     ':set nonumber': () => showToast(':set nonumber', '行番号を非表示にする機能はまだありません', '🔢', 'info'),
                     ':colorscheme': () => showToast(':colorscheme', '現在: sakurajima.nvim (変更不可)', '🎨', 'info'),
+                    ':noh': () => {
+                        removeHighlights();
+                        // コマンドラインもクリア
+                        if (commandlineInput) {
+                            commandlineInput.value = '';
+                            commandlineInput.setAttribute('readonly', '');
+                        }
+                    },
+                    ':nohlsearch': () => commands[':noh'](),
                     ':$': () => {
                         const elements = getLineElements();
                         if (elements.length > 0) jumpToLine(elements.length);

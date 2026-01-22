@@ -736,7 +736,7 @@ pub fn layout_with_toc(
             margin: 1em 0;
         }
 
-        .main-content ul li::before {
+        .main-content ul:not(.badge-list) li::before {
             content: "-";
             color: var(--accent-cyan);
             margin-right: 8px;
@@ -1607,6 +1607,15 @@ pub fn layout_with_toc(
             padding: 0;
         }
 
+        /* バッジリストは行番号を非表示にする */
+        .main-content > ul.badge-list {
+            counter-increment: none;
+        }
+
+        .main-content > ul.badge-list::before {
+            content: none;
+        }
+
         .badge-list li {
             margin: 0;
         }
@@ -1786,8 +1795,9 @@ pub fn layout_with_toc(
                 currentHighlightIndex = 0;
 
                 // CSSカウンター対象のブロック要素を取得（行番号と対応）
+                // .badge-listはcounter-increment: noneなので除外
                 const blockElements = Array.from(mainContent.querySelectorAll(
-                    ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > p, :scope > ul, :scope > ol, :scope > blockquote, :scope > pre, :scope > table, :scope > hr, :scope > div.code-block-wrapper'
+                    ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > p, :scope > ul:not(.badge-list), :scope > ol, :scope > blockquote, :scope > pre, :scope > table, :scope > hr, :scope > div.code-block-wrapper'
                 ));
 
                 // ターゲット行の要素を特定（lineNumは1始まり）

@@ -1117,10 +1117,10 @@ pub async fn run() -> Result<()> {
             // content_blocksから検索用の行データを生成（DOMの行番号と対応）
             // オフセット: main-content内でMarkdown本文の前にある要素
             // - h1タイトル: 1
-            // - ul.badge-list（言語バッジ）: 1
-            // - ul.badge-list（タグバッジ）: 1
-            // 合計: 3
-            const LINE_NUM_OFFSET: usize = 3;
+            // - ul.badge-list（言語バッジ）: 0（counter-increment: noneで非カウント）
+            // - ul.badge-list（タグバッジ）: 0（counter-increment: noneで非カウント）
+            // 合計: 1
+            const LINE_NUM_OFFSET: usize = 1;
             let lines: Vec<SearchLine> = article
                 .content_blocks
                 .iter()

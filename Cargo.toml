@@ -1,31 +1,51 @@
-[package]
-name = "dnfolio"
-version = "0.0.0"
-edition = "2024"
-build = "build_script.rs"
+[workspace]
+resolver = "3"
+members = ["crates/dnfolio-ssg", "crates/dnfolio-wasm"]
 
-[dependencies]
-anyhow = "1.0.98"
-axum = "0.8.4"
-socket2 = "0.5.10"
-thiserror = "2.0.12"
-tokio = { version = "1.47.1", features = ["full"] }
-tower-http = { version = "0.6.6", features = ["fs"] }
-chrono = "0.4.41"
-gray_matter = { version = "0.3.2", features = ["toml"] }
-maud = "0.27.0"
-rss = "2.0.12"
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
-walkdir = "2.5.0"
-clap = { version = "4.5.41", features = ["derive"] }
-rayon = "1.10.0"
-pulldown-cmark = { version = "0.13.0", default-features = false, features = ["html"] }
-slug = "0.1.6"
-base64 = "0.22.1"
-resvg = "0.45.1"
-usvg = "0.45.1"
-tiny-skia = "0.11.4"
-image = "0.25.8"
-fontdb = "0.23.0"
-syntect = "5.3.0"
+[workspace.package]
+edition = "2024"
+rust-version = "1.85"
+authors = ["Daiki"]
+license = "MIT"
+
+[workspace.dependencies]
+# 共通依存
+anyhow = "1.0"
+thiserror = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+log = "0.4"
+chrono = "0.4"
+
+# SSG依存
+axum = "0.8"
+socket2 = "0.5"
+tokio = { version = "1.47", features = ["full"] }
+tower-http = { version = "0.6", features = ["fs"] }
+gray_matter = { version = "0.3", features = ["toml"] }
+maud = "0.27"
+rss = "2.0"
+walkdir = "2.5"
+clap = { version = "4.5", features = ["derive"] }
+rayon = "1.10"
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
+slug = "0.1"
+base64 = "0.22"
+resvg = "0.45"
+usvg = "0.45"
+tiny-skia = "0.11"
+image = "0.25"
+fontdb = "0.23"
+syntect = "5.3"
+
+# WASM依存
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = "0.3"
+gloo = "0.11"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1

@@ -1,7 +1,14 @@
+# dnfolio デプロイワークフロー
+#
+# Cloudflare Workers Assets にデプロイ
+# - WASM ビルド（wasm-pack）
+# - SSG ビルド（cargo run -- build）
+# - wrangler deploy
+
 on:
   push:
-      tags:
-        - "v[0-9]+.[0-9]+.[0-9]+"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   deploy:
@@ -9,23 +16,63 @@ jobs:
     permissions:
       contents: write
       deployments: write
-    name: Deploy to Cloudflare Workers from GitHub Actions                                                            
+    name: Deploy to Cloudflare Workers
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      # Node.js セットアップ（wrangler用）
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 23.8.0
-      - name: Build
-        run: cargo run -- build
+          node-version: 23
+
+      # Rust セットアップ（安定版 + wasm32ターゲット）
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      # Cargo キャッシュ
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      # wasm-pack インストール
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      # WASM ビルド（本番用、サイズ最適化）
+      - name: Build WASM
+        run: |
+          cd crates/dnfolio-wasm
+          wasm-pack build --target web --out-dir ../../dist --out-name dnfolio_wasm --release
+          rm -f ../../dist/.gitignore ../../dist/package.json ../../dist/README.md
+
+      # SSG ビルド
+      - name: Build SSG
+        run: cargo run --release -p dnfolio-ssg -- build
         env:
           CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
-      - name: Deploy                                                                                                  
-        uses: cloudflare/wrangler-action@v3                                                                           
-        with:                                                                                                         
-          apiToken: ${{ secrets.DNFOLIO_WORKERS_API_TOKEN }}                                                               
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}                                                             
+
+      # Cloudflare Workers にデプロイ
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.DNFOLIO_WORKERS_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+
+      # リリースノート生成
       - name: Generate Release Notes
         id: changelog
         run: |
@@ -60,6 +107,7 @@ jobs:
             echo "EOF"
           } >> $GITHUB_OUTPUT
 
+      # GitHub Release 作成
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

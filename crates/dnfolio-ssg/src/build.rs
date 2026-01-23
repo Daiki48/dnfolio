@@ -7,7 +7,7 @@ use anyhow::Result;
 use chrono::{Datelike, NaiveDate};
 use gray_matter::{Matter, ParsedEntity};
 use maud::{Markup, html};
-use pulldown_cmark::{CowStr, Event, Parser, Tag, TagEnd};
+use pulldown_cmark::{CowStr, Event, HeadingLevel, Parser, Tag, TagEnd};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use resvg::usvg::{self, fontdb};
 use slug::slugify;
@@ -365,6 +365,7 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
                     text: text_content.clone(),
                 });
                 let mut found_start = false;
+                let mut start_index: Option<usize> = None;
                 for i in (0..processed_events.len()).rev() {
                     if let Event::Start(Tag::Heading {
                         level: h_level,
@@ -376,6 +377,7 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
                     {
                         *h_id = Some(CowStr::from(id_string.clone()));
                         found_start = true;
+                        start_index = Some(i);
                         break;
                     }
                 }
@@ -383,6 +385,17 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
                     eprintln!(
                         "Warning: Could not find matching Start(Heading) event to assign ID for heading: {text_content:?}"
                     );
+                }
+
+                // h2とh3にのみアンカーリンクを挿入（h4以降は不要）
+                if let Some(idx) = start_index {
+                    if level == HeadingLevel::H2 || level == HeadingLevel::H3 {
+                        let anchor_html = format!(
+                            "<a class=\"header-anchor-link\" href=\"#{}\" contenteditable=\"false\">#</a>",
+                            id_string
+                        );
+                        processed_events.insert(idx + 1, Event::Html(CowStr::from(anchor_html)));
+                    }
                 }
                 processed_events.push(Event::End(
                     Tag::Heading {
@@ -621,691 +634,38 @@ fn generate_tag_pages(
     Ok(())
 }
 
-/// VimModal - Neovim風モーダルコンポーネント
-fn generate_vim_modal_js() -> String {
-    r#"
-// VimModal - Neovim風モーダルコンポーネント
-// INSERT/NORMALモード切り替え、j/k移動などを共通化
-
-class VimModal {
-    constructor(config) {
-        this.modalId = config.modalId;
-        this.inputId = config.inputId;
-        this.listId = config.listId;
-        this.previewId = config.previewId;
-        this.modeIndicatorId = config.modeIndicatorId;
-        this.countId = config.countId;
-        this.closeButtonId = config.closeButtonId;
-
-        this.loadData = config.loadData;
-        this.filterData = config.filterData;
-        this.renderListItem = config.renderListItem;
-        this.renderPreview = config.renderPreview;
-        this.onNavigate = config.onNavigate;
-        this.countLabel = config.countLabel || 'items';
-
-        this.data = null;
-        this.filteredData = [];
-        this.selectedIndex = 0;
-        this.currentMode = 'insert';
-
-        this.modal = null;
-        this.input = null;
-        this.list = null;
-        this.preview = null;
-        this.modeIndicator = null;
-        this.countElement = null;
-        this.closeButton = null;
-
-        this.init();
-    }
-
-    init() {
-        this.modal = document.getElementById(this.modalId);
-        this.input = document.getElementById(this.inputId);
-        this.list = document.getElementById(this.listId);
-        this.preview = document.getElementById(this.previewId);
-        this.modeIndicator = document.getElementById(this.modeIndicatorId);
-        this.countElement = document.getElementById(this.countId);
-        this.closeButton = document.getElementById(this.closeButtonId);
-
-        if (!this.modal || !this.input || !this.list) {
-            console.warn('VimModal: Required elements not found');
-            return;
-        }
-
-        this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-        this.input.addEventListener('input', (e) => {
-            this.filter(e.target.value);
-        });
-
-        this.input.addEventListener('keydown', (e) => this.handleInsertModeKeydown(e));
-        document.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
-
-        if (this.closeButton) {
-            this.closeButton.addEventListener('click', () => this.close());
-        }
-
-        this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
-                this.close();
-            }
-        });
-    }
-
-    setMode(mode) {
-        this.currentMode = mode;
-        if (this.modeIndicator) {
-            this.modeIndicator.textContent = mode === 'insert' ? 'INSERT' : 'NORMAL';
-            this.modeIndicator.className = this.modeIndicator.className.replace(/mode-\w+/, 'mode-' + mode);
-        }
-        if (mode === 'insert') {
-            this.input.focus();
-            this.list.classList.remove('focused');
-        } else {
-            this.input.blur();
-            this.list.classList.add('focused');
-        }
-    }
-
-    handleInsertModeKeydown(e) {
-        switch (e.key) {
-            case 'Escape':
-                this.setMode('normal');
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            case 'ArrowDown':
-                this.moveSelection(1);
-                e.preventDefault();
-                break;
-            case 'ArrowUp':
-                this.moveSelection(-1);
-                e.preventDefault();
-                break;
-            case 'Enter':
-                this.navigateToSelected();
-                e.preventDefault();
-                break;
-        }
-    }
-
-    handleGlobalKeydown(e) {
-        if (!this.modal.classList.contains('open')) return;
-        if (this.currentMode !== 'normal') return;
-
-        switch (e.key) {
-            case 'Escape':
-                this.close();
-                e.preventDefault();
-                break;
-            case 'j':
-            case 'ArrowDown':
-                this.moveSelection(1);
-                e.preventDefault();
-                break;
-            case 'k':
-            case 'ArrowUp':
-                this.moveSelection(-1);
-                e.preventDefault();
-                break;
-            case 'Enter':
-            case 'l':
-                this.navigateToSelected();
-                e.preventDefault();
-                break;
-            case 'i':
-            case 'a':
-                this.setMode('insert');
-                e.preventDefault();
-                break;
-            case 'g':
-                this.selectedIndex = 0;
-                this.render();
-                e.preventDefault();
-                break;
-            case 'G':
-                this.selectedIndex = Math.max(0, this.filteredData.length - 1);
-                this.render();
-                e.preventDefault();
-                break;
-        }
-    }
-
-    moveSelection(delta) {
-        const newIndex = this.selectedIndex + delta;
-        if (newIndex >= 0 && newIndex < this.filteredData.length) {
-            this.selectedIndex = newIndex;
-            this.render();
-        }
-    }
-
-    navigateToSelected() {
-        const item = this.filteredData[this.selectedIndex];
-        if (item && this.onNavigate) {
-            this.close();
-            this.onNavigate(item);
-        }
-    }
-
-    async open() {
-        if (!this.modal) return;
-
-        if (!this.data && this.loadData) {
-            this.data = await this.loadData();
-        }
-
-        this.filteredData = this.data ? [...this.data] : [];
-        this.selectedIndex = 0;
-        this.input.value = '';
-
-        this.render();
-        this.modal.classList.add('open');
-        this.setMode('insert');
-    }
-
-    close() {
-        if (this.modal) {
-            this.modal.classList.remove('open');
-        }
-        this.currentMode = 'insert';
-    }
-
-    filter(query) {
-        if (!this.data) return;
-
-        if (this.filterData) {
-            this.filteredData = this.filterData(this.data, query);
-        } else {
-            this.filteredData = [...this.data];
-        }
-        this.selectedIndex = 0;
-        this.render();
-    }
-
-    render() {
-        this.renderList();
-        this.renderPreviewPane();
-    }
-
-    renderList() {
-        if (!this.list) return;
-
-        if (this.filteredData.length === 0) {
-            this.list.innerHTML = '<div class="vim-modal-no-results">マッチする結果がありません</div>';
-            if (this.countElement) {
-                this.countElement.textContent = '0 ' + this.countLabel;
-            }
-            return;
-        }
-
-        if (this.countElement) {
-            this.countElement.textContent = this.filteredData.length + ' ' + this.countLabel;
-        }
-
-        this.list.innerHTML = this.filteredData.map((item, index) => {
-            const isSelected = index === this.selectedIndex;
-            return this.renderListItem(item, index, isSelected);
-        }).join('');
-
-        this.list.querySelectorAll('[data-index]').forEach(el => {
-            el.addEventListener('click', () => {
-                this.selectedIndex = parseInt(el.dataset.index);
-                this.render();
-            });
-            el.addEventListener('dblclick', () => {
-                this.selectedIndex = parseInt(el.dataset.index);
-                this.navigateToSelected();
-            });
-        });
-
-        const selectedEl = this.list.querySelector('.selected');
-        if (selectedEl) {
-            selectedEl.scrollIntoView({ block: 'nearest' });
-        }
-    }
-
-    renderPreviewPane() {
-        if (!this.preview) return;
-
-        if (this.filteredData.length === 0 || !this.renderPreview) {
-            this.preview.innerHTML = '';
-            return;
-        }
-
-        const item = this.filteredData[this.selectedIndex];
-        if (item) {
-            this.preview.innerHTML = this.renderPreview(item);
-        }
-    }
-}
-
-VimModal.escapeHtml = function(text) {
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-};
-
-VimModal.highlightMatch = function(text, query) {
-    if (!query) return VimModal.escapeHtml(text);
-    const escaped = VimModal.escapeHtml(text);
-    const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-    return escaped.replace(regex, '<mark>$1</mark>');
-};
-
-window.VimModal = VimModal;
-"#.to_string()
-}
-
-fn generate_search_js() -> String {
-    r#"
-// snacks.nvim grep風検索
-let searchIndex = [];
-let searchModal = null;
-let searchInput = null;
-let resultsList = null;
-let previewPane = null;
-let resultsCount = null;
-let modeIndicator = null;
-let selectedIndex = 0;
-let searchResults = [];
-let currentMode = 'insert'; // 'insert' or 'normal'
-
-async function loadSearchIndex() {
-    try {
-        const response = await fetch('/search-index.json');
-        if (response.ok) {
-            searchIndex = await response.json();
-        }
-    } catch (e) {
-        console.error('Failed to load search index:', e);
-    }
-}
-
-function escapeHtml(text) {
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function highlightMatch(text, query) {
-    if (!query) return escapeHtml(text);
-    const escaped = escapeHtml(text);
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return escaped.replace(regex, '<mark>$1</mark>');
-}
-
-function performSearch(query) {
-    if (!query || query.length < 2) {
-        searchResults = [];
-        return;
-    }
-
-    const lowerQuery = query.toLowerCase();
-    const results = [];
-
-    for (const article of searchIndex) {
-        // タイトルマッチ
-        if (article.title.toLowerCase().includes(lowerQuery)) {
-            results.push({
-                slug: article.slug,
-                title: article.title,
-                url: article.url,
-                lineNum: 0,
-                lineText: article.title,
-                isTitle: true,
-                context: article.lines.slice(0, 10)
-            });
-        }
-
-        // 行マッチ
-        for (const line of article.lines) {
-            if (line.text.toLowerCase().includes(lowerQuery)) {
-                const lineIdx = article.lines.indexOf(line);
-                const contextStart = Math.max(0, lineIdx - 3);
-                const contextEnd = Math.min(article.lines.length, lineIdx + 7);
-
-                results.push({
-                    slug: article.slug,
-                    title: article.title,
-                    url: article.url,
-                    lineNum: line.num,
-                    lineText: line.text,
-                    isTitle: false,
-                    context: article.lines.slice(contextStart, contextEnd),
-                    matchLineIdx: lineIdx - contextStart
-                });
-            }
-        }
-    }
-
-    searchResults = results.slice(0, 50);
-}
-
-function renderResults(query) {
-    if (!resultsList) return;
-
-    resultsList.innerHTML = '';
-
-    if (searchResults.length === 0) {
-        if (query && query.length >= 2) {
-            resultsList.innerHTML = '<div class="search-no-results">マッチする結果がありません</div>';
-        }
-        resultsCount.textContent = '0 results';
-        previewPane.innerHTML = '';
-        return;
-    }
-
-    resultsCount.textContent = `${searchResults.length} results`;
-
-    searchResults.forEach((result, index) => {
-        const item = document.createElement('div');
-        item.className = 'search-result-item' + (index === selectedIndex ? ' selected' : '');
-        item.dataset.index = index;
-
-        const location = result.isTitle
-            ? `${result.slug}`
-            : `${result.slug}:${result.lineNum}`;
-
-        item.innerHTML = `
-            <div class="result-location">${escapeHtml(location)}</div>
-            <div class="result-text">${highlightMatch(result.lineText.substring(0, 60), query)}${result.lineText.length > 60 ? '...' : ''}</div>
-        `;
-
-        item.addEventListener('click', () => {
-            // モバイル（プレビュー非表示）の場合はシングルタップで遷移
-            const previewPaneContainer = document.querySelector('.search-preview-pane');
-            const isMobile = previewPaneContainer && getComputedStyle(previewPaneContainer).display === 'none';
-            if (isMobile) {
-                navigateToResult(result);
-            } else {
-                selectedIndex = index;
-                renderResults(query);
-                renderPreview(query);
-            }
-        });
-
-        item.addEventListener('dblclick', () => {
-            navigateToResult(result);
-        });
-
-        resultsList.appendChild(item);
-    });
-
-    // スクロールして選択項目を表示
-    const selectedItem = resultsList.querySelector('.selected');
-    if (selectedItem) {
-        selectedItem.scrollIntoView({ block: 'nearest' });
-    }
-
-    renderPreview(query);
-}
-
-function renderPreview(query) {
-    if (!previewPane || searchResults.length === 0) {
-        if (previewPane) previewPane.innerHTML = '';
-        return;
-    }
-
-    const result = searchResults[selectedIndex];
-    if (!result) return;
-
-    let previewHtml = `<div class="preview-title">${escapeHtml(result.title)}</div>`;
-    previewHtml += '<div class="preview-content">';
-
-    result.context.forEach((line, idx) => {
-        const isMatchLine = !result.isTitle && idx === result.matchLineIdx;
-        const lineClass = isMatchLine ? 'preview-line match' : 'preview-line';
-        const lineText = highlightMatch(line.text, query);
-        previewHtml += `<div class="${lineClass}"><span class="line-num">${line.num}</span><span class="line-text">${lineText}</span></div>`;
-    });
-
-    previewHtml += '</div>';
-    previewPane.innerHTML = previewHtml;
-}
-
-function navigateToResult(result) {
-    closeSearchModal();
-    // キーワードと選択した行のテキスト、行番号をURLパラメータで渡す
-    const query = searchInput.value;
-    const lineText = result.lineText.substring(0, 80); // 長すぎないように制限
-    const lineNum = result.lineNum || 0;
-    const url = `${result.url}?highlight=${encodeURIComponent(query)}&lineText=${encodeURIComponent(lineText)}&lineNum=${lineNum}`;
-    window.location.href = url;
-}
-
-function setMode(mode) {
-    currentMode = mode;
-    if (modeIndicator) {
-        modeIndicator.textContent = mode === 'insert' ? 'INSERT' : 'NORMAL';
-        modeIndicator.className = 'search-mode-indicator mode-' + mode;
-    }
-    if (mode === 'insert') {
-        searchInput.focus();
-        resultsList.classList.remove('focused');
-    } else {
-        searchInput.blur();
-        resultsList.classList.add('focused');
-    }
-}
-
-function openSearchModal() {
-    if (!searchModal) return;
-    searchModal.classList.add('open');
-
-    // コマンドラインに値があれば引き継ぐ
-    const cmdInput = document.getElementById('commandline-input');
-    const existingQuery = cmdInput ? cmdInput.value.trim() : '';
-
-    if (existingQuery) {
-        searchInput.value = existingQuery;
-        selectedIndex = 0;
-        performSearch(existingQuery);
-        renderResults(existingQuery);
-    } else {
-        searchInput.value = '';
-        searchResults = [];
-        selectedIndex = 0;
-        renderResults('');
-    }
-
-    setMode('insert');
-}
-
-function closeSearchModal() {
-    if (!searchModal) return;
-    searchModal.classList.remove('open');
-    currentMode = 'insert';
-
-    // 検索モーダルの入力が空ならコマンドラインもクリア＆ハイライト削除
-    const cmdInput = document.getElementById('commandline-input');
-    if (cmdInput && searchInput.value.trim() === '') {
-        cmdInput.value = '';
-        cmdInput.setAttribute('readonly', '');
-        // ハイライトを削除
-        const highlights = document.querySelectorAll('.search-highlight');
-        highlights.forEach(mark => {
-            const parent = mark.parentNode;
-            const text = document.createTextNode(mark.textContent);
-            parent.replaceChild(text, mark);
-            parent.normalize();
-        });
-    }
-}
-
-function handleInsertModeKeydown(e) {
-    switch (e.key) {
-        case 'Escape':
-            // INSERT -> NORMAL モードへ
-            setMode('normal');
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
-            renderResults(searchInput.value);
-            e.preventDefault();
-            break;
-        case 'ArrowUp':
-            selectedIndex = Math.max(selectedIndex - 1, 0);
-            renderResults(searchInput.value);
-            e.preventDefault();
-            break;
-        case 'Enter':
-            if (searchResults[selectedIndex]) {
-                navigateToResult(searchResults[selectedIndex]);
-            }
-            e.preventDefault();
-            break;
-    }
-}
-
-function handleNormalModeKeydown(e) {
-    switch (e.key) {
-        case 'Escape':
-            // NORMALモードでEsc -> モーダルを閉じる
-            closeSearchModal();
-            e.preventDefault();
-            break;
-        case 'j':
-        case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
-            renderResults(searchInput.value);
-            e.preventDefault();
-            break;
-        case 'k':
-        case 'ArrowUp':
-            selectedIndex = Math.max(selectedIndex - 1, 0);
-            renderResults(searchInput.value);
-            e.preventDefault();
-            break;
-        case 'Enter':
-        case 'l':
-            if (searchResults[selectedIndex]) {
-                navigateToResult(searchResults[selectedIndex]);
-            }
-            e.preventDefault();
-            break;
-        case 'i':
-        case 'a':
-            // NORMALからINSERTモードへ
-            setMode('insert');
-            e.preventDefault();
-            break;
-        case 'g':
-            // gg で先頭へ
-            selectedIndex = 0;
-            renderResults(searchInput.value);
-            e.preventDefault();
-            break;
-        case 'G':
-            // G で末尾へ
-            selectedIndex = Math.max(0, searchResults.length - 1);
-            renderResults(searchInput.value);
-            e.preventDefault();
-            break;
-    }
-}
-
-function handleGlobalKeydown(e) {
-    if (!searchModal.classList.contains('open')) return;
-
-    if (currentMode === 'normal') {
-        handleNormalModeKeydown(e);
-    }
-}
-
-function initGrepSearch() {
-    searchModal = document.getElementById('search-modal');
-    searchInput = document.getElementById('grep-search-input');
-    resultsList = document.getElementById('grep-results-list');
-    previewPane = document.getElementById('grep-preview');
-    resultsCount = document.getElementById('grep-results-count');
-    modeIndicator = document.getElementById('search-mode-indicator');
-
-    if (!searchModal || !searchInput) return;
-
-    loadSearchIndex();
-
-    // 検索入力イベント
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.trim();
-        selectedIndex = 0;
-        performSearch(query);
-        renderResults(query);
-    });
-
-    // INSERTモード時のキーボードイベント
-    searchInput.addEventListener('keydown', handleInsertModeKeydown);
-
-    // NORMALモード時のキーボードイベント（グローバル）
-    document.addEventListener('keydown', handleGlobalKeydown);
-
-    // モーダル外クリックで閉じる
-    searchModal.addEventListener('click', (e) => {
-        if (e.target === searchModal) {
-            closeSearchModal();
-        }
-    });
-
-    // 閉じるボタン
-    const closeBtn = document.getElementById('search-modal-close');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeSearchModal);
-    }
-
-    // グローバルキーバインド（モーダルを開く）
-    document.addEventListener('keydown', (e) => {
-        if (searchModal.classList.contains('open')) return;
-
-        // "/" キーで検索モーダルを開く（入力欄以外で）
-        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
-            openSearchModal();
-            e.preventDefault();
-        }
-        // Ctrl+K / Cmd+K で検索モーダルを開く
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            openSearchModal();
-            e.preventDefault();
-        }
-    });
-
-    // コマンドラインのクリックでも開く
-    const commandline = document.querySelector('.commandline');
-    if (commandline) {
-        commandline.addEventListener('click', () => {
-            openSearchModal();
-        });
-    }
-}
-
-// openSearchModalをグローバルに公開
-window.openSearchModal = openSearchModal;
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initGrepSearch);
-} else {
-    initGrepSearch();
-}
-"#
-    .to_string()
-}
-
 pub async fn run() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let dist_dir = Path::new("dist");
     let ogp_dir = dist_dir.join("ogp");
     let pages_dir = PathBuf::from("pages");
 
+    // dist/ディレクトリをクリーンアップ
+    // 注意: wasm-packが生成するファイル（dnfolio_wasm.*）は保持する
     if dist_dir.exists() {
-        fs::remove_dir_all(dist_dir)?;
+        // SSGが生成するディレクトリを削除
+        let dirs_to_clean = [
+            "posts", "tags", "ogp", "about", "privacy", "content", "icons", "sns",
+        ];
+        for dir_name in dirs_to_clean {
+            let dir_path = dist_dir.join(dir_name);
+            if dir_path.exists() {
+                fs::remove_dir_all(&dir_path)?;
+            }
+        }
+        // SSGが生成するルートのHTMLファイルを削除
+        for entry in fs::read_dir(dist_dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_file() {
+                if let Some(ext) = path.extension() {
+                    // HTML, JSON, XMLファイルを削除（wasmファイルは保持）
+                    if ext == "html" || ext == "json" || ext == "xml" {
+                        fs::remove_file(&path)?;
+                    }
+                }
+            }
+        }
     }
     fs::create_dir_all(dist_dir)?;
     fs::create_dir_all(&ogp_dir)?;
@@ -1422,12 +782,7 @@ pub async fn run() -> Result<()> {
     let search_index_json = serde_json::to_string(&search_index)?;
     fs::write(dist_dir.join("search-index.json"), search_index_json)?;
 
-    // VimModalコンポーネントを生成
-    let vim_modal_js_code = generate_vim_modal_js();
-    fs::write(dist_dir.join("vim-modal.js"), vim_modal_js_code)?;
-
-    let search_js_code = generate_search_js();
-    fs::write(dist_dir.join("search.js"), search_js_code)?;
+    // JS生成は廃止（WASMに移行済み）
 
     let tag_map = collect_tags(&articles);
     let mut sorted_tags: Vec<_> = tag_map.values().collect();
@@ -1437,7 +792,8 @@ pub async fn run() -> Result<()> {
     let tags_index: Vec<serde_json::Value> = sorted_tags
         .iter()
         .map(|tag| {
-            let articles_info: Vec<serde_json::Value> = tag.articles
+            let articles_info: Vec<serde_json::Value> = tag
+                .articles
                 .iter()
                 .filter_map(|article| {
                     let meta = article.metadata.as_ref()?;

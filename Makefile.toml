@@ -1,0 +1,84 @@
+# =====================================
+# dnfolio ビルド設定
+# cargo install cargo-make
+# =====================================
+
+[config]
+default_to_workspace = false
+
+# =====================================
+# 全体ビルド
+# =====================================
+
+[tasks.build]
+description = "SSG + WASM 全体ビルド"
+dependencies = ["ssg", "wasm"]
+
+[tasks.release]
+description = "本番用ビルド（最適化）"
+dependencies = ["ssg-release", "wasm-release"]
+
+# =====================================
+# WASM ビルド
+# =====================================
+
+[tasks.wasm]
+description = "WASM 開発ビルド"
+script = '''
+cd crates/dnfolio-wasm
+wasm-pack build --target web --out-dir ../../dist --out-name dnfolio_wasm --dev
+rm -f ../../dist/.gitignore ../../dist/package.json ../../dist/README.md
+'''
+
+[tasks.wasm-release]
+description = "WASM 本番ビルド（サイズ最適化）"
+script = '''
+cd crates/dnfolio-wasm
+wasm-pack build --target web --out-dir ../../dist --out-name dnfolio_wasm --release
+rm -f ../../dist/.gitignore ../../dist/package.json ../../dist/README.md
+'''
+
+# =====================================
+# SSG ビルド
+# =====================================
+
+[tasks.ssg]
+description = "SSG 開発ビルド"
+command = "cargo"
+args = ["run", "-p", "dnfolio-ssg", "--", "build"]
+
+[tasks.ssg-release]
+description = "SSG 本番ビルド"
+command = "cargo"
+args = ["run", "--release", "-p", "dnfolio-ssg", "--", "build"]
+
+# =====================================
+# 開発サーバー
+# =====================================
+
+[tasks.serve]
+description = "開発サーバー起動（WASM先にビルド、SSGは内部でビルド）"
+dependencies = ["wasm"]
+command = "cargo"
+args = ["run", "-p", "dnfolio-ssg", "--", "serve"]
+
+# =====================================
+# ユーティリティ
+# =====================================
+
+[tasks.clean]
+description = "ビルド成果物をクリーン"
+script = '''
+cargo clean
+rm -rf dist/
+'''
+
+[tasks.check]
+description = "ワークスペース全体の型チェック"
+command = "cargo"
+args = ["check", "--workspace"]
+
+[tasks.test]
+description = "テスト実行"
+command = "cargo"
+args = ["test", "--workspace"]

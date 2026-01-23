@@ -23,14 +23,12 @@ fn build_sitemap_markup(
             url {
                 loc { (base_url) }
                 lastmod { (build_time.to_rfc3339()) }
-                priority { "1.0" }
             }
 
             @for article in articles {
                 url {
                     loc { (format!("{}{}", base_url, article.relative_url.to_string_lossy())) }
                     lastmod { (get_article_lastmod(article, &build_time)) }
-                    priority { "0.8" }
                 }
             }
 
@@ -38,7 +36,6 @@ fn build_sitemap_markup(
                 url {
                     loc { (format!("{}{}", base_url, page.relative_url.to_string_lossy())) }
                     lastmod { (build_time.to_rfc3339()) }
-                    priority { "0.5" }
                 }
             }
 
@@ -46,7 +43,6 @@ fn build_sitemap_markup(
                 url {
                     loc { (format!("{}/tags/{}/", base_url, slugify(tag_name))) }
                     lastmod { (build_time.to_rfc3339()) }
-                    priority { "0.7" }
                 }
             }
         }

@@ -35,6 +35,8 @@ pub fn setup_all_event_handlers() -> Result<()> {
     setup_scroll_handler()?;
     setup_mouse_handlers()?;
     setup_modal_handlers()?;
+    setup_code_copy_handlers()?;
+    setup_folder_toggle_handlers()?;
 
     web_sys::console::log_1(&"  ✓ Event handlers registered".into());
     Ok(())
@@ -1022,6 +1024,85 @@ fn restore_main_content_focus() {
         main.focus().ok();
     }
     let _ = update_block_cursor();
+}
+
+/// フォルダのアコーディオン開閉ハンドラーを登録
+fn setup_folder_toggle_handlers() -> Result<()> {
+    let doc = crate::dom::document()?;
+    let toggles = doc
+        .query_selector_all(".folder-toggle")
+        .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+
+    for i in 0..toggles.length() {
+        if let Some(node) = toggles.get(i) {
+            if let Some(el) = node.dyn_ref::<HtmlElement>() {
+                let el_clone = el.clone();
+                let handler = Closure::wrap(Box::new(move |e: web_sys::MouseEvent| {
+                    e.stop_propagation();
+
+                    // 親の .folder-item に collapsed クラスをトグル
+                    if let Some(parent) = el_clone.parent_element() {
+                        if parent.class_list().contains("folder-item") {
+                            let _ = parent.class_list().toggle("collapsed");
+                        }
+                    }
+                })
+                    as Box<dyn FnMut(web_sys::MouseEvent)>);
+
+                el.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+                    .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+                handler.forget();
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// コードブロックのコピーボタンハンドラーを登録
+fn setup_code_copy_handlers() -> Result<()> {
+    let doc = crate::dom::document()?;
+    let buttons = doc
+        .query_selector_all(".code-copy-btn")
+        .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+
+    for i in 0..buttons.length() {
+        if let Some(node) = buttons.get(i) {
+            if let Some(btn) = node.dyn_ref::<HtmlElement>() {
+                let btn_clone = btn.clone();
+                let handler = Closure::wrap(Box::new(move |e: web_sys::MouseEvent| {
+                    e.prevent_default();
+                    e.stop_propagation();
+
+                    if let Some(el) = btn_clone.dyn_ref::<web_sys::Element>() {
+                        if let Some(code) = el.get_attribute("data-code") {
+                            // HTMLエスケープを解除
+                            let decoded = code
+                                .replace("&amp;", "&")
+                                .replace("&lt;", "<")
+                                .replace("&gt;", ">")
+                                .replace("&quot;", "\"")
+                                .replace("&#39;", "'");
+
+                            // クリップボードにコピー
+                            if let Some(window) = web_sys::window() {
+                                let clipboard = window.navigator().clipboard();
+                                let _ = clipboard.write_text(&decoded);
+                                let _ = Toast::success("コピーしました!", "", "📋");
+                            }
+                        }
+                    }
+                })
+                    as Box<dyn FnMut(web_sys::MouseEvent)>);
+
+                btn.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+                    .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+                handler.forget();
+            }
+        }
+    }
+
+    Ok(())
 }
 
 /// ヘッダーアンカーリンクのクリックハンドラを設定

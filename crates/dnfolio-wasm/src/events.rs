@@ -19,7 +19,7 @@ use crate::search::tags::{
 };
 use crate::ui::{CommandLine, Toast};
 use crate::vim::command::CommandExecutor;
-use crate::vim::cursor::update_block_cursor;
+use crate::vim::cursor::{update_block_cursor, update_block_cursor_no_scroll};
 use crate::vim::mode::{EditorMode, current_mode, set_mode, with_editor_state};
 use crate::vim::motion::MotionHandler;
 use crate::vim::window::{
@@ -1130,9 +1130,9 @@ fn setup_mouse_handlers() -> Result<()> {
         // 行番号以外をクリックした場合はcurrent-lineをクリア
         let _ = crate::ui::clear_current_line();
 
-        // 少し遅延してカーソル更新
+        // 少し遅延してカーソル更新（マウス操作なのでスクロール抑制）
         let callback = Closure::wrap(Box::new(move || {
-            let _ = update_block_cursor();
+            let _ = update_block_cursor_no_scroll();
         }) as Box<dyn Fn()>);
 
         if let Some(window) = web_sys::window() {
@@ -1176,7 +1176,7 @@ fn setup_mouse_handlers() -> Result<()> {
                         if mode.is_visual() {
                             let _ = set_mode(EditorMode::Normal);
                         }
-                        let _ = update_block_cursor();
+                        let _ = update_block_cursor_no_scroll();
                     }
                 }
             }

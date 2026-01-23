@@ -181,8 +181,15 @@ impl BlockCursor {
         // カーソル位置にSelectionを再設定
         self.reset_selection_after_cursor(&cursor_span)?;
 
-        // カーソルが見えるようにスクロール
-        self.scroll_to_cursor(&cursor_span)?;
+        // マウス操作時はスクロールを抑制
+        let should_scroll = SUPPRESS_SCROLL.with(|s| {
+            let suppress = *s.borrow();
+            *s.borrow_mut() = false;
+            !suppress
+        });
+        if should_scroll {
+            self.scroll_to_cursor(&cursor_span)?;
+        }
 
         Ok(())
     }
@@ -348,13 +355,22 @@ impl BlockCursor {
                 let text = cursor_el.text_content().unwrap_or_default();
                 let text_node = doc.create_text_node(&text);
 
+                // 現在のSelectionがカーソルspan内を指しているか確認
+                // マウスクリック時はSelectionがクリック位置にあるため、上書きしてはいけない
+                let sel = SelectionHelper::get()?;
+                let selection_in_cursor = sel
+                    .anchor_node()
+                    .map(|anchor| cursor_el.contains(Some(&anchor)))
+                    .unwrap_or(false);
+
                 // カーソル前の直接の兄弟テキストノードの長さを計算（Selection復元用）
-                // 注意：要素ノード（<code>等）は飛ばさない、直前のテキストノードのみカウント
                 let mut offset_in_merged_node = 0u32;
-                if let Some(prev) = cursor_el.previous_sibling() {
-                    if prev.node_type() == Node::TEXT_NODE {
-                        let prev_text = prev.text_content().unwrap_or_default();
-                        offset_in_merged_node = prev_text.chars().count() as u32;
+                if selection_in_cursor {
+                    if let Some(prev) = cursor_el.previous_sibling() {
+                        if prev.node_type() == Node::TEXT_NODE {
+                            let prev_text = prev.text_content().unwrap_or_default();
+                            offset_in_merged_node = prev_text.chars().count() as u32;
+                        }
                     }
                 }
 
@@ -362,20 +378,20 @@ impl BlockCursor {
                     .replace_child(&text_node, &cursor_el)
                     .map_err(|e| DnfolioError::DomError(format!("{e:?}")))?;
 
-                // normalize前にSelectionを設定（text_nodeに対して）
-                // これによりnormalize後も正しい位置を維持できる
-                let sel = SelectionHelper::get()?;
-                sel.collapse(&text_node, 0)?;
+                if selection_in_cursor {
+                    // Selectionがカーソルspan内にあった場合のみ位置を再設定
+                    sel.collapse(&text_node, 0)?;
+                }
 
                 // 隣接テキストノードを正規化
                 parent.normalize();
 
-                // normalize後、Selectionの位置を調整
-                // 前に兄弟テキストノードがあった場合、それと結合されているので
-                // オフセットを調整する必要がある
-                if let Some(anchor) = sel.anchor_node() {
-                    if anchor.node_type() == Node::TEXT_NODE && offset_in_merged_node > 0 {
-                        sel.collapse(&anchor, offset_in_merged_node)?;
+                if selection_in_cursor {
+                    // normalize後、Selectionの位置を調整
+                    if let Some(anchor) = sel.anchor_node() {
+                        if anchor.node_type() == Node::TEXT_NODE && offset_in_merged_node > 0 {
+                            sel.collapse(&anchor, offset_in_merged_node)?;
+                        }
                     }
                 }
             }
@@ -399,6 +415,8 @@ impl Default for BlockCursor {
 thread_local! {
     static BLOCK_CURSOR: RefCell<BlockCursor> = RefCell::new(BlockCursor::new());
     static UPDATE_SCHEDULED: RefCell<bool> = RefCell::new(false);
+    /// マウス操作時にスクロールを抑制するフラグ
+    static SUPPRESS_SCROLL: RefCell<bool> = RefCell::new(false);
 }
 
 /// グローバルカーソルを更新（requestAnimationFrameでバッチ処理）
@@ -428,6 +446,12 @@ pub fn update_block_cursor() -> Result<()> {
     }
 
     Ok(())
+}
+
+/// グローバルカーソルを更新（スクロール抑制付き）
+pub fn update_block_cursor_no_scroll() -> Result<()> {
+    SUPPRESS_SCROLL.with(|s| *s.borrow_mut() = true);
+    update_block_cursor()
 }
 
 /// グローバルカーソルを削除（即座に実行）

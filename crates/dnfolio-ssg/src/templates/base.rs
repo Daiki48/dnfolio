@@ -2167,6 +2167,13 @@ pub fn layout_with_toc(
 
             .main-content {
                 padding: 1em;
+                overflow-x: hidden;
+            }
+
+            .main-content table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             /* モバイルでは行番号を非表示 */

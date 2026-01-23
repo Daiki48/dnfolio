@@ -58,11 +58,23 @@ X570チップセット + NVIDIAの組み合わせでは、[PCIeのエラーレ�
 
 ### 1. nvidia-primeの削除
 
-シングルGPU環境には不要なパッケージを削除。
+実際にインストールされているか確認する。
+
+```bash
+$ dpkg -l | grep nvidia-prime
+ii  nvidia-prime        ...
+ii  nvidia-prime-applet ...
+```
+
+やはり入っている。nvidia-primeはiGPU + dGPUのハイブリッド構成でGPU切り替えを管理するためのパッケージであり、シングルGPU環境には不要だ。
+
+削除して大丈夫なのかは正直不安だった。「これを消したらGPU使えなくなるのでは？」と思ったが、GPUを実際に動かしているのは`nvidia-driver-570`（NVIDIAドライバ本体）であり、nvidia-primeはあくまでGPU切り替えの管理ツールに過ぎない。切り替える対象のiGPUがないのだから、削除しても何も失われない。
 
 ```bash
 sudo apt remove nvidia-prime nvidia-prime-applet
 ```
+
+削除後も`nvidia-smi`でGPUが正常に認識されていることを確認できる。
 
 ### 2. カーネルパラメータの追加
 

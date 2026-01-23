@@ -620,6 +620,17 @@ pub fn tags_modal_open_selected() -> Result<()> {
     TAGS_MODAL_STATE.with(|state| state.borrow().open_selected())
 }
 
+/// 選択インデックスを設定してタグを開く（タップ用）
+pub fn tags_modal_select_and_open(index: usize) -> Result<()> {
+    TAGS_MODAL_STATE.with(|state| {
+        let s = state.borrow();
+        *s.selected_index.borrow_mut() = index;
+        s.render_tags()?;
+        s.render_preview()?;
+        s.open_selected()
+    })
+}
+
 /// モーダル状態をクリア
 pub fn tags_modal_clear() -> Result<()> {
     TAGS_MODAL_STATE.with(|state| state.borrow().clear())

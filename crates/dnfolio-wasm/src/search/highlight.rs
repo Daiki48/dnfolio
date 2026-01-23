@@ -212,6 +212,13 @@ impl HighlightManager {
         // スクロールとカーソル移動を遅延実行（DOM完全構築後）
         if let Some(el) = target_element {
             let callback = wasm_bindgen::closure::Closure::once(Box::new(move || {
+                // コマンドラインがアクティブな場合はスクロール・カーソル移動をスキップ
+                // （入力中にフォーカスを奪わないため）
+                let commandline_active = crate::ui::CommandLine::is_active().unwrap_or(false);
+                if commandline_active {
+                    return;
+                }
+
                 // 画面中央にスクロール（即座に実行）
                 if let Some(html_el) = el.dyn_ref::<HtmlElement>() {
                     let options = web_sys::ScrollIntoViewOptions::new();
@@ -257,11 +264,6 @@ impl HighlightManager {
         // search-countを更新
         if let Ok(search_count) = query_selector::<HtmlElement>("#search-count") {
             search_count.set_text_content(Some(&count_text));
-        }
-
-        // highlight-nav-countを更新
-        if let Ok(nav_count) = query_selector::<HtmlElement>("#highlight-nav-count") {
-            nav_count.set_text_content(Some(&count_text));
         }
 
         // highlight-navの表示切り替え

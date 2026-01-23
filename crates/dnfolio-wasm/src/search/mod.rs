@@ -14,10 +14,10 @@ pub use index::{
 };
 pub use modal::{
     SEARCH_MODAL_STATE, SearchModalState, modal_clear, modal_move_down, modal_move_up,
-    modal_open_selected, perform_search,
+    modal_open_selected, modal_select_and_open, perform_search,
 };
 pub use navigator::HighlightNavigator;
 pub use tags::{
     TAGS_MODAL_STATE, TagInfo, TagsModalState, perform_tags_filter, tags_modal_clear,
-    tags_modal_move_down, tags_modal_move_up, tags_modal_open_selected,
+    tags_modal_move_down, tags_modal_move_up, tags_modal_open_selected, tags_modal_select_and_open,
 };

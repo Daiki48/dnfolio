@@ -1999,6 +1999,122 @@ pub fn layout_with_toc(
         .hamburger-btn, .overlay { display: none; }
 
         /* ========================================
+           モバイル用コマンドパレット（ボトムシート）
+           ======================================== */
+        .bottomsheet-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bottomsheet-overlay.is-open {
+            display: block;
+            opacity: 1;
+        }
+
+        .command-bottomsheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            border-radius: 16px 16px 0 0;
+            z-index: 901;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .command-bottomsheet.is-open {
+            transform: translateY(0);
+        }
+
+        .bottomsheet-handle {
+            display: flex;
+            justify-content: center;
+            padding: 12px 0 8px;
+        }
+
+        .bottomsheet-handle-bar {
+            width: 40px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+
+        .bottomsheet-header {
+            padding: 0 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .bottomsheet-title {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .bottomsheet-presets {
+            padding: 8px 0;
+        }
+
+        .bottomsheet-preset-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 14px 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .bottomsheet-preset-btn:hover,
+        .bottomsheet-preset-btn:active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .preset-icon {
+            color: var(--accent-cyan);
+            width: 24px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .preset-icon svg {
+            stroke: var(--accent-cyan);
+        }
+
+        .preset-cmd {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-bright);
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+
+        .preset-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
            レスポンシブ（モバイル）
            ======================================== */
         @media screen and (max-width: 992px) {
@@ -2238,22 +2354,6 @@ pub fn layout_with_toc(
             z-index: 850;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            font-family: var(--font-mono);
-        }
-
-        .highlight-nav-count {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            color: var(--accent-yellow);
-            font-weight: 600;
-        }
-
-        .highlight-nav-buttons {
-            display: flex;
             gap: 8px;
         }
 
@@ -2437,11 +2537,8 @@ pub fn layout_with_toc(
 
                 // モバイル用ハイライトナビゲーション
                 div id="highlight-nav" class="highlight-nav" {
-                    div id="highlight-nav-count" class="highlight-nav-count" {}
-                    div class="highlight-nav-buttons" {
-                        button id="highlight-nav-prev" class="highlight-nav-btn" title="前へ (N)" { "↑" }
-                        button id="highlight-nav-next" class="highlight-nav-btn" title="次へ (n)" { "↓" }
-                    }
+                    button id="highlight-nav-prev" class="highlight-nav-btn" title="前へ (N)" { "↑" }
+                    button id="highlight-nav-next" class="highlight-nav-btn" title="次へ (n)" { "↓" }
                 }
 
                 // 固定フッター（ステータスライン + コマンドライン）
@@ -2472,6 +2569,54 @@ pub fn layout_with_toc(
                         span class="commandline-prefix" { "/" }
                         input type="text" id="commandline-input" placeholder="Type :command or /pattern (:help for list)" autocomplete="off" readonly;
                         span class="commandline-cursor" { "_" }
+                    }
+                }
+
+                // モバイル用コマンドパレット（ボトムシート）
+                div id="bottomsheet-overlay" class="bottomsheet-overlay" {}
+                div id="command-bottomsheet" class="command-bottomsheet" {
+                    div class="bottomsheet-handle" {
+                        span class="bottomsheet-handle-bar" {}
+                    }
+                    div class="bottomsheet-header" {
+                        span class="bottomsheet-title" { "Command Palette" }
+                    }
+                    div class="bottomsheet-presets" {
+                        button class="bottomsheet-preset-btn" data-command=":search" {
+                            span class="preset-icon" { (PreEscaped(icons::search(16))) }
+                            span class="preset-cmd" { ":search" }
+                            span class="preset-desc" { "記事をGrep検索" }
+                        }
+                        button class="bottomsheet-preset-btn" data-command=":tags" {
+                            span class="preset-icon" { (PreEscaped(icons::tag(16))) }
+                            span class="preset-cmd" { ":tags" }
+                            span class="preset-desc" { "タグで絞り込み" }
+                        }
+                        button class="bottomsheet-preset-btn" data-command="/search" {
+                            span class="preset-icon" { (PreEscaped(icons::text_search(16))) }
+                            span class="preset-cmd" { "/pattern" }
+                            span class="preset-desc" { "ページ内検索" }
+                        }
+                        button class="bottomsheet-preset-btn" data-command=":help" {
+                            span class="preset-icon" { (PreEscaped(icons::help_circle(16))) }
+                            span class="preset-cmd" { ":help" }
+                            span class="preset-desc" { "キーバインド一覧" }
+                        }
+                        button class="bottomsheet-preset-btn" data-command=":version" {
+                            span class="preset-icon" { (PreEscaped(icons::info(16))) }
+                            span class="preset-cmd" { ":version" }
+                            span class="preset-desc" { "バージョン情報" }
+                        }
+                        button class="bottomsheet-preset-btn" data-command=":noh" {
+                            span class="preset-icon" { (PreEscaped(icons::x_circle(16))) }
+                            span class="preset-cmd" { ":noh" }
+                            span class="preset-desc" { "検索ハイライトを消す" }
+                        }
+                        button class="bottomsheet-preset-btn" data-command=":smile" {
+                            span class="preset-icon" { (PreEscaped(icons::smile(16))) }
+                            span class="preset-cmd" { ":smile" }
+                            span class="preset-desc" { "イースターエッグ" }
+                        }
                     }
                 }
 

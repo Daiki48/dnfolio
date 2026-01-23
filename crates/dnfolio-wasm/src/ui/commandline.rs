@@ -2,11 +2,17 @@
 //!
 //! Vimコマンドの入力と実行
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use wasm_bindgen::JsCast;
+use wasm_bindgen::prelude::*;
 use web_sys::HtmlInputElement;
 
 use crate::dom::query_selector_optional;
 use crate::error::Result;
+use crate::ui::Toast;
+use crate::vim::command::CommandExecutor;
 
 /// コマンドライン管理
 pub struct CommandLine;
@@ -130,5 +136,89 @@ impl CommandLine {
             input.set_selection_end(Some(len)).ok();
         }
         Ok(())
+    }
+
+    /// タイプライター演出でコマンドを入力し、完了後に実行する
+    pub fn typewriter_execute(cmd: &str) {
+        let cmd = cmd.to_string();
+        let chars: Vec<char> = cmd.chars().collect();
+        let total = chars.len();
+
+        if total == 0 {
+            return;
+        }
+
+        // コマンドラインをアクティブ化（空の状態で開始）
+        if let Ok(Some(input)) = Self::get_input() {
+            input.remove_attribute("readonly").ok();
+            input.set_value("");
+            input.focus().ok();
+        }
+
+        // 1文字ずつ入力するアニメーション
+        let index = Rc::new(RefCell::new(0usize));
+        let interval_id = Rc::new(RefCell::new(0i32));
+
+        let index_clone = index.clone();
+        let interval_id_clone = interval_id.clone();
+        let chars_clone = chars.clone();
+        let cmd_clone = cmd.clone();
+
+        let callback = Closure::wrap(Box::new(move || {
+            let current = *index_clone.borrow();
+            if current < total {
+                // 1文字追加
+                let display: String = chars_clone[..=current].iter().collect();
+                if let Ok(Some(input)) =
+                    query_selector_optional::<HtmlInputElement>("#commandline-input")
+                {
+                    input.set_value(&display);
+                }
+                *index_clone.borrow_mut() = current + 1;
+            } else {
+                // アニメーション完了: インターバルをクリアして実行
+                if let Some(window) = web_sys::window() {
+                    window.clear_interval_with_handle(*interval_id_clone.borrow());
+                }
+
+                // 少し間を置いてからコマンドを実行
+                let cmd_exec = cmd_clone.clone();
+                let exec_callback = Closure::wrap(Box::new(move || {
+                    // コマンドを実行
+                    if let Ok(Some(result)) = CommandExecutor::execute(&cmd_exec) {
+                        let _ = match result.toast_type.as_str() {
+                            "warn" => Toast::warn(&result.title, &result.message, &result.icon),
+                            "error" => Toast::error(&result.title, &result.message, &result.icon),
+                            "success" => {
+                                Toast::success(&result.title, &result.message, &result.icon)
+                            }
+                            _ => Toast::info(&result.title, &result.message, &result.icon),
+                        };
+                    }
+                    // コマンドラインを非アクティブ化
+                    let _ = CommandLine::deactivate();
+                }) as Box<dyn Fn()>);
+
+                if let Some(window) = web_sys::window() {
+                    let _ = window.set_timeout_with_callback_and_timeout_and_arguments_0(
+                        exec_callback.as_ref().unchecked_ref(),
+                        250,
+                    );
+                }
+                exec_callback.forget();
+            }
+        }) as Box<dyn Fn()>);
+
+        // 60msごとに1文字ずつ入力
+        if let Some(window) = web_sys::window() {
+            let id = window
+                .set_interval_with_callback_and_timeout_and_arguments_0(
+                    callback.as_ref().unchecked_ref(),
+                    60,
+                )
+                .unwrap_or(0);
+            *interval_id.borrow_mut() = id;
+        }
+        callback.forget();
     }
 }

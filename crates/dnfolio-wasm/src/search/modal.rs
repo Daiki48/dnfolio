@@ -464,6 +464,16 @@ pub fn modal_open_selected() -> Result<()> {
     SEARCH_MODAL_STATE.with(|state| state.borrow().open_selected())
 }
 
+/// 選択インデックスを設定して記事を開く（タップ用）
+pub fn modal_select_and_open(index: usize) -> Result<()> {
+    SEARCH_MODAL_STATE.with(|state| {
+        let s = state.borrow();
+        *s.selected_index.borrow_mut() = index;
+        s.render_results()?;
+        s.open_selected()
+    })
+}
+
 /// モーダル状態をクリア
 pub fn modal_clear() -> Result<()> {
     SEARCH_MODAL_STATE.with(|state| state.borrow().clear())

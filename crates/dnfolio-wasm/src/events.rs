@@ -37,6 +37,10 @@ pub fn setup_all_event_handlers() -> Result<()> {
     setup_modal_handlers()?;
     setup_code_copy_handlers()?;
     setup_folder_toggle_handlers()?;
+    setup_hamburger_handler()?;
+    setup_commandline_tap_handler()?;
+    setup_bottomsheet_handlers()?;
+    setup_highlight_nav_handlers()?;
 
     web_sys::console::log_1(&"  ✓ Event handlers registered".into());
     Ok(())
@@ -881,6 +885,51 @@ fn setup_modal_handlers() -> Result<()> {
         handler.forget();
     }
 
+    // 検索モーダルの結果アイテムをタップで開く（イベント委譲）
+    if let Some(list) = query_selector_optional::<HtmlElement>("#grep-results-list")? {
+        let handler = Closure::wrap(Box::new(move |e: web_sys::MouseEvent| {
+            // クリックされた要素から .search-result-item を探す
+            if let Some(target) = e.target() {
+                if let Some(el) = target.dyn_ref::<web_sys::Element>() {
+                    if let Some(item) = el.closest(".search-result-item").ok().flatten() {
+                        if let Some(index_str) = item.get_attribute("data-index") {
+                            if let Ok(index) = index_str.parse::<usize>() {
+                                let _ = crate::search::modal::modal_select_and_open(index);
+                            }
+                        }
+                    }
+                }
+            }
+        }) as Box<dyn Fn(web_sys::MouseEvent)>);
+
+        list.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))
+            .ok();
+        handler.forget();
+    }
+
+    // タグモーダルの結果アイテムをタップで開く（イベント委譲）
+    if let Some(list) = query_selector_optional::<HtmlElement>("#tags-list")? {
+        let handler = Closure::wrap(Box::new(move |e: web_sys::MouseEvent| {
+            if let Some(target) = e.target() {
+                if let Some(el) = target.dyn_ref::<web_sys::Element>() {
+                    if let Some(item) = el.closest(".tag-result-item").ok().flatten() {
+                        if let Some(index_str) = item.get_attribute("data-index") {
+                            if let Ok(index) = index_str.parse::<usize>() {
+                                let _ = crate::search::tags::tags_modal_select_and_open(index);
+                            }
+                        }
+                    }
+                }
+            }
+        }) as Box<dyn Fn(web_sys::MouseEvent)>);
+
+        list.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))
+            .ok();
+        handler.forget();
+    }
+
     Ok(())
 }
 
@@ -1503,6 +1552,171 @@ fn explorer_open_selected() -> Result<()> {
                 }
             }
         }
+    }
+
+    Ok(())
+}
+
+/// ハンバーガーボタンとオーバーレイのクリックハンドラー
+fn setup_hamburger_handler() -> Result<()> {
+    // ハンバーガーボタン: サイドバーをトグル
+    if let Some(btn) = query_selector_optional::<HtmlElement>("#hamburger-btn")? {
+        let handler = Closure::wrap(Box::new(move || {
+            if let Ok(Some(sidebar)) = query_selector_optional::<HtmlElement>("#sidebar-left") {
+                let _ = sidebar.class_list().toggle("is-open");
+            }
+            if let Ok(Some(overlay)) = query_selector_optional::<HtmlElement>("#overlay") {
+                let _ = overlay.class_list().toggle("is-open");
+            }
+        }) as Box<dyn Fn()>);
+
+        btn.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
+    }
+
+    // オーバーレイ: クリックでサイドバーを閉じる
+    if let Some(overlay) = query_selector_optional::<HtmlElement>("#overlay")? {
+        let handler = Closure::wrap(Box::new(move || {
+            if let Ok(Some(sidebar)) = query_selector_optional::<HtmlElement>("#sidebar-left") {
+                sidebar.class_list().remove_1("is-open").ok();
+            }
+            if let Ok(Some(overlay)) = query_selector_optional::<HtmlElement>("#overlay") {
+                overlay.class_list().remove_1("is-open").ok();
+            }
+        }) as Box<dyn Fn()>);
+
+        overlay
+            .add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
+    }
+
+    Ok(())
+}
+
+/// コマンドラインのタップハンドラー（モバイル用ボトムシート表示）
+fn setup_commandline_tap_handler() -> Result<()> {
+    if let Some(commandline) = query_selector_optional::<HtmlElement>(".commandline")? {
+        let handler = Closure::wrap(Box::new(move |e: web_sys::Event| {
+            // デスクトップ幅（992px超）ではボトムシートを表示しない
+            if let Some(window) = web_sys::window() {
+                let width = window
+                    .inner_width()
+                    .ok()
+                    .and_then(|v| v.as_f64())
+                    .unwrap_or(0.0);
+                if width > 992.0 {
+                    return;
+                }
+            }
+            // モバイルではinputのフォーカスを防止してボトムシートを表示
+            e.prevent_default();
+            open_command_bottomsheet();
+        }) as Box<dyn Fn(web_sys::Event)>);
+
+        commandline
+            .add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
+    }
+    Ok(())
+}
+
+/// ボトムシートを開く
+fn open_command_bottomsheet() {
+    if let Ok(Some(sheet)) = query_selector_optional::<HtmlElement>("#command-bottomsheet") {
+        sheet.class_list().add_1("is-open").ok();
+    }
+    if let Ok(Some(overlay)) = query_selector_optional::<HtmlElement>("#bottomsheet-overlay") {
+        overlay.class_list().add_1("is-open").ok();
+    }
+}
+
+/// ボトムシートを閉じる
+fn close_command_bottomsheet() {
+    if let Ok(Some(sheet)) = query_selector_optional::<HtmlElement>("#command-bottomsheet") {
+        sheet.class_list().remove_1("is-open").ok();
+    }
+    if let Ok(Some(overlay)) = query_selector_optional::<HtmlElement>("#bottomsheet-overlay") {
+        overlay.class_list().remove_1("is-open").ok();
+    }
+}
+
+/// ボトムシートのイベントハンドラー（オーバーレイクリック + プリセット選択）
+fn setup_bottomsheet_handlers() -> Result<()> {
+    // オーバーレイクリックでボトムシートを閉じる
+    if let Some(overlay) = query_selector_optional::<HtmlElement>("#bottomsheet-overlay")? {
+        let handler = Closure::wrap(Box::new(move || {
+            close_command_bottomsheet();
+        }) as Box<dyn Fn()>);
+
+        overlay
+            .add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
+    }
+
+    // プリセットボタンのクリックハンドラー
+    let doc = document()?;
+    let buttons = doc
+        .query_selector_all(".bottomsheet-preset-btn")
+        .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+
+    for i in 0..buttons.length() {
+        if let Some(node) = buttons.get(i) {
+            if let Some(btn) = node.dyn_ref::<HtmlElement>() {
+                let handler = Closure::wrap(Box::new(move |e: web_sys::Event| {
+                    if let Some(target) = e.current_target() {
+                        if let Some(el) = target.dyn_ref::<HtmlElement>() {
+                            if let Some(cmd) = el.get_attribute("data-command") {
+                                // ボトムシートを閉じる
+                                close_command_bottomsheet();
+
+                                if cmd.starts_with('/') {
+                                    // 検索モード: コマンドラインを検索入力状態にする
+                                    let _ = CommandLine::activate_search();
+                                } else {
+                                    // タイプライター演出でコマンドを実行
+                                    CommandLine::typewriter_execute(&cmd);
+                                }
+                            }
+                        }
+                    }
+                }) as Box<dyn Fn(web_sys::Event)>);
+
+                btn.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+                    .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+                handler.forget();
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// ハイライトナビゲーションボタンのクリックハンドラー
+fn setup_highlight_nav_handlers() -> Result<()> {
+    // 次へボタン（↓）
+    if let Some(btn) = query_selector_optional::<HtmlElement>("#highlight-nav-next")? {
+        let handler = Closure::wrap(Box::new(move || {
+            let _ = HighlightNavigator::next();
+        }) as Box<dyn Fn()>);
+
+        btn.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
+    }
+
+    // 前へボタン（↑）
+    if let Some(btn) = query_selector_optional::<HtmlElement>("#highlight-nav-prev")? {
+        let handler = Closure::wrap(Box::new(move || {
+            let _ = HighlightNavigator::prev();
+        }) as Box<dyn Fn()>);
+
+        btn.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
     }
 
     Ok(())

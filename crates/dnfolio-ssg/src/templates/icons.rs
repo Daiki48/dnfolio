@@ -248,6 +248,22 @@ pub fn list_ordered(size: u32) -> String {
 // ユーティリティ関数
 // =============================================================================
 
+/// タグ
+pub fn tag(size: u32) -> String {
+    format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{}" height="{}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>"#,
+        size, size
+    )
+}
+
+/// テキスト検索（スラッシュ）
+pub fn text_search(size: u32) -> String {
+    format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{}" height="{}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 6H3"></path><path d="M10 12H3"></path><path d="M10 18H3"></path><circle cx="17" cy="15" r="4"></circle><line x1="21" y1="19" x2="19.8" y2="17.8"></line></svg>"#,
+        size, size
+    )
+}
+
 /// SVGをインラインスタイル付きで生成（色指定）
 pub fn with_color(svg: &str, color: &str) -> String {
     svg.replace("stroke=\"currentColor\"", &format!("stroke=\"{}\"", color))

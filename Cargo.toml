@@ -6,7 +6,6 @@ members = ["crates/dnfolio-ssg", "crates/dnfolio-wasm"]
 edition = "2024"
 rust-version = "1.85"
 authors = ["Daiki"]
-license = "MIT"
 
 [workspace.dependencies]
 # 共通依存

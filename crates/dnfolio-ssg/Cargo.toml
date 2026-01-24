@@ -30,3 +30,4 @@ tiny-skia.workspace = true
 image.workspace = true
 fontdb.workspace = true
 syntect.workspace = true
+css-minify.workspace = true

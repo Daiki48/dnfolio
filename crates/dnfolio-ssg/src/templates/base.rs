@@ -1,5 +1,6 @@
 use crate::models::MetaData;
 use crate::templates::icons;
+use css_minify::optimizations::{Level, Minifier};
 use maud::{DOCTYPE, Markup, PreEscaped, html};
 
 /// 歯車ロゴSVG（ローディング表示用）
@@ -85,6 +86,21 @@ pub fn layout_with_toc(
     const GIT_VERSION: &str = env!("GIT_VERSION");
 
     let css = r#"
+        @font-face {
+            font-family: 'UDEV Gothic';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('/fonts/UDEVGothic-Regular.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'UDEV Gothic';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url('/fonts/UDEVGothic-Bold.woff2') format('woff2');
+        }
+
         /* ========================================
            sakurajima.nvim カラーパレット
            ======================================== */
@@ -141,9 +157,9 @@ pub fn layout_with_toc(
             --sidebar-width: 340px;
 
             /* フォント */
-            --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
-            --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
-            --font-code: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            --font-mono: 'UDEV Gothic', monospace;
+            --font-body: 'UDEV Gothic', monospace;
+            --font-code: 'UDEV Gothic', monospace;
         }
 
         /* ========================================
@@ -2418,7 +2434,7 @@ pub fn layout_with_toc(
                 // 注意: frame-ancestorsはmeta要素では無効（HTTPヘッダーでのみ有効）
                 // 注意: 'unsafe-inline'はGoogle Analytics等のインラインスクリプトに必要
                 //       SSGではnonce/hashを動的生成できないため必要
-                meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://bst.heion.net https://blueskytimeline.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://cloudflareinsights.com https://bst.heion.net https://blueskytimeline.com; base-uri 'self'; form-action 'self';";
+                meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://bst.heion.net https://blueskytimeline.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://cloudflareinsights.com https://bst.heion.net https://blueskytimeline.com; base-uri 'self'; form-action 'self';";
 
                 // Referrer Policy - 外部サイトにはオリジンのみ送信
                 meta name="referrer" content="strict-origin-when-cross-origin";
@@ -2429,10 +2445,6 @@ pub fn layout_with_toc(
                 meta name="keywords" content=(keywords);
                 meta name="author" content="Daiki Nakashima";
 
-                // Google Fonts（JetBrains Mono, Inter, Noto Sans JP）
-                link rel="preconnect" href="https://fonts.googleapis.com";
-                link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous";
-                link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet";
 
                 meta property="og:title" content=(config.base.page_title);
                 meta property="og:description" content=(description);
@@ -2469,7 +2481,13 @@ pub fn layout_with_toc(
                     (PreEscaped(json_ld))
                 }
 
-                style { (PreEscaped(css)) }
+                style {
+                    (PreEscaped(
+                        Minifier::default()
+                            .minify(css, Level::Two)
+                            .unwrap_or_else(|_| css.to_string())
+                    ))
+                }
             }
             body data-version=(GIT_VERSION) {
                 // ローディングオーバーレイ（Rust歯車）- 初期表示、WASM初期化完了後に非表示
@@ -2708,13 +2726,18 @@ pub fn layout_with_toc(
                     "#))
                 }
 
-                script async src="https://www.googletagmanager.com/gtag/js?id=G-S0DTM6WBVT" {}
                 script {
                     (PreEscaped(r#"
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-                        gtag('config', 'G-S0DTM6WBVT');
+                        (window.requestIdleCallback || function(cb) { setTimeout(cb, 2000); })(function() {
+                            var s = document.createElement('script');
+                            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-S0DTM6WBVT';
+                            s.async = true;
+                            document.head.appendChild(s);
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-S0DTM6WBVT');
+                        });
                     "#))
                 }
 

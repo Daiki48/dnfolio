@@ -154,7 +154,7 @@ pub fn layout_with_toc(
             --titlebar-height: 40px;
             --statusline-height: 28px;
             --commandline-height: 32px;
-            --sidebar-width: 340px;
+            --sidebar-width: 400px;
 
             /* フォント */
             --font-mono: 'UDEV Gothic', monospace;
@@ -342,6 +342,7 @@ pub fn layout_with_toc(
         .sidebar-header {
             padding: 8px 12px;
             border-bottom: 1px solid var(--border-color);
+            position: relative;
         }
 
         .sidebar-header h2 {
@@ -1954,7 +1955,7 @@ pub fn layout_with_toc(
             display: block;
             padding: 4px 0;
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: var(--text-primary);
             text-decoration: none;
             white-space: nowrap;
             overflow: hidden;
@@ -1968,7 +1969,7 @@ pub fn layout_with_toc(
 
         .toc-section .toc-h3 a {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
 
         /* 現在表示中の見出し（スクロール追跡） */
@@ -2012,7 +2013,7 @@ pub fn layout_with_toc(
         /* ========================================
            ハンバーガーメニュー・オーバーレイ
            ======================================== */
-        .hamburger-btn, .overlay { display: none; }
+        .hamburger-btn, .overlay, .sidebar-close-btn { display: none; }
 
         /* ========================================
            モバイル用コマンドパレット（ボトムシート）
@@ -2156,12 +2157,13 @@ pub fn layout_with_toc(
 
             .sidebar-left {
                 position: fixed;
-                left: 0;
+                right: 0;
+                left: auto;
                 top: 0;
                 height: 100%;
-                width: var(--sidebar-width);
+                width: 100%;
                 z-index: 1000;
-                transform: translateX(-100%);
+                transform: translateX(100%);
                 transition: transform 0.3s ease-in-out;
             }
 
@@ -2226,6 +2228,10 @@ pub fn layout_with_toc(
                 cursor: pointer;
                 padding: 0;
                 z-index: 1001;
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
             }
 
             .hamburger-btn span {
@@ -2248,6 +2254,29 @@ pub fn layout_with_toc(
 
             .overlay.is-open {
                 display: block;
+            }
+
+            .sidebar-close-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                background: transparent;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                cursor: pointer;
+                color: var(--text-bright);
+                font-size: 1.1rem;
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                transition: background 0.15s ease;
+            }
+
+            .sidebar-close-btn:hover {
+                background: var(--bg-elevated);
             }
 
             .statusline {
@@ -2524,6 +2553,9 @@ pub fn layout_with_toc(
                     aside id="sidebar-left" class="sidebar-left" {
                         div class="sidebar-header" {
                             h2 { "EXPLORER" }
+                            button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="Close sidebar" {
+                                (PreEscaped(icons::arrow_right(16)))
+                            }
                         }
                         div class="sidebar-content" {
                             // 目次（記事ページの場合）- トップに配置

@@ -264,6 +264,14 @@ pub fn text_search(size: u32) -> String {
     )
 }
 
+/// 右矢印（サイドバー閉じるボタン用）
+pub fn arrow_right(size: u32) -> String {
+    format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{}" height="{}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>"#,
+        size, size
+    )
+}
+
 /// SVGをインラインスタイル付きで生成（色指定）
 pub fn with_color(svg: &str, color: &str) -> String {
     svg.replace("stroke=\"currentColor\"", &format!("stroke=\"{}\"", color))

@@ -95,9 +95,9 @@ fn generate_file_tree_markup(
                                             a href=(article_url) class=(class_name) {
                                                 span class="tree-icon tree-icon-file" { (maud::PreEscaped(icons::file_document(12))) }
                                                 @if let Some(meta) = &article.metadata {
-                                                    @let title_display: String = meta.title.chars().take(25).collect();
+                                                    @let title_display: String = meta.title.chars().take(40).collect();
                                                     (title_display)
-                                                    @if meta.title.chars().count() > 25 { "..." }
+                                                    @if meta.title.chars().count() > 40 { "..." }
                                                 } @else {
                                                     (article.output_path.file_name().unwrap_or_default().to_string_lossy())
                                                 }

@@ -1592,6 +1592,50 @@ fn setup_hamburger_handler() -> Result<()> {
         handler.forget();
     }
 
+    // 閉じるボタン: サイドバーを閉じる
+    if let Some(close_btn) = query_selector_optional::<HtmlElement>("#sidebar-close-btn")? {
+        let handler = Closure::wrap(Box::new(move || {
+            if let Ok(Some(sidebar)) = query_selector_optional::<HtmlElement>("#sidebar-left") {
+                sidebar.class_list().remove_1("is-open").ok();
+            }
+            if let Ok(Some(overlay)) = query_selector_optional::<HtmlElement>("#overlay") {
+                overlay.class_list().remove_1("is-open").ok();
+            }
+        }) as Box<dyn Fn()>);
+
+        close_btn
+            .add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+            .map_err(|e| crate::error::DnfolioError::DomError(format!("{e:?}")))?;
+        handler.forget();
+    }
+
+    // 目次リンク: クリック時にサイドバーを閉じる（モバイル用）
+    let doc = document()?;
+    if let Ok(links) = doc.query_selector_all(".toc-section .toc-item a") {
+        for i in 0..links.length() {
+            if let Some(node) = links.get(i) {
+                if let Some(el) = node.dyn_ref::<HtmlElement>() {
+                    let handler = Closure::wrap(Box::new(move || {
+                        if let Ok(Some(sidebar)) =
+                            query_selector_optional::<HtmlElement>("#sidebar-left")
+                        {
+                            sidebar.class_list().remove_1("is-open").ok();
+                        }
+                        if let Ok(Some(overlay)) =
+                            query_selector_optional::<HtmlElement>("#overlay")
+                        {
+                            overlay.class_list().remove_1("is-open").ok();
+                        }
+                    }) as Box<dyn Fn()>);
+
+                    el.add_event_listener_with_callback("click", handler.as_ref().unchecked_ref())
+                        .ok();
+                    handler.forget();
+                }
+            }
+        }
+    }
+
     Ok(())
 }
 

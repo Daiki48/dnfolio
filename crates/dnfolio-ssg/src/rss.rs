@@ -1,9 +1,9 @@
 use std::fs;
 use std::path::Path;
 
+use crate::dates;
 use crate::models::Article;
 use anyhow::Result;
-use chrono::{FixedOffset, NaiveDate, TimeZone};
 use rss::{CategoryBuilder, ChannelBuilder, GuidBuilder, ItemBuilder};
 
 const SITE_URL: &str = "https://dnfolio.me";
@@ -11,23 +11,13 @@ const SITE_TITLE: &str = "dnfolio";
 const SITE_DESCRIPTION: &str = "Daikiの個人サイト。技術ブログを公開しています。";
 
 pub fn generate_rss(articles: &[Article], dist_dir: &Path) -> Result<()> {
-    let jst = FixedOffset::east_opt(9 * 3600).unwrap();
-
     let items: Vec<rss::Item> = articles
         .iter()
         .take(20)
         .filter_map(|article| {
             let meta = article.metadata.as_ref()?;
             let full_url = format!("{}{}", SITE_URL, article.relative_url.to_string_lossy());
-
-            // 日付をRFC2822形式に変換
-            let pub_date = meta
-                .created
-                .as_ref()
-                .and_then(|d| NaiveDate::parse_from_str(d, "%Y-%m-%d").ok())
-                .and_then(|d| d.and_hms_opt(9, 0, 0))
-                .and_then(|dt| jst.from_local_datetime(&dt).single())
-                .map(|dt| dt.to_rfc2822());
+            let article_dates = dates::resolve_article_dates(article);
 
             // タグからカテゴリを生成
             let categories: Vec<rss::Category> = meta
@@ -46,7 +36,7 @@ pub fn generate_rss(articles: &[Article], dist_dir: &Path) -> Result<()> {
                     .title(Some(meta.title.clone()))
                     .link(Some(full_url.clone()))
                     .description(meta.description.clone())
-                    .pub_date(pub_date)
+                    .pub_date(article_dates.map(|resolved| resolved.published.to_rfc2822()))
                     .categories(categories)
                     .guid(Some(
                         GuidBuilder::default()

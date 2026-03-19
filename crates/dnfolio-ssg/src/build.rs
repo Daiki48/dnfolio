@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 
 use anyhow::Result;
-use chrono::{Datelike, NaiveDate};
+use chrono::Datelike;
 use gray_matter::{Matter, ParsedEntity};
 use maud::{Markup, html};
 use pulldown_cmark::{CowStr, Event, HeadingLevel, Parser, Tag, TagEnd};
@@ -19,7 +19,7 @@ use walkdir::WalkDir;
 use crate::models::{Article, Heading, MetaData, Page, TagInfo};
 use crate::templates::base::{ArticlePageConfig, PageConfig};
 use crate::templates::{base, icons, privacy};
-use crate::{ogp, rss, sitemap, structured_data};
+use crate::{dates, ogp, redirects, rss, sitemap, structured_data};
 
 // 年月別グループ化のためのヘルパー構造
 struct YearGroup {
@@ -37,7 +37,7 @@ fn group_articles_by_year_month(articles: &[Article]) -> Vec<YearGroup> {
     let mut year_map: HashMap<i32, HashMap<u32, Vec<Article>>> = HashMap::new();
 
     for article in articles {
-        if let Some(date) = extract_date_from_filename(&article.source_path) {
+        if let Some(date) = dates::extract_date_from_path(&article.source_path) {
             let year = date.year();
             let month = date.month();
             year_map
@@ -180,21 +180,6 @@ fn highlight_code(lang: &str, code: &str) -> String {
 {}</div>"#,
         display_lang, escaped_code, highlighted_html
     )
-}
-
-fn extract_date_from_filename(path: &Path) -> Option<NaiveDate> {
-    let file_name = path.file_stem()?.to_str()?;
-
-    if let Some(date_part) = file_name.split('_').next() {
-        if date_part.len() >= 10 {
-            let date_str = &date_part[0..10];
-            NaiveDate::parse_from_str(date_str, "%Y-%m-%d").ok()
-        } else {
-            None
-        }
-    } else {
-        None
-    }
 }
 
 fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Article> {
@@ -623,6 +608,8 @@ fn generate_tag_pages(
                 metadata: None,
                 ogp_image_path: None,
                 structured_data_html: Some(&structured_data),
+                robots_directive: Some("noindex,follow"),
+                article_dates: None,
             },
             articles_list_markup.clone(),
             tag_main_content_markup,
@@ -659,8 +646,8 @@ pub async fn run() -> Result<()> {
             let path = entry.path();
             if path.is_file() {
                 if let Some(ext) = path.extension() {
-                    // HTML, JSON, XMLファイルを削除（wasmファイルは保持）
-                    if ext == "html" || ext == "json" || ext == "xml" {
+                    // HTML, JSON, XML, CSSファイルを削除（wasmファイルは保持）
+                    if ext == "html" || ext == "json" || ext == "xml" || ext == "css" {
                         fs::remove_file(&path)?;
                     }
                 }
@@ -678,6 +665,7 @@ pub async fn run() -> Result<()> {
             fs::copy(entry.path(), &target_path)?;
         }
     }
+    fs::write(dist_dir.join("app.css"), base::minified_stylesheet())?;
 
     let markdown_files: Vec<PathBuf> = WalkDir::new(&content_dir)
         .into_iter()
@@ -712,8 +700,8 @@ pub async fn run() -> Result<()> {
         .collect();
 
     articles.sort_by(|a, b| {
-        let date_a = extract_date_from_filename(&a.source_path);
-        let date_b = extract_date_from_filename(&b.source_path);
+        let date_a = dates::extract_date_from_path(&a.source_path);
+        let date_b = dates::extract_date_from_path(&b.source_path);
 
         match (date_a, date_b) {
             (Some(date_a), Some(date_b)) => date_b.cmp(&date_a),
@@ -800,7 +788,8 @@ pub async fn run() -> Result<()> {
                     Some(serde_json::json!({
                         "title": meta.title,
                         "url": article.relative_url.to_string_lossy(),
-                        "date": meta.created.clone()
+                        "date": dates::resolve_article_dates(article)
+                            .map(|resolved| resolved.published.format("%Y-%m-%d").to_string())
                     }))
                 })
                 .collect();
@@ -905,11 +894,19 @@ pub async fn run() -> Result<()> {
             let ogp_image_path = ogp_png_url_path;
 
             let canonical_url = format!("https://dnfolio.me{}", article.relative_url.to_string_lossy());
+            let article_dates = dates::resolve_article_dates(article).ok_or_else(|| {
+                anyhow::Error::msg(format!(
+                    "公開日を解決できません: {:?}",
+                    article.source_path
+                ))
+            })?;
+            let published_time = article_dates.published.to_rfc3339();
+            let modified_time = article_dates.modified.to_rfc3339();
 
             // 新しいNeovim風のスタイルでメインコンテンツを生成
             let main_content_markup = html! {
                 @if let Some(meta) = &article.metadata {
-                    img src=(ogp_image_path) alt=(meta.title);
+                    img src=(ogp_image_path) alt=(meta.title) decoding="async";
                 }
                 h1 {
                     @if let Some(meta) = &article.metadata {
@@ -948,7 +945,15 @@ pub async fn run() -> Result<()> {
             let article_sidebar_markup = generate_file_tree_markup(&year_groups, Some(&article_url_str), None);
 
             let article_url = article.relative_url.to_string_lossy();
-            let structured_data = structured_data::generate_structured_data_html(structured_data::PageType::Article { url: &article_url, ogp_image_url: &ogp_image_path }, article.metadata.as_ref());
+            let structured_data = structured_data::generate_structured_data_html(
+                structured_data::PageType::Article {
+                    url: &article_url,
+                    ogp_image_url: &ogp_image_path,
+                    published_date: &published_time,
+                    modified_date: &modified_time,
+                },
+                article.metadata.as_ref(),
+            );
 
             let full_article_html = base::layout_with_toc(
                 ArticlePageConfig {
@@ -958,6 +963,8 @@ pub async fn run() -> Result<()> {
                         metadata: article.metadata.as_ref(),
                         ogp_image_path: Some(&ogp_image_path),
                         structured_data_html: Some(&structured_data),
+                        robots_directive: None,
+                        article_dates: Some((&published_time, &modified_time)),
                     },
                     toc_html: Some(&article.table_of_contents_html),
                 },
@@ -1011,6 +1018,8 @@ pub async fn run() -> Result<()> {
             metadata: None,
             ogp_image_path: Some(&index_ogp_path),
             structured_data_html: Some(&home_structured_data),
+            robots_directive: None,
+            article_dates: None,
         },
         articles_list_markup.clone(),
         index_main_content_markup,
@@ -1049,6 +1058,8 @@ pub async fn run() -> Result<()> {
                 metadata: None,
                 ogp_image_path: None,
                 structured_data_html: None,
+                robots_directive: None,
+                article_dates: None,
             },
             articles_list_markup.clone(),
             privacy_main_content_markup,
@@ -1093,6 +1104,8 @@ pub async fn run() -> Result<()> {
             metadata: None,
             ogp_image_path: Some("/ogp/dnfolio.png"),
             structured_data_html: None,
+            robots_directive: Some("noindex,follow"),
+            article_dates: None,
         },
         articles_list_markup.clone(),
         not_found_main_content,
@@ -1104,9 +1117,10 @@ pub async fn run() -> Result<()> {
     println!("Generated 404.html");
 
     let base_url = "https://dnfolio.me";
-    sitemap::generate_and_write_sitemap(base_url, &articles, &pages, &tag_map, dist_dir)?;
+    sitemap::generate_and_write_sitemap(base_url, &articles, &pages, dist_dir)?;
 
     rss::generate_rss(&articles, dist_dir)?;
+    redirects::generate_and_write_redirects(&articles, dist_dir)?;
 
     Ok(())
 }

@@ -18,6 +18,8 @@ pub enum PageType<'a> {
     Article {
         url: &'a str,
         ogp_image_url: &'a str,
+        published_date: &'a str,
+        modified_date: &'a str,
     },
     /// タグ一覧ページ
     TagPage { tag_name: &'a str, url: &'a str },
@@ -34,9 +36,12 @@ pub enum PageType<'a> {
 pub fn generate_structured_data_html(page_type: PageType, metadata: Option<&MetaData>) -> String {
     let json_ld = match page_type {
         PageType::Home => generate_website_json_ld(),
-        PageType::Article { url, ogp_image_url } => {
-            generate_article_json_ld(metadata, url, ogp_image_url)
-        }
+        PageType::Article {
+            url,
+            ogp_image_url,
+            published_date,
+            modified_date,
+        } => generate_article_json_ld(metadata, url, ogp_image_url, published_date, modified_date),
         PageType::TagPage { tag_name, url } => generate_tag_page_json_ld(tag_name, url),
     };
 
@@ -60,7 +65,13 @@ fn generate_website_json_ld() -> String {
 }
 
 /// BlogPosting構造化データ（記事ページ用）
-fn generate_article_json_ld(metadata: Option<&MetaData>, url: &str, ogp_image_url: &str) -> String {
+fn generate_article_json_ld(
+    metadata: Option<&MetaData>,
+    url: &str,
+    ogp_image_url: &str,
+    published_date: &str,
+    modified_date: &str,
+) -> String {
     let meta = match metadata {
         Some(m) => m,
         None => return generate_website_json_ld(), // フォールバック
@@ -69,16 +80,11 @@ fn generate_article_json_ld(metadata: Option<&MetaData>, url: &str, ogp_image_ur
     let full_url = format!("{}{}", SITE_URL, url);
     let full_image_url = format!("{}{}", SITE_URL, ogp_image_url);
 
-    // 公開日（createdフィールド）
-    let date_published = meta.created.as_deref().unwrap_or("2025-01-01");
-
-    // 更新日（updatedフィールドがあれば使用、なければ公開日）
-    let date_modified = meta.updated.as_deref().unwrap_or(date_published);
-
     let description = meta.description.as_deref().unwrap_or(&meta.title);
 
     // パンくずリスト
     let breadcrumb = serde_json::json!({
+        "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
             {
@@ -90,12 +96,6 @@ fn generate_article_json_ld(metadata: Option<&MetaData>, url: &str, ogp_image_ur
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": "記事",
-                "item": format!("{}/posts/", SITE_URL)
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
                 "name": &meta.title,
                 "item": &full_url
             }
@@ -110,8 +110,8 @@ fn generate_article_json_ld(metadata: Option<&MetaData>, url: &str, ogp_image_ur
         "description": description,
         "image": full_image_url,
         "url": full_url,
-        "datePublished": date_published,
-        "dateModified": date_modified,
+        "datePublished": published_date,
+        "dateModified": modified_date,
         "author": {
             "@type": "Person",
             "name": AUTHOR_NAME,
@@ -148,12 +148,6 @@ fn generate_tag_page_json_ld(tag_name: &str, url: &str) -> String {
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": "タグ",
-                "item": format!("{}/tags/", SITE_URL)
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
                 "name": tag_name,
                 "item": full_url
             }

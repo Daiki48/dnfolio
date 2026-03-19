@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
 
-Disallow: /content/
-Disallow: /changed-bluesky-s-handle-to-my-domain/
-
 Sitemap: https://dnfolio.me/sitemap.xml

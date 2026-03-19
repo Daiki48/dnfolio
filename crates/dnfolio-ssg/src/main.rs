@@ -1,6 +1,8 @@
 mod build;
+mod dates;
 mod models;
 mod ogp;
+mod redirects;
 mod rss;
 mod serve;
 mod sitemap;

@@ -642,10 +642,11 @@ body {
 }
 
 .main-content img {
-    max-width: 100%;
+    max-width: min(560px, 100%);
     height: auto;
     border-radius: 4px;
     border: 1px solid var(--border-color);
+    display: block;
 }
 
 /* ========================================

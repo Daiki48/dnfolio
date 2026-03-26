@@ -45,7 +45,10 @@ pub fn generate_structured_data_html(page_type: PageType, metadata: Option<&Meta
         PageType::TagPage { tag_name, url } => generate_tag_page_json_ld(tag_name, url),
     };
 
-    format!(r#"<script type="application/ld+json">{}</script>"#, json_ld)
+    format!(
+        r#"<script type="application/ld+json">{}</script>"#,
+        escape_json_for_html(&json_ld)
+    )
 }
 
 /// WebSite構造化データ（トップページ用）
@@ -162,4 +165,11 @@ fn generate_tag_page_json_ld(tag_name: &str, url: &str) -> String {
     });
 
     serde_json::json!([collection, breadcrumb]).to_string()
+}
+
+/// JSON文字列をHTML <script>タグ内に安全に埋め込むためのエスケープ
+fn escape_json_for_html(json: &str) -> String {
+    json.replace('<', "\\u003c")
+        .replace('>', "\\u003e")
+        .replace('&', "\\u0026")
 }

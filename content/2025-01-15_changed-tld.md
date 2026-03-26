@@ -23,4 +23,4 @@ I think the site further emphasizes the personal website.
 
 I changed Bluesky handle name this way.
 
-[Changed Bluesky's handle to my domain | dnfolio](https://dnfolio.me/changed-bluesky-s-handle-to-my-domain/)
+[Changed Bluesky's handle to my domain | dnfolio](https://dnfolio.me/posts/bluesky-handle-custom-domain/)

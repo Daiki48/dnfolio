@@ -421,6 +421,15 @@ fn parse_markdown_file(input_path: &Path, dist_dir: &Path) -> anyhow::Result<Art
                 let highlighted = highlight_code(&code_block_lang, &code_block_content);
                 processed_events.push(Event::Html(CowStr::from(highlighted)));
             }
+            // セキュリティ: MarkdownインラインHTMLをブロック（XSS対策）
+            // pulldown-cmarkはデフォルトでHTMLをパススルーするため、
+            // <script>や<iframe>等の危険なタグがそのまま出力されるのを防ぐ。
+            // highlight_code()等で生成した信頼済みEvent::Htmlは
+            // この分岐に到達する前にprocessed_eventsへpush済み。
+            Event::Html(html) | Event::InlineHtml(html) => {
+                // HTMLタグをテキストとして出力（自動エスケープされる）
+                processed_events.push(Event::Text(html));
+            }
             other => {
                 processed_events.push(other);
             }
@@ -493,7 +502,11 @@ fn parse_page_file(input_path: &Path, _pages_dir: &Path, dist_dir: &Path) -> any
     pulldown_options.insert(pulldown_cmark::Options::ENABLE_SMART_PUNCTUATION);
     pulldown_options.insert(pulldown_cmark::Options::ENABLE_HEADING_ATTRIBUTES);
 
-    let parser = Parser::new_ext(&markdown_content, pulldown_options);
+    // セキュリティ: MarkdownインラインHTMLをブロック（XSS対策）
+    let parser = Parser::new_ext(&markdown_content, pulldown_options).map(|event| match event {
+        Event::Html(html) | Event::InlineHtml(html) => Event::Text(html),
+        other => other,
+    });
     let mut html_content = String::new();
     pulldown_cmark::html::push_html(&mut html_content, parser);
 

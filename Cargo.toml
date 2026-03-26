@@ -1,6 +1,10 @@
 [workspace]
 resolver = "3"
-members = ["crates/dnfolio-ssg", "crates/dnfolio-wasm"]
+members = [
+    "crates/dnfolio-ssg",
+    "crates/dnfolio-wasm",
+    "crates/dnfolio-worker",
+]
 
 [workspace.package]
 edition = "2024"
@@ -37,6 +41,7 @@ image = "0.25"
 fontdb = "0.23"
 syntect = "5.3"
 css-minify = "0.5"
+toml = "0.8"
 
 # WASM依存
 wasm-bindgen = "0.2"
@@ -44,6 +49,9 @@ wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 web-sys = "0.3"
 gloo = "0.11"
+worker = "0.7.5"
+worker-macros = "0.7.5"
+console_error_panic_hook = "0.1"
 
 [profile.release]
 opt-level = "z"

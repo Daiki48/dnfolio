@@ -29,3 +29,5 @@ static/*.d.ts
 .env
 .env.local
 .env.*.local
+
+bugs/

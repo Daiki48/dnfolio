@@ -25,7 +25,7 @@ pub struct SearchModalState {
 }
 
 impl SearchModalState {
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             results: RefCell::new(Vec::new()),

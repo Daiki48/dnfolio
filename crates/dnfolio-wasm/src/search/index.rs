@@ -77,7 +77,7 @@ pub struct SearchIndex {
 }
 
 impl SearchIndex {
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             articles: RefCell::new(Vec::new()),
@@ -357,13 +357,13 @@ pub async fn load_search_index() -> Result<()> {
 }
 
 /// グローバルインデックスで検索を実行
-#[must_use] 
+#[must_use]
 pub fn search_articles(query: &str) -> Vec<SearchResult> {
     SEARCH_INDEX.with(|idx| idx.borrow().search(query))
 }
 
 /// グローバルインデックスで検索を実行（行単位、grep形式）
-#[must_use] 
+#[must_use]
 pub fn search_lines(query: &str) -> Vec<SearchMatch> {
     if query.is_empty() {
         return Vec::new();

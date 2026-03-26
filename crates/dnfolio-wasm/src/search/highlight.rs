@@ -20,7 +20,7 @@ pub struct HighlightManager {
 
 impl HighlightManager {
     /// `新しいHighlightManagerを作成`
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             highlights: RefCell::new(Vec::new()),

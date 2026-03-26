@@ -104,8 +104,7 @@ impl CommandLine {
 
     /// コマンドラインがアクティブか
     pub fn is_active() -> Result<bool> {
-        Ok(Self::get_input()?
-            .is_some_and(|i| !i.has_attribute("readonly")))
+        Ok(Self::get_input()?.is_some_and(|i| !i.has_attribute("readonly")))
     }
 
     /// コマンドラインにフォーカスがあるか

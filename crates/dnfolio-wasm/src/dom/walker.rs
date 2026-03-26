@@ -56,13 +56,13 @@ impl TextNodeWalker {
     }
 
     /// ルートノードを取得
-    #[must_use] 
+    #[must_use]
     pub fn root(&self) -> Node {
         self.walker.root()
     }
 
     /// 現在のノードを取得
-    #[must_use] 
+    #[must_use]
     pub fn current_node(&self) -> Node {
         self.walker.current_node()
     }

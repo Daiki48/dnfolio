@@ -147,7 +147,7 @@ pub struct TagsIndex {
 }
 
 impl TagsIndex {
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             tags: RefCell::new(Vec::new()),
@@ -263,7 +263,7 @@ pub struct TagsModalState {
 }
 
 impl TagsModalState {
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             tags: RefCell::new(Vec::new()),
@@ -578,7 +578,7 @@ pub async fn load_tags_index() -> Result<()> {
 }
 
 /// タグをフィルタリング
-#[must_use] 
+#[must_use]
 pub fn filter_tags(query: &str) -> Vec<TagInfo> {
     TAGS_INDEX.with(|idx| idx.borrow().filter(query))
 }

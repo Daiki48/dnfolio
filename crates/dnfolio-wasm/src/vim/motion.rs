@@ -85,10 +85,9 @@ impl MotionHandler {
                         let next_block = Self::get_containing_block(&next_text);
                         if current_block.is_some()
                             && next_block.is_some()
-                            && current_block
-                                .as_ref()
-                                .unwrap()
-                                .is_same_node(next_block.as_ref().map(wasm_bindgen::JsCast::unchecked_ref))
+                            && current_block.as_ref().unwrap().is_same_node(
+                                next_block.as_ref().map(wasm_bindgen::JsCast::unchecked_ref),
+                            )
                         {
                             // 同じブロック内なので移動
                             sel.collapse(&next_text, 0)?;
@@ -110,10 +109,9 @@ impl MotionHandler {
                         let prev_block = Self::get_containing_block(&prev_text);
                         if current_block.is_some()
                             && prev_block.is_some()
-                            && current_block
-                                .as_ref()
-                                .unwrap()
-                                .is_same_node(prev_block.as_ref().map(wasm_bindgen::JsCast::unchecked_ref))
+                            && current_block.as_ref().unwrap().is_same_node(
+                                prev_block.as_ref().map(wasm_bindgen::JsCast::unchecked_ref),
+                            )
                         {
                             // 同じブロック内なので末尾に移動
                             let prev_text_content = prev_text.text_content().unwrap_or_default();
@@ -852,11 +850,12 @@ impl MotionHandler {
                         }
                     }
                 } else if child.node_type() == Node::ELEMENT_NODE
-                    && !Self::should_skip_element(&child) {
-                        if let Some(found) = Self::find_last_text_node(&child) {
-                            return Some(found);
-                        }
+                    && !Self::should_skip_element(&child)
+                {
+                    if let Some(found) = Self::find_last_text_node(&child) {
+                        return Some(found);
                     }
+                }
             }
         }
         None

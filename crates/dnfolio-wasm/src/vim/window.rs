@@ -18,7 +18,7 @@ pub enum FocusedPane {
 
 impl FocusedPane {
     /// ペイン名を取得
-    #[must_use] 
+    #[must_use]
     pub fn name(&self) -> &'static str {
         match self {
             Self::MainContent => "main-content",
@@ -27,7 +27,7 @@ impl FocusedPane {
     }
 
     /// CSSセレクタを取得
-    #[must_use] 
+    #[must_use]
     pub fn selector(&self) -> &'static str {
         match self {
             Self::MainContent => ".main-content",
@@ -61,7 +61,7 @@ thread_local! {
 }
 
 /// 現在のフォーカスペインを取得
-#[must_use] 
+#[must_use]
 pub fn current_focused_pane() -> FocusedPane {
     WINDOW_STATE.with(|state| state.borrow().focused_pane)
 }
@@ -74,7 +74,7 @@ pub fn set_focused_pane(pane: FocusedPane) {
 }
 
 /// Ctrl+w プレフィックスが押されたかを取得
-#[must_use] 
+#[must_use]
 pub fn is_ctrl_w_pending() -> bool {
     WINDOW_STATE.with(|state| state.borrow().ctrl_w_pending)
 }
@@ -87,7 +87,7 @@ pub fn set_ctrl_w_pending(pending: bool) {
 }
 
 /// EXPLORER内の選択インデックスを取得
-#[must_use] 
+#[must_use]
 pub fn explorer_selected_index() -> usize {
     WINDOW_STATE.with(|state| state.borrow().explorer_selected_index)
 }
@@ -100,7 +100,7 @@ pub fn set_explorer_selected_index(index: usize) {
 }
 
 /// フォーカスを次のペインへ移動（サイクル）
-#[must_use] 
+#[must_use]
 pub fn cycle_focus() -> FocusedPane {
     WINDOW_STATE.with(|state| {
         let mut s = state.borrow_mut();
@@ -113,14 +113,14 @@ pub fn cycle_focus() -> FocusedPane {
 }
 
 /// フォーカスを左のペインへ移動
-#[must_use] 
+#[must_use]
 pub fn focus_left() -> FocusedPane {
     set_focused_pane(FocusedPane::Explorer);
     FocusedPane::Explorer
 }
 
 /// フォーカスを右のペインへ移動
-#[must_use] 
+#[must_use]
 pub fn focus_right() -> FocusedPane {
     set_focused_pane(FocusedPane::MainContent);
     FocusedPane::MainContent

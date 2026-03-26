@@ -40,7 +40,7 @@ pub fn clear_current_line() -> Result<()> {
 
 /// `行番号（::before擬似要素）のクリック位置から対象要素を特定`
 /// main-content直下のブロック要素かどうかを判定
-#[must_use] 
+#[must_use]
 pub fn is_line_number_click(target: &HtmlElement, click_x: f64) -> bool {
     // 行番号は左端にあるので、クリック位置がgutter領域内かチェック
     // gutter幅は約40-50px（CSSで定義）
@@ -52,7 +52,7 @@ pub fn is_line_number_click(target: &HtmlElement, click_x: f64) -> bool {
 }
 
 /// main-content直下のブロック要素かどうかを判定
-#[must_use] 
+#[must_use]
 pub fn is_block_element(target: &HtmlElement) -> bool {
     if let Some(parent) = target.parent_element() {
         parent.class_list().contains("main-content")
@@ -62,7 +62,7 @@ pub fn is_block_element(target: &HtmlElement) -> bool {
 }
 
 /// クリックされた要素からmain-content直下のブロック要素を取得
-#[must_use] 
+#[must_use]
 pub fn get_block_element(target: &HtmlElement) -> Option<HtmlElement> {
     // まず、targetがmain-content直下かチェック
     if is_block_element(target) {

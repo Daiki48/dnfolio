@@ -25,43 +25,43 @@ impl SelectionHelper {
     }
 
     /// 内部のSelectionへの参照を取得
-    #[must_use] 
+    #[must_use]
     pub fn inner(&self) -> &Selection {
         &self.selection
     }
 
     /// アンカーノード（選択開始点）を取得
-    #[must_use] 
+    #[must_use]
     pub fn anchor_node(&self) -> Option<Node> {
         self.selection.anchor_node()
     }
 
     /// アンカーオフセット（選択開始位置）を取得
-    #[must_use] 
+    #[must_use]
     pub fn anchor_offset(&self) -> u32 {
         self.selection.anchor_offset()
     }
 
     /// フォーカスノード（選択終了点）を取得
-    #[must_use] 
+    #[must_use]
     pub fn focus_node(&self) -> Option<Node> {
         self.selection.focus_node()
     }
 
     /// フォーカスオフセット（選択終了位置）を取得
-    #[must_use] 
+    #[must_use]
     pub fn focus_offset(&self) -> u32 {
         self.selection.focus_offset()
     }
 
     /// 選択が折りたたまれているか（カーソルのみの状態か）
-    #[must_use] 
+    #[must_use]
     pub fn is_collapsed(&self) -> bool {
         self.selection.is_collapsed()
     }
 
     /// Range数を取得
-    #[must_use] 
+    #[must_use]
     pub fn range_count(&self) -> u32 {
         self.selection.range_count()
     }
@@ -120,7 +120,7 @@ impl SelectionHelper {
     }
 
     /// 選択範囲のテキストを取得
-    #[must_use] 
+    #[must_use]
     pub fn to_string(&self) -> String {
         self.selection.to_string().as_string().unwrap_or_default()
     }

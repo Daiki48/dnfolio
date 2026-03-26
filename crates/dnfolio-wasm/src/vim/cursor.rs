@@ -21,7 +21,7 @@ pub struct BlockCursor {
 
 impl BlockCursor {
     /// `新しいBlockCursorを作成`
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             current_element: RefCell::new(None),

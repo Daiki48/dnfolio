@@ -21,7 +21,7 @@ pub struct CommandResult {
 }
 
 impl CommandResult {
-    #[must_use] 
+    #[must_use]
     pub fn info(title: &str, message: &str, icon: &str) -> Self {
         Self {
             title: title.to_string(),
@@ -31,7 +31,7 @@ impl CommandResult {
         }
     }
 
-    #[must_use] 
+    #[must_use]
     pub fn warn(title: &str, message: &str, icon: &str) -> Self {
         Self {
             title: title.to_string(),

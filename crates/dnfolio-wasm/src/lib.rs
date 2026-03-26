@@ -181,9 +181,7 @@ fn apply_url_highlight() -> Result<bool> {
 
                     if !query.is_empty() {
                         search::highlight::apply_highlight(&query, line_num)?;
-                        web_sys::console::log_1(
-                            &format!("  ✓ Highlight applied: {query}").into(),
-                        );
+                        web_sys::console::log_1(&format!("  ✓ Highlight applied: {query}").into());
                         return Ok(true);
                     }
                 }

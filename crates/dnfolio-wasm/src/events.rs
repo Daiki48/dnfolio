@@ -418,8 +418,7 @@ fn handle_modal_keydown(e: &KeyboardEvent) -> Result<()> {
     let is_in_input = target
         .as_ref()
         .and_then(|t| t.dyn_ref::<HtmlElement>())
-        .map(|el| el.tag_name().to_uppercase() == "INPUT")
-        .unwrap_or(false);
+        .is_some_and(|el| el.tag_name().to_uppercase() == "INPUT");
 
     // どのモーダルが開いているか判定
     let is_tags_modal = is_tags_modal_open()?;
@@ -681,11 +680,11 @@ fn setup_commandline_handler() -> Result<()> {
                     if query.len() > crate::dom::MAX_SEARCH_QUERY_LEN {
                         return;
                     }
-                    if !query.is_empty() {
-                        let _ = apply_highlight(query, None);
-                    } else {
+                    if query.is_empty() {
                         // クエリが空の場合はハイライトを削除
                         let _ = remove_highlights();
+                    } else {
+                        let _ = apply_highlight(query, None);
                     }
                 }
             }
@@ -1174,14 +1173,14 @@ fn setup_anchor_link_handlers() -> Result<()> {
 
                     if let Some(el) = anchor_clone.dyn_ref::<web_sys::Element>() {
                         if let Some(href) = el.get_attribute("href") {
-                            web_sys::console::log_1(&format!("Anchor href: {}", href).into());
+                            web_sys::console::log_1(&format!("Anchor href: {href}").into());
 
                             if let Some(window) = web_sys::window() {
                                 // 該当要素にスクロール（先に実行）
                                 if let Some(doc) = window.document() {
                                     let id = href.trim_start_matches('#');
                                     web_sys::console::log_1(
-                                        &format!("Looking for element with id: {}", id).into(),
+                                        &format!("Looking for element with id: {id}").into(),
                                     );
 
                                     if let Some(target) = doc.get_element_by_id(id) {
@@ -1196,11 +1195,11 @@ fn setup_anchor_link_handlers() -> Result<()> {
                                 }
 
                                 // pushStateでURLを更新（スクロールを発生させない）
-                                if let Some(history) = window.history().ok() {
+                                if let Ok(history) = window.history() {
                                     let current_url = window.location().href().unwrap_or_default();
                                     let base_url =
                                         current_url.split('#').next().unwrap_or(&current_url);
-                                    let new_url = format!("{}{}", base_url, href);
+                                    let new_url = format!("{base_url}{href}");
                                     let _ = history.push_state_with_url(
                                         &wasm_bindgen::JsValue::NULL,
                                         "",
@@ -1246,7 +1245,7 @@ fn setup_mouse_handlers() -> Result<()> {
 
             // 行番号クリック検出（左端約50px内のクリック）
             if let Some(html_el) = target.dyn_ref::<HtmlElement>() {
-                let click_x = e.client_x() as f64;
+                let click_x = f64::from(e.client_x());
                 if crate::ui::is_line_number_click(html_el, click_x) {
                     // main-content直下のブロック要素を取得
                     if let Some(block_el) = crate::ui::get_block_element(html_el) {
@@ -1335,14 +1334,14 @@ fn setup_mouse_handlers() -> Result<()> {
 
 /// EXPLORERにフォーカスを切り替え
 fn switch_to_explorer() -> Result<()> {
-    focus_left();
+    let _ = focus_left();
     apply_pane_focus(FocusedPane::Explorer)?;
     Ok(())
 }
 
 /// main-contentにフォーカスを切り替え
 fn switch_to_main_content() -> Result<()> {
-    focus_right();
+    let _ = focus_right();
     apply_pane_focus(FocusedPane::MainContent)?;
     Ok(())
 }

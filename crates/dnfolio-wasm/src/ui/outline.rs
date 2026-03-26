@@ -53,13 +53,13 @@ pub fn update_active_heading() -> Result<()> {
     }
 
     // 目次のアクティブ状態を更新
-    update_toc_active_state(&active_id)?;
+    update_toc_active_state(active_id.as_ref())?;
 
     Ok(())
 }
 
 /// 目次のアクティブ状態を更新
-fn update_toc_active_state(active_id: &Option<String>) -> Result<()> {
+fn update_toc_active_state(active_id: Option<&String>) -> Result<()> {
     let doc = document()?;
 
     // 全ての目次アイテムからactiveを削除
@@ -78,7 +78,7 @@ fn update_toc_active_state(active_id: &Option<String>) -> Result<()> {
     // アクティブな見出しに対応する目次アイテムにactiveを追加
     if let Some(id) = active_id {
         // href="#id" を持つリンクの親要素を探す
-        let selector = format!(".toc-section .toc-item a[href=\"#{}\"]", id);
+        let selector = format!(".toc-section .toc-item a[href=\"#{id}\"]");
         if let Some(link) = query_selector_optional::<HtmlElement>(&selector)? {
             if let Some(parent) = link.parent_element() {
                 if let Some(parent_el) = parent.dyn_ref::<HtmlElement>() {

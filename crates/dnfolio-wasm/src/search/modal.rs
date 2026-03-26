@@ -25,6 +25,7 @@ pub struct SearchModalState {
 }
 
 impl SearchModalState {
+    #[must_use] 
     pub fn new() -> Self {
         Self {
             results: RefCell::new(Vec::new()),
@@ -412,7 +413,7 @@ thread_local! {
 pub async fn perform_search(query: String) -> Result<()> {
     // クエリを保存
     SEARCH_MODAL_STATE.with(|state| {
-        *state.borrow().current_query.borrow_mut() = query.clone();
+        state.borrow().current_query.borrow_mut().clone_from(&query);
     });
 
     // 空クエリの場合は結果をクリア

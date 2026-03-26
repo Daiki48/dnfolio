@@ -20,7 +20,8 @@ pub struct BlockCursor {
 }
 
 impl BlockCursor {
-    /// 新しいBlockCursorを作成
+    /// `新しいBlockCursorを作成`
+    #[must_use] 
     pub fn new() -> Self {
         Self {
             current_element: RefCell::new(None),
@@ -44,6 +45,7 @@ impl BlockCursor {
     }
 
     /// カーソル更新の実装
+    #[allow(clippy::needless_range_loop)]
     fn update_impl(&self) -> Result<()> {
         // 既存のカーソルを削除
         self.remove()?;
@@ -211,12 +213,11 @@ impl BlockCursor {
                 if let Some(child) = child_nodes.get(offset) {
                     if child.node_type() == Node::TEXT_NODE {
                         let text = child.text_content().unwrap_or_default();
-                        if !text.is_empty() {
-                            node = child;
-                            offset = 0;
-                        } else {
+                        if text.is_empty() {
                             return Err(DnfolioError::DomError("空のテキストノード".to_string()));
                         }
+                        node = child;
+                        offset = 0;
                     } else {
                         return Err(DnfolioError::DomError(
                             "テキストノードではありません".to_string(),
@@ -360,8 +361,7 @@ impl BlockCursor {
                 let sel = SelectionHelper::get()?;
                 let selection_in_cursor = sel
                     .anchor_node()
-                    .map(|anchor| cursor_el.contains(Some(&anchor)))
-                    .unwrap_or(false);
+                    .is_some_and(|anchor| cursor_el.contains(Some(&anchor)));
 
                 // カーソル前の直接の兄弟テキストノードの長さを計算（Selection復元用）
                 let mut offset_in_merged_node = 0u32;
@@ -414,9 +414,9 @@ impl Default for BlockCursor {
 // グローバルなBlockCursorインスタンス
 thread_local! {
     static BLOCK_CURSOR: RefCell<BlockCursor> = RefCell::new(BlockCursor::new());
-    static UPDATE_SCHEDULED: RefCell<bool> = RefCell::new(false);
+    static UPDATE_SCHEDULED: RefCell<bool> = const { RefCell::new(false) };
     /// マウス操作時にスクロールを抑制するフラグ
-    static SUPPRESS_SCROLL: RefCell<bool> = RefCell::new(false);
+    static SUPPRESS_SCROLL: RefCell<bool> = const { RefCell::new(false) };
 }
 
 /// グローバルカーソルを更新（requestAnimationFrameでバッチ処理）

@@ -19,7 +19,8 @@ pub struct HighlightManager {
 }
 
 impl HighlightManager {
-    /// 新しいHighlightManagerを作成
+    /// `新しいHighlightManagerを作成`
+    #[must_use] 
     pub fn new() -> Self {
         Self {
             highlights: RefCell::new(Vec::new()),
@@ -88,8 +89,7 @@ impl HighlightManager {
             // このノードがターゲット要素内にあるかチェック
             let is_in_target = target_element
                 .as_ref()
-                .map(|el| el.contains(Some(&node)))
-                .unwrap_or(false);
+                .is_some_and(|el| el.contains(Some(&node)));
 
             // テキストを分割してハイライト
             let parts = self.split_by_query(&text, query);

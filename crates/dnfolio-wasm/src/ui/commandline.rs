@@ -105,8 +105,7 @@ impl CommandLine {
     /// コマンドラインがアクティブか
     pub fn is_active() -> Result<bool> {
         Ok(Self::get_input()?
-            .map(|i| !i.has_attribute("readonly"))
-            .unwrap_or(false))
+            .is_some_and(|i| !i.has_attribute("readonly")))
     }
 
     /// コマンドラインにフォーカスがあるか
@@ -116,8 +115,7 @@ impl CommandLine {
                 if let Some(active) = doc.active_element() {
                     return Ok(active
                         .dyn_ref::<HtmlInputElement>()
-                        .map(|el| el == &input)
-                        .unwrap_or(false));
+                        .is_some_and(|el| el == &input));
                 }
             }
         }

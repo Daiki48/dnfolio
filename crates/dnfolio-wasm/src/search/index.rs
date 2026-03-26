@@ -77,6 +77,7 @@ pub struct SearchIndex {
 }
 
 impl SearchIndex {
+    #[must_use] 
     pub fn new() -> Self {
         Self {
             articles: RefCell::new(Vec::new()),
@@ -211,29 +212,26 @@ fn validate_search_index(articles: &[SearchArticle]) -> Result<()> {
         // タイトル長チェック
         if article.title.len() > MAX_TITLE_LEN {
             web_sys::console::warn_1(
-                &format!("Article {} title too long, truncating in memory", i).into(),
+                &format!("Article {i} title too long, truncating in memory").into(),
             );
         }
 
         // URL検証（相対パスのみ許可）
         if article.url.len() > MAX_URL_LEN {
             return Err(DnfolioError::ValidationError(format!(
-                "Article {} URL too long",
-                i
+                "Article {i} URL too long"
             )));
         }
         // Protocol-relative URL（//で始まる）を拒否
         if article.url.starts_with("//") {
             return Err(DnfolioError::ValidationError(format!(
-                "Article {} has protocol-relative URL (not allowed)",
-                i
+                "Article {i} has protocol-relative URL (not allowed)"
             )));
         }
         // /で始まる相対パスのみ許可
         if !article.url.starts_with('/') {
             return Err(DnfolioError::ValidationError(format!(
-                "Article {} has invalid URL (must be relative path starting with /)",
-                i
+                "Article {i} has invalid URL (must be relative path starting with /)"
             )));
         }
         // 危険なURLスキームをチェック（URLエンコードされたものも考慮）
@@ -242,8 +240,7 @@ fn validate_search_index(articles: &[SearchArticle]) -> Result<()> {
         for pattern in dangerous_patterns {
             if lower_url.contains(pattern) {
                 return Err(DnfolioError::ValidationError(format!(
-                    "Article {} has dangerous URL pattern",
-                    i
+                    "Article {i} has dangerous URL pattern"
                 )));
             }
         }
@@ -360,11 +357,13 @@ pub async fn load_search_index() -> Result<()> {
 }
 
 /// グローバルインデックスで検索を実行
+#[must_use] 
 pub fn search_articles(query: &str) -> Vec<SearchResult> {
     SEARCH_INDEX.with(|idx| idx.borrow().search(query))
 }
 
 /// グローバルインデックスで検索を実行（行単位、grep形式）
+#[must_use] 
 pub fn search_lines(query: &str) -> Vec<SearchMatch> {
     if query.is_empty() {
         return Vec::new();

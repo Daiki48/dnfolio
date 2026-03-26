@@ -1,6 +1,6 @@
 //! Vimモード管理
 //!
-//! EditorMode enumとグローバル状態管理
+//! `EditorMode` enumとグローバル状態管理
 
 use std::cell::RefCell;
 
@@ -21,6 +21,7 @@ pub enum EditorMode {
 
 impl EditorMode {
     /// ステータスラインに表示するテキスト
+    #[must_use] 
     pub fn display_name(&self) -> &'static str {
         match self {
             Self::Normal => "NORMAL",
@@ -31,6 +32,7 @@ impl EditorMode {
     }
 
     /// CSSクラス名
+    #[must_use] 
     pub fn css_class(&self) -> &'static str {
         match self {
             Self::Normal => "mode-normal",
@@ -41,6 +43,7 @@ impl EditorMode {
     }
 
     /// ビジュアルモードかどうか
+    #[must_use] 
     pub fn is_visual(&self) -> bool {
         matches!(self, Self::Visual | Self::VisualLine)
     }
@@ -58,12 +61,14 @@ pub struct EditorState {
 }
 
 impl EditorState {
-    /// 新しいEditorStateを作成
+    /// `新しいEditorStateを作成`
+    #[must_use] 
     pub fn new() -> Self {
         Self::default()
     }
 
     /// 現在のモードを取得
+    #[must_use] 
     pub fn mode(&self) -> EditorMode {
         self.mode
     }
@@ -76,6 +81,7 @@ impl EditorState {
     }
 
     /// 最後のキーを取得
+    #[must_use] 
     pub fn last_key(&self) -> Option<char> {
         self.last_key
     }
@@ -86,6 +92,7 @@ impl EditorState {
     }
 
     /// キーシーケンスを取得
+    #[must_use] 
     pub fn key_sequence(&self) -> &str {
         &self.key_sequence
     }
@@ -135,6 +142,7 @@ where
 }
 
 /// 現在のモードを取得
+#[must_use] 
 pub fn current_mode() -> EditorMode {
     EDITOR_STATE.with(|state| state.borrow().mode())
 }

@@ -14,7 +14,7 @@ pub enum DnfolioError {
     #[error("Selection取得に失敗: {0}")]
     SelectionError(String),
 
-    /// TreeWalker操作のエラー
+    /// `TreeWalker操作のエラー`
     #[error("TreeWalker操作に失敗: {0}")]
     TreeWalkerError(String),
 
@@ -22,7 +22,7 @@ pub enum DnfolioError {
     #[error("DOM操作に失敗: {0}")]
     DomError(String),
 
-    /// JavaScriptからのエラー
+    /// `JavaScriptからのエラー`
     #[error("JavaScriptエラー: {0}")]
     JsError(String),
 

@@ -41,7 +41,7 @@ impl StatusLine {
             crate::error::DnfolioError::DomError("documentElementが見つかりません".to_string())
         })?;
 
-        let scroll_height = doc_element.scroll_height() as f64;
+        let scroll_height = f64::from(doc_element.scroll_height());
         let inner_height = win
             .inner_height()
             .ok()
@@ -59,7 +59,7 @@ impl StatusLine {
             } else if percent >= 100 {
                 "Bot".to_string()
             } else {
-                format!("{}%", percent)
+                format!("{percent}%")
             }
         };
 

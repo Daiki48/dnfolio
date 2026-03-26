@@ -88,7 +88,7 @@ impl MotionHandler {
                             && current_block
                                 .as_ref()
                                 .unwrap()
-                                .is_same_node(next_block.as_ref().map(|e| e.unchecked_ref()))
+                                .is_same_node(next_block.as_ref().map(wasm_bindgen::JsCast::unchecked_ref))
                         {
                             // 同じブロック内なので移動
                             sel.collapse(&next_text, 0)?;
@@ -113,7 +113,7 @@ impl MotionHandler {
                             && current_block
                                 .as_ref()
                                 .unwrap()
-                                .is_same_node(prev_block.as_ref().map(|e| e.unchecked_ref()))
+                                .is_same_node(prev_block.as_ref().map(wasm_bindgen::JsCast::unchecked_ref))
                         {
                             // 同じブロック内なので末尾に移動
                             let prev_text_content = prev_text.text_content().unwrap_or_default();
@@ -364,20 +364,18 @@ impl MotionHandler {
                 if next_pos < chars.len() {
                     // 同じノード内に改行後のコンテンツがある
                     return Ok(Some((start_node.clone(), next_pos as u32)));
-                } else {
-                    // 改行がノードの最後なので、次のノードの先頭へ
-                    if let Some(next_node) = walker.next()? {
-                        let next_block = Self::get_containing_block(&next_node);
-                        if next_block
-                            .as_ref()
-                            .map(|b| b.is_same_node(Some(block)))
-                            .unwrap_or(false)
-                        {
-                            return Ok(Some((next_node, 0)));
-                        }
-                    }
-                    return Ok(None);
                 }
+                // 改行がノードの最後なので、次のノードの先頭へ
+                if let Some(next_node) = walker.next()? {
+                    let next_block = Self::get_containing_block(&next_node);
+                    if next_block
+                        .as_ref()
+                        .is_some_and(|b| b.is_same_node(Some(block)))
+                    {
+                        return Ok(Some((next_node, 0)));
+                    }
+                }
+                return Ok(None);
             }
         }
 
@@ -386,8 +384,7 @@ impl MotionHandler {
             let next_block = Self::get_containing_block(&next_node);
             if !next_block
                 .as_ref()
-                .map(|b| b.is_same_node(Some(block)))
-                .unwrap_or(false)
+                .is_some_and(|b| b.is_same_node(Some(block)))
             {
                 // 異なるブロックに入った
                 return Ok(None);
@@ -401,20 +398,18 @@ impl MotionHandler {
                     let next_pos = i + 1;
                     if next_pos < next_chars.len() {
                         return Ok(Some((next_node, next_pos as u32)));
-                    } else {
-                        // さらに次のノードへ
-                        if let Some(after_newline_node) = walker.next()? {
-                            let after_block = Self::get_containing_block(&after_newline_node);
-                            if after_block
-                                .as_ref()
-                                .map(|b| b.is_same_node(Some(block)))
-                                .unwrap_or(false)
-                            {
-                                return Ok(Some((after_newline_node, 0)));
-                            }
-                        }
-                        return Ok(None);
                     }
+                    // さらに次のノードへ
+                    if let Some(after_newline_node) = walker.next()? {
+                        let after_block = Self::get_containing_block(&after_newline_node);
+                        if after_block
+                            .as_ref()
+                            .is_some_and(|b| b.is_same_node(Some(block)))
+                        {
+                            return Ok(Some((after_newline_node, 0)));
+                        }
+                    }
+                    return Ok(None);
                 }
             }
         }
@@ -461,8 +456,7 @@ impl MotionHandler {
             let prev_block = Self::get_containing_block(&prev_node);
             if !prev_block
                 .as_ref()
-                .map(|b| b.is_same_node(Some(block)))
-                .unwrap_or(false)
+                .is_some_and(|b| b.is_same_node(Some(block)))
             {
                 return Ok(None);
             }
@@ -493,6 +487,8 @@ impl MotionHandler {
         Ok(None)
     }
 
+    // 以下のヘルパー関数群は将来のVimモーション拡張用に保持
+    #[allow(dead_code)]
     /// 最初の行で指定列位置のオフセットを取得
     fn get_offset_at_column_in_first_line(text: &str, col: usize) -> u32 {
         let chars: Vec<char> = text.chars().collect();
@@ -508,12 +504,13 @@ impl MotionHandler {
         target_col as u32
     }
 
+    #[allow(dead_code)]
     /// 最後の行で指定列位置のオフセットを取得
     fn get_offset_at_column_in_last_line(text: &str, col: usize) -> u32 {
         let chars: Vec<char> = text.chars().collect();
         // 最後の改行位置を探す
         let last_newline = chars.iter().rposition(|&c| c == '\n');
-        let last_line_start = last_newline.map(|i| i + 1).unwrap_or(0);
+        let last_line_start = last_newline.map_or(0, |i| i + 1);
         let last_line_len = chars.len() - last_line_start;
         let target_col = if col < last_line_len {
             col
@@ -525,6 +522,7 @@ impl MotionHandler {
         (last_line_start + target_col) as u32
     }
 
+    #[allow(dead_code)]
     /// 次/前のブロック要素に移動（h/l用）
     fn move_to_adjacent_block(
         sel: &SelectionHelper,
@@ -569,11 +567,22 @@ impl MotionHandler {
         main_content.contains(Some(node))
     }
 
+    #[allow(dead_code)]
     /// カーソル位置を検証し、有効でなければ調整（Neovim風）
     fn validate_cursor_position(sel: &SelectionHelper) -> Result<()> {
         if let Some(node) = sel.anchor_node() {
             // テキストノードでない場合、最も近いテキストノードに移動
-            if node.node_type() != Node::TEXT_NODE {
+            if node.node_type() == Node::TEXT_NODE {
+                // テキストノードの場合、オフセットが有効かチェック
+                let text = node.text_content().unwrap_or_default();
+                let char_count = text.chars().count();
+                let offset = sel.anchor_offset() as usize;
+
+                // オフセットがテキスト長を超えている場合、行末に調整
+                if offset >= char_count && char_count > 0 {
+                    sel.collapse(&node, (char_count - 1) as u32)?;
+                }
+            } else {
                 // 再帰的に子孫からテキストノードを探す
                 if let Some(text_node) = Self::find_first_text_node(&node) {
                     let text = text_node.text_content().unwrap_or_default();
@@ -590,16 +599,6 @@ impl MotionHandler {
                 // 現在位置から次のテキストノードを探す
                 if let Some(next) = walker.find_next_from(&node)? {
                     sel.collapse(&next, 0)?;
-                }
-            } else {
-                // テキストノードの場合、オフセットが有効かチェック
-                let text = node.text_content().unwrap_or_default();
-                let char_count = text.chars().count();
-                let offset = sel.anchor_offset() as usize;
-
-                // オフセットがテキスト長を超えている場合、行末に調整
-                if offset >= char_count && char_count > 0 {
-                    sel.collapse(&node, (char_count - 1) as u32)?;
                 }
             }
         }
@@ -674,6 +673,7 @@ impl MotionHandler {
         true
     }
 
+    #[allow(dead_code)]
     /// ブロック境界を超えて強制移動
     fn force_move_to_adjacent_node(
         sel: &SelectionHelper,
@@ -851,13 +851,12 @@ impl MotionHandler {
                             return Some(child);
                         }
                     }
-                } else if child.node_type() == Node::ELEMENT_NODE {
-                    if !Self::should_skip_element(&child) {
+                } else if child.node_type() == Node::ELEMENT_NODE
+                    && !Self::should_skip_element(&child) {
                         if let Some(found) = Self::find_last_text_node(&child) {
                             return Some(found);
                         }
                     }
-                }
             }
         }
         None
@@ -924,7 +923,7 @@ impl MotionHandler {
             if let Some(window) = web_sys::window() {
                 if let Some(doc) = window.document() {
                     if let Some(body) = doc.body() {
-                        let height = body.scroll_height() as f64;
+                        let height = f64::from(body.scroll_height());
                         window.scroll_to_with_x_and_y(0.0, height);
                     }
                 }

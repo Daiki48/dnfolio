@@ -19,7 +19,7 @@ pub enum ToastType {
 
 impl ToastType {
     /// CSSクラス名を取得
-    fn css_class(&self) -> &'static str {
+    fn css_class(self) -> &'static str {
         match self {
             Self::Info => "toast-info",
             Self::Warn => "toast-warn",

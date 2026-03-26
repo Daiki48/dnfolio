@@ -738,7 +738,7 @@ pub async fn run() -> Result<()> {
             let slug = url
                 .trim_matches('/')
                 .split('/')
-                .last()
+                .next_back()
                 .unwrap_or("")
                 .to_string();
 

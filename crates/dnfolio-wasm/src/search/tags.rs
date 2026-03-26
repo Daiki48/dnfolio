@@ -71,27 +71,24 @@ fn validate_tags_index(tags: &[TagInfo]) -> Result<()> {
     for (i, tag) in tags.iter().enumerate() {
         // タグ名長チェック
         if tag.name.len() > MAX_TAG_NAME_LEN {
-            web_sys::console::warn_1(&format!("Tag {} name too long", i).into());
+            web_sys::console::warn_1(&format!("Tag {i} name too long").into());
         }
 
         // タグURL検証（相対パスのみ許可）
         if tag.url.len() > MAX_URL_LEN {
             return Err(DnfolioError::ValidationError(format!(
-                "Tag {} URL too long",
-                i
+                "Tag {i} URL too long"
             )));
         }
         // Protocol-relative URL（//で始まる）を拒否
         if tag.url.starts_with("//") {
             return Err(DnfolioError::ValidationError(format!(
-                "Tag {} has protocol-relative URL (not allowed)",
-                i
+                "Tag {i} has protocol-relative URL (not allowed)"
             )));
         }
         if !tag.url.starts_with('/') {
             return Err(DnfolioError::ValidationError(format!(
-                "Tag {} has invalid URL (must be relative path)",
-                i
+                "Tag {i} has invalid URL (must be relative path)"
             )));
         }
         // 危険なURLスキームをチェック
@@ -100,8 +97,7 @@ fn validate_tags_index(tags: &[TagInfo]) -> Result<()> {
         for pattern in dangerous_patterns {
             if lower_url.contains(pattern) {
                 return Err(DnfolioError::ValidationError(format!(
-                    "Tag {} has dangerous URL pattern",
-                    i
+                    "Tag {i} has dangerous URL pattern"
                 )));
             }
         }
@@ -122,23 +118,21 @@ fn validate_tags_index(tags: &[TagInfo]) -> Result<()> {
         // 各記事のURL検証
         for (j, article) in tag.articles.iter().enumerate() {
             if article.url.len() > MAX_URL_LEN {
-                web_sys::console::warn_1(&format!("Tag {} article {} URL too long", i, j).into());
+                web_sys::console::warn_1(&format!("Tag {i} article {j} URL too long").into());
             }
             // Protocol-relative URL（//で始まる）を拒否
             if article.url.starts_with("//") {
                 return Err(DnfolioError::ValidationError(format!(
-                    "Tag {} article {} has protocol-relative URL",
-                    i, j
+                    "Tag {i} article {j} has protocol-relative URL"
                 )));
             }
             if !article.url.starts_with('/') {
                 return Err(DnfolioError::ValidationError(format!(
-                    "Tag {} article {} has invalid URL",
-                    i, j
+                    "Tag {i} article {j} has invalid URL"
                 )));
             }
             if article.title.len() > MAX_TITLE_LEN {
-                web_sys::console::warn_1(&format!("Tag {} article {} title too long", i, j).into());
+                web_sys::console::warn_1(&format!("Tag {i} article {j} title too long").into());
             }
         }
     }
@@ -153,6 +147,7 @@ pub struct TagsIndex {
 }
 
 impl TagsIndex {
+    #[must_use] 
     pub fn new() -> Self {
         Self {
             tags: RefCell::new(Vec::new()),
@@ -268,6 +263,7 @@ pub struct TagsModalState {
 }
 
 impl TagsModalState {
+    #[must_use] 
     pub fn new() -> Self {
         Self {
             tags: RefCell::new(Vec::new()),
@@ -462,7 +458,7 @@ impl TagsModalState {
     pub fn update_count(&self) -> Result<()> {
         if let Some(count_el) = query_selector_optional::<HtmlElement>("#tags-count")? {
             let count = self.tags.borrow().len();
-            count_el.set_text_content(Some(&format!("{} tags", count)));
+            count_el.set_text_content(Some(&format!("{count} tags")));
         }
         Ok(())
     }
@@ -534,7 +530,7 @@ impl TagsModalState {
     /// 選択アイテムをスクロールして見える位置に
     fn scroll_selected_into_view(&self) -> Result<()> {
         let selected = *self.selected_index.borrow();
-        let selector = format!(".tag-result-item[data-index=\"{}\"]", selected);
+        let selector = format!(".tag-result-item[data-index=\"{selected}\"]");
 
         if let Some(item) = query_selector_optional::<HtmlElement>(&selector)? {
             let options = web_sys::ScrollIntoViewOptions::new();
@@ -582,6 +578,7 @@ pub async fn load_tags_index() -> Result<()> {
 }
 
 /// タグをフィルタリング
+#[must_use] 
 pub fn filter_tags(query: &str) -> Vec<TagInfo> {
     TAGS_INDEX.with(|idx| idx.borrow().filter(query))
 }

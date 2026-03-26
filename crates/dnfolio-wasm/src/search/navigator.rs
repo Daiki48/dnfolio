@@ -30,11 +30,13 @@ impl HighlightNavigator {
     }
 
     /// ハイライトが存在するか
+    #[must_use] 
     pub fn has_highlights() -> bool {
         HIGHLIGHT_MANAGER.with(|manager| manager.borrow().count() > 0)
     }
 
-    /// 現在位置の情報を取得 (current_index, total_count)
+    /// 現在位置の情報を取得 (`current_index`, `total_count`)
+    #[must_use] 
     pub fn get_position() -> (usize, usize) {
         HIGHLIGHT_MANAGER.with(|manager| {
             let m = manager.borrow();

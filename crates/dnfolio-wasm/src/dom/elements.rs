@@ -109,7 +109,7 @@ pub fn hide_loading() -> Result<()> {
 
 /// 要素の全ての子要素を安全に削除
 ///
-/// set_inner_html("")の代わりに使用する
+/// `set_inner_html("")の代わりに使用する`
 /// XSS脆弱性を防ぐため、DOM APIで個別に削除
 pub fn clear_children(element: &Element) -> Result<()> {
     while let Some(child) = element.first_child() {
@@ -122,7 +122,7 @@ pub fn clear_children(element: &Element) -> Result<()> {
 
 /// テキストコンテンツを持つdiv要素を安全に作成して追加
 ///
-/// set_inner_html("<div>...</div>")の代わりに使用
+/// `set_inner_html`("<div>...</div>")の代わりに使用
 /// XSS脆弱性を防ぐため、textContentを使用
 pub fn create_text_div(parent: &Element, class_name: &str, text: &str) -> Result<Element> {
     let doc = document()?;
@@ -161,12 +161,11 @@ pub const MAX_URL_LEN: usize = 2000;
 
 /// 検索クエリをバリデーション（長さ制限）
 ///
-/// 長すぎるクエリはReDoS攻撃やメモリ枯渇の原因になる
+/// `長すぎるクエリはReDoS攻撃やメモリ枯渇の原因になる`
 pub fn validate_search_query(query: &str) -> Result<&str> {
     if query.len() > MAX_SEARCH_QUERY_LEN {
         return Err(DnfolioError::DomError(format!(
-            "検索クエリが長すぎます（最大{}文字）",
-            MAX_SEARCH_QUERY_LEN
+            "検索クエリが長すぎます（最大{MAX_SEARCH_QUERY_LEN}文字）"
         )));
     }
     Ok(query)
@@ -176,8 +175,7 @@ pub fn validate_search_query(query: &str) -> Result<&str> {
 pub fn validate_command(cmd: &str) -> Result<&str> {
     if cmd.len() > MAX_COMMAND_LEN {
         return Err(DnfolioError::DomError(format!(
-            "コマンドが長すぎます（最大{}文字）",
-            MAX_COMMAND_LEN
+            "コマンドが長すぎます（最大{MAX_COMMAND_LEN}文字）"
         )));
     }
     Ok(cmd)
@@ -230,8 +228,7 @@ pub fn validate_url(url: &str) -> Result<&str> {
     for scheme in dangerous_schemes {
         if lower_url.starts_with(scheme) {
             return Err(DnfolioError::DomError(format!(
-                "危険なURLスキームです: {}",
-                scheme
+                "危険なURLスキームです: {scheme}"
             )));
         }
     }
@@ -266,8 +263,7 @@ pub fn validate_fragment(fragment: &str) -> Result<&str> {
     for c in id.chars() {
         if !c.is_alphanumeric() && c != '-' && c != '_' {
             return Err(DnfolioError::DomError(format!(
-                "無効なフラグメント文字: {}",
-                c
+                "無効なフラグメント文字: {c}"
             )));
         }
     }

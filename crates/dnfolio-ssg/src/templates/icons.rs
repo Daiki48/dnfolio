@@ -3,6 +3,9 @@
 //! sakurajima.nvimテーマに合わせたSVGアイコンを提供
 //! 全てインラインSVGとして埋め込み可能
 
+// アイコンライブラリのため、現在未使用のアイコンも将来利用のために保持する
+#![allow(dead_code)]
+
 /// アイコンサイズの定数
 pub const ICON_SIZE_SM: u32 = 12;
 pub const ICON_SIZE_MD: u32 = 14;

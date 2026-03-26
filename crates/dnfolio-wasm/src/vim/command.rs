@@ -21,6 +21,7 @@ pub struct CommandResult {
 }
 
 impl CommandResult {
+    #[must_use] 
     pub fn info(title: &str, message: &str, icon: &str) -> Self {
         Self {
             title: title.to_string(),
@@ -30,6 +31,7 @@ impl CommandResult {
         }
     }
 
+    #[must_use] 
     pub fn warn(title: &str, message: &str, icon: &str) -> Self {
         Self {
             title: title.to_string(),
@@ -208,7 +210,7 @@ impl CommandExecutor {
         "dev".to_string()
     }
 
-    /// URLパラメータからhighlightとlineNumを削除
+    /// `URLパラメータからhighlightとlineNumを削除`
     fn clear_url_highlight_params() -> Result<()> {
         if let Ok(win) = window() {
             if let Ok(href) = win.location().href() {
@@ -236,7 +238,7 @@ impl CommandExecutor {
                         };
 
                         // history.replaceStateでURL更新（リロードなし）
-                        if let Some(history) = win.history().ok() {
+                        if let Ok(history) = win.history() {
                             let _ = history.replace_state_with_url(
                                 &wasm_bindgen::JsValue::NULL,
                                 "",

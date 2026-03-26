@@ -1,4 +1,4 @@
-//! TreeWalkerラッパー
+//! `TreeWalkerラッパー`
 //!
 //! テキストノードを効率的に走査するためのヘルパー
 
@@ -7,10 +7,10 @@ use web_sys::{HtmlElement, Node, TreeWalker};
 use crate::dom::elements::document;
 use crate::error::{DnfolioError, Result};
 
-/// NodeFilter.SHOW_TEXT の値（テキストノードのみ表示）
+/// `NodeFilter.SHOW_TEXT` の値（テキストノードのみ表示）
 const SHOW_TEXT: u32 = 0x4;
 
-/// テキストノードを走査するTreeWalkerラッパー
+/// `テキストノードを走査するTreeWalkerラッパー`
 pub struct TextNodeWalker {
     walker: TreeWalker,
 }
@@ -56,11 +56,13 @@ impl TextNodeWalker {
     }
 
     /// ルートノードを取得
+    #[must_use] 
     pub fn root(&self) -> Node {
         self.walker.root()
     }
 
     /// 現在のノードを取得
+    #[must_use] 
     pub fn current_node(&self) -> Node {
         self.walker.current_node()
     }

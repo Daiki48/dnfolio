@@ -1,3 +1,32 @@
+// WASMクレート全体のclippy設定
+//
+// missing_errors_doc: JS連携のpub関数が多数あり、個別のエラードキュメントは過剰
+// missing_panics_doc: 同上
+// cast_possible_truncation: WASMターゲット(wasm32)ではusizeは32bitのため安全
+// cast_precision_loss: DOM操作でusize→f64変換が頻出するが、実用上の範囲で精度問題なし
+// cast_sign_loss: DOM APIがi32を返すが、負値は発生しないコンテキストで使用
+// cast_possible_wrap: 同上
+// unused_self: トレイトライクなimplでAPI一貫性のためselfを受け取っている
+// unnecessary_wraps: エラーハンドリングチェーンの統一のためResult型で統一
+// too_many_lines: イベントハンドラ等は分割すると可読性が下がる
+// similar_names: DOM操作で article_div / articles_div 等の類似名が自然
+// manual_let_else: 既存コードのスタイル維持
+// inherent_to_string: SelectionHelperのデバッグ用途
+#![allow(
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc,
+    clippy::cast_possible_truncation,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
+    clippy::cast_possible_wrap,
+    clippy::unused_self,
+    clippy::unnecessary_wraps,
+    clippy::too_many_lines,
+    clippy::similar_names,
+    clippy::manual_let_else,
+    clippy::inherent_to_string
+)]
+
 //! dnfolio WASM モジュール
 //!
 //! Neovim風UIのインタラクティブ機能をRust/WASMで実装
@@ -7,15 +36,15 @@
 //! - `error` - 共通エラー型
 //! - `dom` - DOM操作ヘルパー
 //!   - `elements` - 要素取得
-//!   - `walker` - TreeWalkerラッパー
+//!   - `walker` - `TreeWalkerラッパー`
 //!   - `selection` - Selection APIラッパー
 //! - `vim` - Vim機能
-//!   - `mode` - EditorMode, EditorState
-//!   - `cursor` - BlockCursor
+//!   - `mode` - `EditorMode`, `EditorState`
+//!   - `cursor` - `BlockCursor`
 //!   - `motion` - hjkl移動
 //!   - `command` - コマンド処理
 //! - `search` - 検索・ハイライト機能
-//!   - `highlight` - HighlightManager
+//!   - `highlight` - `HighlightManager`
 //!   - `navigator` - n/Nナビゲーション
 //! - `ui` - UIコンポーネント
 //!   - `toast` - トースト通知
@@ -35,7 +64,7 @@ pub mod vim;
 use error::Result;
 
 /// WASMモジュールのエントリポイント
-/// DOMContentLoaded後に自動実行される
+/// `DOMContentLoaded後に自動実行される`
 #[wasm_bindgen(start)]
 pub fn main() -> std::result::Result<(), JsValue> {
     // パニック時のスタックトレースをコンソールに出力
@@ -153,7 +182,7 @@ fn apply_url_highlight() -> Result<bool> {
                     if !query.is_empty() {
                         search::highlight::apply_highlight(&query, line_num)?;
                         web_sys::console::log_1(
-                            &format!("  ✓ Highlight applied: {}", query).into(),
+                            &format!("  ✓ Highlight applied: {query}").into(),
                         );
                         return Ok(true);
                     }

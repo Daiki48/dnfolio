@@ -650,8 +650,14 @@ fn open_link_at_cursor() -> Result<()> {
                                         }
                                     }
                                 } else {
-                                    // 外部リンク
-                                    let _ = window.open_with_url_and_target(&href, "_blank");
+                                    let lower = href.to_lowercase();
+                                    let is_dangerous =
+                                        ["javascript:", "data:", "vbscript:", "blob:", "file:"]
+                                            .iter()
+                                            .any(|s| lower.starts_with(s));
+                                    if !is_dangerous {
+                                        let _ = window.open_with_url_and_target(&href, "_blank");
+                                    }
                                 }
                                 return Ok(());
                             }
@@ -1545,9 +1551,11 @@ fn explorer_open_selected() -> Result<()> {
     if let Some(node) = items.get(index as u32) {
         if let Some(el) = node.dyn_ref::<HtmlElement>() {
             if let Some(href) = el.get_attribute("href") {
-                // ページ遷移
-                if let Some(window) = web_sys::window() {
-                    let _ = window.location().set_href(&href);
+                if crate::dom::validate_url(&href).is_ok() {
+                    // ページ遷移
+                    if let Some(window) = web_sys::window() {
+                        let _ = window.location().set_href(&href);
+                    }
                 }
             }
         }

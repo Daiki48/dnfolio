@@ -136,6 +136,8 @@ impl SearchIndex {
             &format!("Search index loaded: {} articles", articles.len()).into(),
         );
 
+        validate_search_index(&articles)?;
+
         *self.articles.borrow_mut() = articles;
         *self.loaded.borrow_mut() = true;
 

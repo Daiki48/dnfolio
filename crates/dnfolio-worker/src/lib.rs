@@ -43,8 +43,7 @@ fn build_redirect_url(url: &Url, target_path: &str) -> Result<Url> {
     } else {
         "/"
     };
-    let mut redirect_url = Url::parse(&format!("https://{CANONICAL_HOST}{safe_path}"))?;
-    redirect_url.set_query(url.query());
+    let redirect_url = Url::parse(&format!("https://{CANONICAL_HOST}{safe_path}"))?;
     Ok(redirect_url)
 }
 

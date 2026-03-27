@@ -56,6 +56,9 @@ fn gone_response() -> Result<Response> {
     let headers = worker::Headers::new();
     headers.set("Cache-Control", "public, max-age=86400")?;
     headers.set("X-Robots-Tag", "noindex")?;
+    headers.set("X-Content-Type-Options", "nosniff")?;
+    headers.set("X-Frame-Options", "DENY")?;
+    headers.set("Content-Security-Policy", "default-src 'none'")?;
     Response::from_html(
         "<!DOCTYPE html><html lang=\"ja\"><head><meta charset=\"utf-8\"><title>410 Gone</title></head><body><h1>410 Gone</h1><p>このURLは廃止されました。</p></body></html>",
     )

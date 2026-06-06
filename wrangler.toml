@@ -3,7 +3,7 @@ main = "./crates/dnfolio-worker/build/worker/shim.mjs"
 compatibility_date = "2026-03-26"
 
 [build]
-command = "cd crates/dnfolio-worker && (command -v worker-build > /dev/null 2>&1 || cargo install -q worker-build) && worker-build --release"
+command = "cd crates/dnfolio-worker && (command -v worker-build > /dev/null 2>&1 || cargo install -q worker-build@^0.7) && worker-build --release"
 
 [assets]                                                                                                              
 directory = "./dist"                                                                                                  

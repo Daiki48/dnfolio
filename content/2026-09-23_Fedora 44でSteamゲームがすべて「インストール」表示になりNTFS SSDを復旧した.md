@@ -62,7 +62,7 @@ lsblk -o NAME,MODEL,SIZE,FSTYPE,FSVER,LABEL,UUID,MOUNTPOINTS
 ```text
 sdc                 Samsung SSD 860 QVO 1TB  931.5G
 ├─sdc1                                        16M
-└─sdc2                                      931.5G ntfs SSD 60AE40E5AE40B4F6
+└─sdc2                                      931.5G ntfs SSD <SSD_UUID>
 ```
 
 パーティションも残っている。
@@ -75,7 +75,7 @@ UUIDも以前と同じ。
 
 ```text
 sdb
-└─sdb1  931.5G ntfs HDD 06BA4A37BA4A2391
+└─sdb1  931.5G ntfs HDD <HDD_UUID>
 ```
 
 一方、ext4で使っているSSDは正常にマウントされていた。
@@ -107,8 +107,8 @@ Fedora
 問題発生時は次のような設定だった。
 
 ```fstab
-UUID=60AE40E5AE40B4F6 /media/ssd ntfs3 uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
-UUID=06BA4A37BA4A2391 /media/hdd ntfs3 uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
+UUID=<SSD_UUID> /media/ssd ntfs3 uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
+UUID=<HDD_UUID> /media/hdd ntfs3 uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
 ```
 
 UUIDは`lsblk`で確認した値と一致していた。
@@ -227,10 +227,6 @@ TARGET      SOURCE     FSTYPE
 
 ```text
 SteamLibrary
-OBS録画
-ObsidianSync
-Thunderbird
-ollama-models
 ...
 ```
 
@@ -247,8 +243,8 @@ Steamで何十GB、何百GBと再ダウンロードする必要はなさそう�
 そこで、今回は`fstab`の`ntfs3`固定をやめ、`ntfs-3g`を使う構成へ変更した。
 
 ```fstab
-UUID=60AE40E5AE40B4F6 /media/ssd ntfs-3g uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
-UUID=06BA4A37BA4A2391 /media/hdd ntfs-3g uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
+UUID=<SSD_UUID> /media/ssd ntfs-3g uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
+UUID=<HDD_UUID> /media/hdd ntfs-3g uid=1000,gid=1000,rw,exec,umask=022,nofail,x-systemd.device-timeout=10s 0 0
 ```
 
 `exec`を残しているのは、SteamやWine系の利用を考慮しているためだ。
